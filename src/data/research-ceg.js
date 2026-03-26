@@ -345,3 +345,38 @@ export const chartData = {
     { stream: "Retail & Other", pct: 10, color: "deepBlue" },
   ],
 };
+
+/* ─── Channel Check Framework ─── */
+export const channelChecks = [
+  { group: "Customers (Hyperscalers, C&I)", checks: [
+    { q: "Are you actively seeking nuclear-specific PPAs?", positive: '"We need 24/7 CFE, only nuclear works"', negative: '"Hourly matching isn\'t a priority"' },
+    { q: "What price premium for nuclear vs wind/solar?", positive: '"$15–25/MWh premium for 24/7 clean"', negative: '"We\'ll take the cheapest clean MWh"' },
+    { q: "How does Constellation compare to Vistra/Talen?", positive: '"CEG has the scale and fleet diversity"', negative: '"We\'re indifferent between providers"' },
+    { q: "Considering on-site co-location (behind-the-meter)?", positive: '"Yes, we\'d pay a premium for dedicated nuclear"', negative: '"Regulatory uncertainty is too high"' },
+    { q: "5-year electricity procurement growth forecast?", positive: '"Doubling to tripling DC capacity"', negative: '"Efficiency gains offsetting load growth"' },
+  ]},
+  { group: "Competitors (Vistra, NRG, Talen)", checks: [
+    { q: "PPA demand shifting toward nuclear specifically?", positive: '"Absolutely — hyperscalers want nuclear by name"', negative: '"Demand is technology-agnostic"' },
+    { q: "How do you view Calpine acquisition impact?", positive: '"Makes CEG harder to compete with"', negative: '"It distracts them; we\'re taking share"' },
+    { q: "Pipeline for data center power contracts?", positive: "Smaller pipeline than CEG", negative: "Larger, more advanced pipeline" },
+  ]},
+  { group: "Regulators / Policy", checks: [
+    { q: "Will FERC co-location order lead to actionable frameworks by 2027?", positive: '"PJM working group on track"', negative: '"Significant stakeholder opposition"' },
+    { q: "Is IRA nuclear PTC repeal a realistic risk?", positive: '"Nuclear PTCs survived the OBBBA"', negative: '"Budget reconciliation threatens credits"' },
+    { q: "NRC capacity for Crane restart licensing?", positive: '"Crane is priority; staff assigned"', negative: '"Competing priorities creating delays"' },
+  ]},
+];
+
+/* ─── Bearish Triggers ("What Would Change My Mind") ─── */
+export const bearishTriggers = [
+  { trigger: "PJM load growth revised down >25%", detail: "Signals demand thesis is overbuilt. Watch PJM's semi-annual load forecast updates." },
+  { trigger: "2+ hyperscalers pivot away from nuclear PPAs", detail: "Indicates 24/7 clean energy premium is fading. Watch corporate sustainability reports and PPA announcements." },
+  { trigger: "Henry Hub below $2.00 for 6+ months", detail: "Compresses wholesale prices enough to test PTC floor and pressure gas fleet margins simultaneously." },
+];
+
+/* ─── Hidden Risks / Red Flags ─── */
+export const hiddenRisks = [
+  { risk: "Nuclear decommissioning trust adequacy", detail: "If 80-year license extensions create larger decommissioning costs, or trust fund returns disappoint, this is a long-tail liability." },
+  { risk: "Customer concentration (MSFT + META)", detail: "Microsoft and Meta PPAs are large single-counterparty exposures. Hyperscaler creditworthiness is strong today but represents concentration risk." },
+  { risk: "Accounting opacity (GAAP vs Adjusted)", detail: "Gap between GAAP EPS ($7.40) and adjusted EPS ($9.39) requires trusting management adjustments. DPP mechanism in receivables securitisation adds complexity." },
+];

@@ -8,6 +8,7 @@ import {
   nuclearFleetIllinois, nuclearFleetMidAtlantic, nuclearFleetOther,
   calpineCards, geoSegments, revenueStreams, hedgingStats,
   qualityCards, mgmtQuality, variants,
+  channelChecks, bearishTriggers, hiddenRisks,
 } from "../data/research-ceg";
 
 /* ─── SVG chart helpers ─── */
@@ -488,10 +489,61 @@ export default function ResearchCEG({ T }) {
         </div>
       </Section>
 
+      {/* KPI Driver Tree */}
+      <Section id="kpi">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>KPI DRIVER TREE</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>What actually drives the stock</h2>
+          {Object.entries(kpiTree).map(([key, node], i) => (
+            <Card key={i} T={T} style={{ padding: "16px 20px", marginBottom: 12, borderLeft: `3px solid ${i === 0 ? T.green : i === 1 ? T.capRed : i === 2 ? T.orange : T.deepBlue}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <span style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn }}>{node.label}</span>
+                {node.pctEarnings && <Pill T={T} color={T.green} bg={T.greenBg}>{node.pctEarnings}</Pill>}
+              </div>
+              {node.items.map((item, j) => (
+                <div key={j} style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, paddingLeft: 12, borderLeft: "2px solid " + T.border, marginBottom: 4 }}>{item}</div>
+              ))}
+            </Card>
+          ))}
+          <div style={{ fontSize: 12, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", marginTop: 20, marginBottom: 10, textTransform: "uppercase" }}>External variables that matter most</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10 }}>
+            {[
+              { title: "Henry Hub Gas Price", color: T.orange, text: "Every $1/MMBtu increase adds ~$300–500M to nuclear margin. Gas sets marginal electricity price." },
+              { title: "PJM Capacity Prices", color: T.capRed, text: "Structural support with multi-year forward visibility from auctions. Potential cap removal = further upside." },
+              { title: "Data Centre Build Pace", color: T.deepBlue, text: "Determines incremental load growth and PPA demand. ~97% of PJM incremental load growth." },
+              { title: "IRA Policy Durability", color: T.green, text: "Nuclear PTC provides $1–2B annual floor. Survived OBBBA. Bipartisan support is key." },
+              { title: "Interest Rates", color: T.purple, text: "Affects WACC and relative attractiveness of utility equity. $21B+ debt stack sensitive to rates." },
+            ].map((v, i) => (
+              <Card key={i} T={T} style={{ padding: "14px 16px" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: v.color, fontFamily: Fn, marginBottom: 4 }}>{v.title}</div>
+                <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>{v.text}</div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* Channel Check Framework */}
+      <Section id="channel">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>CHANNEL CHECKS</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Due diligence framework</h2>
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, marginBottom: 20, lineHeight: 1.7 }}>Key questions to validate the thesis across customers, competitors, and regulators.</p>
+          {channelChecks.map((group, gi) => (
+            <div key={gi} style={{ marginBottom: 20 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 10 }}>{group.group}</div>
+              {group.checks.map((ck, ci) => (
+                <Expandable key={ci} T={T} title={ck.q} tag={null} content={`✅ Positive: ${ck.positive}\n\n❌ Negative: ${ck.negative}`} color="deepBlue" />
+              ))}
+            </div>
+          ))}
+        </div>
+      </Section>
+
       {/* Risk Assessment */}
       <Section id="risks">
         <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>08 / RISK ASSESSMENT</div>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>RISK ASSESSMENT</div>
           <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Risks & red flags</h2>
           {riskTiers.map((tier, ti) => (
             <div key={ti} style={{ marginBottom: 20 }}>
@@ -504,6 +556,30 @@ export default function ResearchCEG({ T }) {
               ))}
             </div>
           ))}
+
+          {/* Hidden Risks */}
+          <div style={{ marginTop: 24 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", marginBottom: 10, textTransform: "uppercase" }}>Hidden risks / red flags</div>
+            {hiddenRisks.map((hr, i) => (
+              <Card key={i} T={T} style={{ padding: "14px 18px", marginBottom: 8, borderLeft: `3px solid ${T.orange}` }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 4 }}>{hr.risk}</div>
+                <p style={{ fontSize: 12, color: T.textSec, lineHeight: 1.7, fontFamily: Fn, margin: 0 }}>{hr.detail}</p>
+              </Card>
+            ))}
+          </div>
+
+          {/* Bearish Triggers */}
+          <div style={{ marginTop: 24 }}>
+            <Card T={T} style={{ padding: "18px 20px", borderLeft: `4px solid ${T.capRed}` }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: T.capRed, fontFamily: Fn, marginBottom: 10 }}>What would change my mind (bearish triggers)</div>
+              {bearishTriggers.map((bt, i) => (
+                <div key={i} style={{ marginBottom: 10 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn }}>{bt.trigger}</div>
+                  <p style={{ fontSize: 12, color: T.textSec, lineHeight: 1.7, fontFamily: Fn, margin: "4px 0 0" }}>{bt.detail}</p>
+                </div>
+              ))}
+            </Card>
+          </div>
         </div>
       </Section>
 
