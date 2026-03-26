@@ -324,3 +324,98 @@ export const businessRisks = [
   { title: "Macro / Volume Sensitivity", text: "Rail volumes are cyclical, tied to industrial production, housing, consumer spending, and agricultural output. A recession would hit carloads across nearly all segments. CN's operating leverage means margin compression accelerates when volumes fall." },
   { title: "Regulatory & Competitive", text: "Canada's Transportation Modernization Act increases regulatory scrutiny on service levels and pricing. CPKC's Mexico access is a structural competitive threat CN cannot replicate organically. The grain revenue cap limits upside pricing on the highest-volume commodity." },
 ];
+
+// ─── STAGE 3: INSTITUTIONAL EQUITY ANALYSIS DATA ───
+
+export const moatSources = [
+  { title: "Physical network monopoly", evidence: "~20,000 route miles; only Class I connecting Atlantic, Pacific, and Gulf. 85%+ traffic originates on-network. Replication cost: hundreds of billions.", durability: "Permanent", rating: "Strong" },
+  { title: "Regulatory moat", evidence: "78% of US freight stations served by single Class I. No switching order granted in 40 years. STB/CTA frameworks formalize the oligopoly.", durability: "Long-term", rating: "Strong" },
+  { title: "Captive shipper economics", evidence: "Mines, grain elevators, chemical plants physically connected to single railroad. Trucking costs 3-4x more per ton-mile. Switching requires new track construction.", durability: "Long-term", rating: "Strong" },
+  { title: "Cost advantage (OR discipline)", evidence: "61.7% adj. OR (Q4: 60.1%). Near-zero variable cost per incremental tonne. Each 100bp OR improvement = ~C$170M incremental operating income.", durability: "Medium-term", rating: "Strong" },
+  { title: "Intermodal network effects", evidence: "Falcon Premium (UP/Ferromex), CN-CSX interline, Crowley container service. Interline with short lines grew 10% even as volumes declined 5%.", durability: "Medium-term", rating: "Moderate" },
+];
+
+export const moatComparison = [
+  { peer: "CN", reach: "Atlantic-Pacific-Gulf", portAccess: "Prince Rupert monopoly", or: "62.9%", captive: "High (Canadian duopoly)", crossBorder: "US-Canada" },
+  { peer: "CPKC", reach: "Canada-US-Mexico (unique)", portAccess: "None exclusive", or: "61.3%", captive: "High (Canadian duopoly)", crossBorder: "US-Canada-Mexico" },
+  { peer: "UNP", reach: "Western US only", portAccess: "Ferromex stake (25%)", or: "59.9%", captive: "High (Western US)", crossBorder: "US-Mexico (via Ferromex)" },
+  { peer: "CSX", reach: "Eastern US only", portAccess: "Limited", or: "~63.9%", captive: "Moderate", crossBorder: "None" },
+  { peer: "NSC", reach: "Eastern US only", portAccess: "Limited", or: "65.8%", captive: "Moderate", crossBorder: "None" },
+];
+
+export const qualityScorecard = [
+  { metric: "Adj. ROIC", y20: "13.3%", y21: "14.1%", y22: "15.9%", y23: "14.5%", y24: "13.1%", y25: "~13.5%E" },
+  { metric: "Adj. Operating Ratio", y20: "61.9%", y21: "61.2%", y22: "59.9%", y23: "60.8%", y24: "62.9%", y25: "61.7%" },
+  { metric: "Adj. EPS (C$)", y20: "5.28", y21: "5.95", y22: "7.46", y23: "7.28", y24: "7.10", y25: "7.63" },
+  { metric: "FCF (C$B)", y20: "3.2", y21: "3.3", y22: "4.3", y23: "3.9", y24: "3.1", y25: "3.3" },
+  { metric: "FCF / Net Income", y20: "91%", y21: "78%*", y22: "83%", y23: "81%*", y24: "69%", y25: "71%" },
+];
+
+export const kpiScorecard = [
+  { kpi: "RTMs (millions)", y22: "234,964", y23: "232,614", y24: "235,538", y25: "238,159", trend: "Flat/slight growth" },
+  { kpi: "Revenue/RTM (C$/100)", y22: "~7.28", y23: "~7.23", y24: "~7.24", y25: "~7.27E", trend: "Stable" },
+  { kpi: "Adj. operating ratio", y22: "59.9%", y23: "60.8%", y24: "62.9%", y25: "61.7%", trend: "Recovering ▲" },
+  { kpi: "Train speed (mph)", y22: "18.9", y23: "19.8", y24: "18.9", y25: "19.2", trend: "Volatile" },
+  { kpi: "Terminal dwell (hours)", y22: "7.6", y23: "7.0", y24: "7.1", y25: "7.0", trend: "Improved ▲" },
+  { kpi: "Car velocity (miles/day)", y22: "195", y23: "213", y24: "206", y25: "215", trend: "Improved ▲" },
+  { kpi: "Fuel eff. (gal/1000 GTMs)", y22: "0.865", y23: "0.874", y24: "0.873", y25: "0.875", trend: "Near record" },
+  { kpi: "Capex / Revenue", y22: "~19%", y23: "~19%", y24: "~21%", y25: "~16%E (2026)", trend: "Declining ▲" },
+];
+
+export const peerORComparison = [
+  { peer: "Union Pacific", or24: "59.9%", q4Trend: "Industry-leading; Q4 58.7%" },
+  { peer: "CPKC", or24: "61.3%", q4Trend: "Improving rapidly; Q4 57.1% (core)" },
+  { peer: "CN", or24: "62.9%", q4Trend: "Recovering; Q4 60.1%" },
+  { peer: "CSX", or24: "~63.9%", q4Trend: "Lagging; service metrics weakest" },
+  { peer: "Norfolk Southern", or24: "65.8%", q4Trend: "Improving post-activist" },
+];
+
+export const variantBull = [
+  { title: "Prince Rupert monopoly optionality is mispriced", detail: "CN has exclusive rail access to North America's closest major port to Asia. Expanding from 1.6M to 1.8M TEU, with CANXPORT adding 400K TEU by ~2027. CN envisions doubling mainline capacity from ~25 to 50 trains/day. 58-hour shipping advantage over LA/Long Beach." },
+  { title: "FCF inflection is underappreciated", detail: "Capex declining from C$3.5B to C$2.8B in 2026 — a C$700M reduction. CN should generate C$3.5B+ in FCF, supporting ~5.5% FCF yield. The 24M-share buyback (~4% of float) creates a price floor. Management wants to 'take advantage of the cheap share price.'" },
+  { title: "Overseas revenue insulates more than assumed", detail: "37% of revenues from overseas traffic vs 29% transborder. Port network enables trade diversification — the opposite of tariff vulnerability." },
+  { title: "Western Canada energy renaissance", detail: "LNG Canada operational. Keyera-CN partnership targets 45,000 annual carloads of NGL exports via Prince Rupert. Propane, methanol, plastics pellets scaling. JX LNG's proposed inland facility would use CN directly." },
+];
+
+export const variantBear = [
+  { title: "Tariff and CUSMA risk is dominant", detail: "Tariffs erased >C$350M of 2025 revenue. CUSMA review in July 2026 is the highest-impact catalyst — hostile renegotiation could structurally impair 29% of revenue from cross-border flows. Forest products (-5%) and automotive (-10% Q4) already suffering." },
+  { title: "CPKC is becoming formidable", detail: "Single-line Canada-US-Mexico network captures nearshoring directly. 51% of Vancouver container volumes in recent months. Tracking toward C$1.2B annual merger synergies by 2027. Q4 2025 core OR of 57.1% is best-in-class." },
+  { title: "Jasper corridor is catastrophic single point of failure", detail: "CN's sole route through Jasper National Park faces intensifying wildfire risk. No bypass exists. July 2024 Jasper fire cut Vancouver traffic 46% and Prince Rupert 42%. Climate models suggest growing annual risk." },
+  { title: "Labor relations structurally adversarial", detail: "August 2024 simultaneous CN/CPKC shutdown was unprecedented. TCRC challenged constitutionality of binding arbitration. Next major negotiations (~2027-2028) carry elevated disruption risk." },
+];
+
+export const valuationHistory = [
+  { metric: "Trailing P/E", current: "~18.1x", avg5y: "20.6x", low5y: "16.9x", high5y: "23.3x", vsAvg: "-12%" },
+  { metric: "Forward P/E", current: "~17.2x", avg5y: "~19.5x", low5y: "~16x", high5y: "~22x", vsAvg: "-12%" },
+  { metric: "EV/EBITDA", current: "~11.8x", avg5y: "~12.5x", low5y: "~10x", high5y: "~14x", vsAvg: "-6%" },
+  { metric: "Dividend Yield", current: "2.6%", avg5y: "~2.0%", low5y: "1.5%", high5y: "2.8%", vsAvg: "Higher (cheaper)" },
+  { metric: "P/FCF", current: "~25x", avg5y: "~28x", low5y: "~22x", high5y: "~35x", vsAvg: "-11%" },
+];
+
+export const peerValuationTable = [
+  { peer: "CN (CNI)", trailingPE: "18.1x", fwdPE: "17.2x", evEbitda: "11.8x", pFcf: "25.2x", divYield: "2.6%", or: "62.9%", roic: "~13%" },
+  { peer: "UNP", trailingPE: "20.0x", fwdPE: "19.3x", evEbitda: "14.0x", pFcf: "26.0x", divYield: "2.1%", or: "59.9%", roic: "15.8%" },
+  { peer: "CPKC", trailingPE: "24.7x", fwdPE: "21.4x", evEbitda: "15.3x", pFcf: "45.9x", divYield: "0.75%", or: "61.3%", roic: "~7%*" },
+  { peer: "CSX", trailingPE: "26.2x", fwdPE: "21.8x", evEbitda: "14.4x", pFcf: "43.2x", divYield: "1.4%", or: "~63.9%", roic: "~11%" },
+  { peer: "NSC", trailingPE: "22.1x", fwdPE: "~19.5x", evEbitda: "13.5x", pFcf: "~29x", divYield: "2.0%", or: "65.8%", roic: "~10%" },
+];
+
+export const riskMatrix = [
+  { rank: 1, risk: "US-Canada tariff / CUSMA failure", prob: "High", impact: "High", mitigant: "37% overseas revenue; CUSMA-compliant goods largely exempt; steel/aluminum = 2% of southbound" },
+  { rank: 2, risk: "Jasper corridor wildfire/climate", prob: "High (recurring)", impact: "High", mitigant: "Fire suppression trains; vegetation management; but no bypass exists" },
+  { rank: 3, risk: "CPKC competitive encroachment", prob: "High", impact: "Medium", mitigant: "Prince Rupert monopoly; Gulf Coast access; deeper Midwest penetration" },
+  { rank: 4, risk: "Labor relations / work stoppage", prob: "Medium", impact: "High", mitigant: "Government binding arbitration within hours; but legally challenged" },
+  { rank: 5, risk: "STB regulatory tightening", prob: "Medium", impact: "Medium", mitigant: "July 2025 court vacatur favorable; Part 1144 repeal NPRM in progress" },
+  { rank: 6, risk: "Commodity mix cyclicality", prob: "Medium", impact: "Medium", mitigant: "Diversified (no segment >23%); grain near-record; forest/auto declining" },
+  { rank: 7, risk: "Leverage creep above target", prob: "Low-Med", impact: "Low-Med", mitigant: "Return to 2.5x by 2027; A-/A2 stable outlook; capex reduction improves FCF" },
+];
+
+export const s3Catalysts = [
+  { label: "Q1 2026 Earnings", date: "Apr 27, 2026", detail: "Management flagged as 'the toughest quarter' on YoY comps. Consensus EPS: C$1.78. Any beat or constructive tariff guidance would be bullish." },
+  { label: "CUSMA / USMCA Review", date: "July 2026", detail: "Highest-impact catalyst. Constructive outcome removes dominant overhang, triggers re-rating toward 19-20x fwd P/E. Hostile renegotiation pressures stock toward ~US$91 low." },
+  { label: "FCF Inflection", date: "H2 2026", detail: "Capex down C$600M to C$2.8B. Visibly higher FCF from Q2-Q3 reports. Combined with 24M-share NCIB (~4% of float), creates price floor." },
+  { label: "Grain Volume Strength", date: "Q1-Q2 2026", detail: "Record 2025 harvest (107M tonnes) still being exported. Second-best January ever. Elevated volumes persist before normalizing." },
+  { label: "Prince Rupert Expansion", date: "2026-2027", detail: "Fairview to 1.8M TEU completing imminently. CANXPORT Phase 1 and Ridley Island energy terminal validate monopoly growth thesis." },
+  { label: "OR Momentum", date: "Throughout 2026", detail: "Q4 2025's 60.1% was best in years. 400 mgmt layoffs (C$75M savings), 5% headcount cut. Could approach high-59% range." },
+  { label: "Capital Return Acceleration", date: "Feb 2026-Feb 2027", detail: "24M shares authorized for buyback — largest NCIB in recent memory. ~C$3.5B potential repurchases, roughly equal to annual FCF." },
+];

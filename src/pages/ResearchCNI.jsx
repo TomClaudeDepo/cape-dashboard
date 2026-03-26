@@ -7,6 +7,9 @@ import {
   monitoringPoints, chartData,
   primerSnapshot, networkCards, revenueTable, operatingMetrics,
   capitalAllocation, peerComparison, businessRisks,
+  moatSources, moatComparison, qualityScorecard, kpiScorecard,
+  peerORComparison, variantBull, variantBear, valuationHistory,
+  peerValuationTable, riskMatrix, s3Catalysts,
 } from "../data/research-cni";
 
 /* ─── SVG chart helpers ─── */
@@ -650,12 +653,370 @@ export default function ResearchCNI({ T }) {
         </div>
       </Section>
 
-      {/* Proceed to Stage 3 */}
-      <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.textTer}`, marginBottom: 32 }}>
-        <div style={{ fontSize: 11, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 6 }}>Next Steps</div>
-        <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>
-          With the business model now mapped, Stage 3 will apply an institutional investment framework to CN — assessing moat durability, building the KPI tree, identifying variant perceptions, and scoring quality.
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/* STAGE 3: INSTITUTIONAL EQUITY ANALYSIS                */}
+      {/* ═══════════════════════════════════════════════════════ */}
+
+      <div style={{ borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+          <Pill T={T} color={T.orange} bg="rgba(234,88,12,0.08)">STAGE 3</Pill>
+          <Pill T={T}>Institutional Equity Analysis</Pill>
+        </div>
+        <h2 style={{ fontFamily: Fn, fontSize: 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
+          Moat, quality, variants & valuation
+        </h2>
+        <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
+          A wide-moat, high-quality compounder trading at a meaningful discount to its own history. At ~17x forward earnings versus a five-year average of ~21x, the stock prices in tariff headwinds and competitive encroachment — but underweights the FCF inflection and Prince Rupert optionality.
         </p>
+      </div>
+
+      {/* S3-01: Moat Assessment */}
+      <Section id="s3-moat">
+        <div style={{ marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-01 / MOAT ASSESSMENT</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Irreplaceable infrastructure earns a wide rating</h2>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12, marginBottom: 24 }}>
+            {moatSources.map((m, i) => (
+              <Card key={i} T={T} style={{ padding: "18px 20px", borderLeft: `4px solid ${m.rating === "Strong" ? T.green : T.orange}` }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn }}>{m.title}</div>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    <Pill T={T} color={m.rating === "Strong" ? T.green : T.orange} bg={m.rating === "Strong" ? T.greenBg : "rgba(234,88,12,0.08)"}>{m.rating}</Pill>
+                    <Pill T={T}>{m.durability}</Pill>
+                  </div>
+                </div>
+                <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>{m.evidence}</p>
+              </Card>
+            ))}
+          </div>
+
+          {/* Moat comparison table */}
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 12 }}>Moat comparison vs peers</div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["Peer", "Reach", "Port Access", "Adj. OR", "Captive %", "Cross-Border"].map(h => (
+                    <th key={h} style={{ textAlign: "left", padding: "8px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {moatComparison.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border, background: r.peer === "CN" ? T.bg : "transparent" }}>
+                    <td style={{ padding: "8px 10px", fontWeight: r.peer === "CN" ? 700 : 500, color: r.peer === "CN" ? T.deepBlue : T.text }}>{r.peer}</td>
+                    <td style={{ padding: "8px 10px", color: T.textSec, fontSize: 11 }}>{r.reach}</td>
+                    <td style={{ padding: "8px 10px", color: T.textSec, fontSize: 11 }}>{r.portAccess}</td>
+                    <td style={{ padding: "8px 10px", color: T.textSec }}>{r.or}</td>
+                    <td style={{ padding: "8px 10px", color: T.textSec, fontSize: 11 }}>{r.captive}</td>
+                    <td style={{ padding: "8px 10px", color: T.textSec, fontSize: 11 }}>{r.crossBorder}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+
+          <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.green}` }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8 }}>Moat Rating: Wide — stable with localized pressure from CPKC</div>
+            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>
+              The physical infrastructure moat is as wide as it has ever been. Pricing power remains intact. CPKC narrows the moat modestly on Mexico-bound traffic but does not breach the core network advantage.
+            </p>
+          </Card>
+        </div>
+      </Section>
+
+      {/* S3-02: Quality Scoring */}
+      <Section id="s3-quality">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-02 / QUALITY SCORING</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Strong but not flawless compounder</h2>
+
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 12 }}>Return on capital: 2020-2025</div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["Metric", "2020", "2021", "2022", "2023", "2024", "2025"].map(h => (
+                    <th key={h} style={{ textAlign: h === "Metric" ? "left" : "right", padding: "8px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {qualityScorecard.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                    <td style={{ padding: "8px 10px", fontWeight: 500, color: T.text }}>{r.metric}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.textSec }}>{r.y20}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.textSec }}>{r.y21}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.green, fontWeight: 600 }}>{r.y22}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.textSec }}>{r.y23}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.textSec }}>{r.y24}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.text, fontWeight: 600 }}>{r.y25}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+            <Card T={T} style={{ padding: "18px" }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: T.orange, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>Balance Sheet</div>
+              <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>
+                Debt/EBITDA risen from 1.86x (2022) to 2.60x (2024), exceeding 2.5x target. Deliberately stepping up to ~2.7x for buybacks. A-/A2/A ratings stable. Return to 2.5x by 2027.
+              </p>
+            </Card>
+            <Card T={T} style={{ padding: "18px" }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: T.green, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>Capital Allocation</div>
+              <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>
+                ~C$39B returned to shareholders over the past decade. 30 consecutive years of dividend growth (~12% CAGR). Share count reduced ~20% since 2015. One notable failure: the 2021 KCS bid.
+              </p>
+            </Card>
+          </div>
+
+          <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.orange}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn }}>Quality Score: 8/10</div>
+              <Pill T={T} color={T.green} bg={T.greenBg}>HIGH</Pill>
+            </div>
+            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>
+              High marks on franchise quality, capital returns history, and management credibility under Tracy Robinson. Deductions for rising leverage, FCF conversion compression, and the 2021 KCS strategic error.
+            </p>
+          </Card>
+        </div>
+      </Section>
+
+      {/* S3-03: KPI Tree */}
+      <Section id="s3-kpi">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-03 / KPI TREE</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Mapping drivers of intrinsic value</h2>
+
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 12 }}>KPI Scorecard: 2022-2025</div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["KPI", "2022", "2023", "2024", "2025", "Trend"].map(h => (
+                    <th key={h} style={{ textAlign: h === "KPI" || h === "Trend" ? "left" : "right", padding: "8px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {kpiScorecard.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                    <td style={{ padding: "8px 10px", fontWeight: 500, color: T.text }}>{r.kpi}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.textSec }}>{r.y22}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.textSec }}>{r.y23}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.textSec }}>{r.y24}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.text, fontWeight: 600 }}>{r.y25}</td>
+                    <td style={{ padding: "8px 10px", color: r.trend.includes("▲") ? T.green : T.textTer, fontSize: 11 }}>{r.trend}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto" }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 12 }}>Peer Operating Ratio Comparison</div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["Railroad", "2024 Adj. OR", "Q4 2025 Trend"].map(h => (
+                    <th key={h} style={{ textAlign: "left", padding: "8px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {peerORComparison.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border, background: r.peer === "CN" ? T.bg : "transparent" }}>
+                    <td style={{ padding: "8px 10px", fontWeight: r.peer === "CN" ? 700 : 500, color: r.peer === "CN" ? T.deepBlue : T.text }}>{r.peer}</td>
+                    <td style={{ padding: "8px 10px", color: T.textSec }}>{r.or24}</td>
+                    <td style={{ padding: "8px 10px", color: T.textSec, fontSize: 11 }}>{r.q4Trend}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+        </div>
+      </Section>
+
+      {/* S3-04: Variant Perception */}
+      <Section id="s3-variants">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-04 / VARIANT PERCEPTION</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>What the market is pricing vs reality</h2>
+
+          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 20, maxWidth: 720 }}>
+            The street models ~8% EPS growth in 2026 (C$8.17 consensus). Average PT of ~US$115 implies ~14% upside. CN is viewed as "steady but unexciting" — 16 buy, 13 hold, 1 sell across 30 analysts.
+          </p>
+
+          <div style={{ fontSize: 12, fontWeight: 600, color: T.green, fontFamily: Fn, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.08em" }}>Bull case variants</div>
+          {variantBull.map((v, i) => (
+            <Expandable key={i} T={T} title={v.title} tag="Underpriced" content={v.detail} color="green" />
+          ))}
+
+          <div style={{ fontSize: 12, fontWeight: 600, color: T.capRed, fontFamily: Fn, marginBottom: 12, marginTop: 24, textTransform: "uppercase", letterSpacing: "0.08em" }}>Bear case variants</div>
+          {variantBear.map((v, i) => (
+            <Expandable key={i} T={T} title={v.title} tag="Risk" content={v.detail} color="capRed" />
+          ))}
+
+          <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.orange}`, marginTop: 20 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8 }}>What is genuinely mispriced?</div>
+            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>
+              The market likely underprices Prince Rupert's long-term optionality and the near-term FCF inflection from capex reduction. It likely overprices the sustainability of record grain volumes. It appropriately prices tariff risk at current levels — though a CUSMA resolution could trigger rapid re-rating.
+            </p>
+          </Card>
+        </div>
+      </Section>
+
+      {/* S3-05: Valuation Framework */}
+      <Section id="s3-valuation">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-05 / VALUATION FRAMEWORK</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Discount to history and peers is partly justified</h2>
+
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 12 }}>Current multiples vs history</div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["Multiple", "Current", "5Y Avg", "5Y Low", "5Y High", "vs Average"].map(h => (
+                    <th key={h} style={{ textAlign: h === "Multiple" ? "left" : "right", padding: "8px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {valuationHistory.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                    <td style={{ padding: "8px 10px", fontWeight: 500, color: T.text }}>{r.metric}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.text, fontWeight: 600 }}>{r.current}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.textSec }}>{r.avg5y}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.textTer }}>{r.low5y}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.textTer }}>{r.high5y}</td>
+                    <td style={{ padding: "8px 10px", textAlign: "right", color: T.capRed, fontWeight: 600 }}>{r.vsAvg}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 12 }}>Peer valuation comparison</div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["Peer", "Trailing P/E", "Fwd P/E", "EV/EBITDA", "P/FCF", "Div Yield", "OR", "ROIC"].map(h => (
+                    <th key={h} style={{ textAlign: h === "Peer" ? "left" : "right", padding: "8px 8px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {peerValuationTable.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border, background: r.peer.includes("CN") ? T.bg : "transparent" }}>
+                    <td style={{ padding: "8px 8px", fontWeight: r.peer.includes("CN") ? 700 : 500, color: r.peer.includes("CN") ? T.deepBlue : T.text }}>{r.peer}</td>
+                    <td style={{ padding: "8px 8px", textAlign: "right", color: T.textSec }}>{r.trailingPE}</td>
+                    <td style={{ padding: "8px 8px", textAlign: "right", color: T.textSec }}>{r.fwdPE}</td>
+                    <td style={{ padding: "8px 8px", textAlign: "right", color: T.textSec }}>{r.evEbitda}</td>
+                    <td style={{ padding: "8px 8px", textAlign: "right", color: T.textSec }}>{r.pFcf}</td>
+                    <td style={{ padding: "8px 8px", textAlign: "right", color: T.textSec }}>{r.divYield}</td>
+                    <td style={{ padding: "8px 8px", textAlign: "right", color: T.textSec }}>{r.or}</td>
+                    <td style={{ padding: "8px 8px", textAlign: "right", color: T.textSec }}>{r.roic}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+
+          <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.green}` }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8 }}>Justified valuation range</div>
+            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, marginBottom: 10 }}>
+              Fair forward P/E of 19-21x on consensus 2026 EPS of C$8.17 implies C$155-172 (TSX) / US$111-123 (NYSE). This represents 10-22% upside from ~C$141 / ~US$101.
+            </p>
+            <div style={{ display: "flex", gap: 20 }}>
+              {[{ l: "Bear", v: "C$130", c: T.capRed }, { l: "Base", v: "C$160", c: T.deepBlue }, { l: "Bull", v: "C$172", c: T.green }].map((s, i) => (
+                <div key={i} style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 20, fontWeight: 300, color: s.c, fontFamily: Fn }}>{s.v}</div>
+                  <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn, marginTop: 2 }}>{s.l}</div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </Section>
+
+      {/* S3-06: Risk Matrix */}
+      <Section id="s3-risks">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-06 / RISK MATRIX</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Probability-adjusted risk ranking</h2>
+
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["#", "Risk", "Probability", "Impact", "Key Mitigant"].map(h => (
+                    <th key={h} style={{ textAlign: "left", padding: "8px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {riskMatrix.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                    <td style={{ padding: "8px 10px", color: T.textTer, fontWeight: 600 }}>{r.rank}</td>
+                    <td style={{ padding: "8px 10px", fontWeight: 500, color: T.text }}>{r.risk}</td>
+                    <td style={{ padding: "8px 10px" }}>
+                      <Pill T={T} color={r.prob.includes("High") ? T.capRed : T.orange} bg={r.prob.includes("High") ? T.redBg : "rgba(234,88,12,0.08)"}>{r.prob}</Pill>
+                    </td>
+                    <td style={{ padding: "8px 10px" }}>
+                      <Pill T={T} color={r.impact === "High" ? T.capRed : T.orange} bg={r.impact === "High" ? T.redBg : "rgba(234,88,12,0.08)"}>{r.impact}</Pill>
+                    </td>
+                    <td style={{ padding: "8px 10px", color: T.textTer, fontSize: 11 }}>{r.mitigant}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+        </div>
+      </Section>
+
+      {/* S3-07: Catalysts */}
+      <Section id="s3-catalysts">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-07 / CATALYSTS</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>12-18 month catalyst horizon</h2>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
+            {s3Catalysts.map((c, i) => (
+              <Card key={i} T={T} style={{ padding: "16px 20px", display: "flex", gap: 16, alignItems: "flex-start" }}>
+                <div style={{ flexShrink: 0, textAlign: "center", minWidth: 80 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: T.deepBlue, fontFamily: Fn }}>{c.date}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 4 }}>{c.label}</div>
+                  <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>{c.detail}</p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* Stage 3 Conclusion */}
+      <Card T={T} style={{ padding: "24px", borderLeft: `4px solid ${T.deepBlue}`, marginBottom: 32 }}>
+        <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 12 }}>Investment conclusion</div>
+        <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 10 }}>
+          CN Rail is a wide-moat compounder with irreplaceable physical infrastructure, durable pricing power, and improving operational execution. The stock's ~12% discount to its five-year average and ~15% discount to peers creates an entry point rare for a franchise of this quality.
+        </p>
+        <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 10 }}>
+          Three observations suggest the discount is excessive: CN's 37% overseas revenue provides more tariff insulation than narrative implies; the C$600M capex reduction creates a tangible FCF inflection; and Q4 2025's 60.1% OR demonstrates structural recovery.
+        </p>
+        <div style={{
+          fontFamily: Fn, fontSize: 14, fontWeight: 500, color: T.text, lineHeight: 1.7,
+          margin: "16px 0 0", padding: "16px 20px", background: T.bg, borderRadius: T.radiusSm,
+          borderLeft: `3px solid ${T.deepBlue}`,
+        }}>
+          For a quality-focused fund, CN warrants a full position at current levels with a 12-month fair value target of US$115-120 (C$160-167), predicated on OR stabilization in the low 61s, FCF exceeding C$3.5B, and a constructive CUSMA outcome.
+        </div>
       </Card>
 
       {/* Disclaimer */}
