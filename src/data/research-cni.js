@@ -267,3 +267,60 @@ export const chartData = {
     values: [24.5, 23.4, 12.5, 10.9, 14.1, 12.2],
   },
 };
+
+// ─── STAGE 2: BUSINESS PRIMER DATA ───
+
+export const primerSnapshot = [
+  { value: "C$17.3B", label: "FY2025 Revenue" },
+  { value: "61.9%", label: "2025 Op. Ratio" },
+  { value: "C$7.63", label: "Adj. Diluted EPS" },
+  { value: "C$3.3B", label: "Free Cash Flow" },
+  { value: "~20,000", label: "Route Miles" },
+];
+
+export const networkCards = [
+  { title: "Pacific Gateway", text: "Vancouver and Prince Rupert provide access to transpacific trade. Prince Rupert is the closest North American port to Asia (500 nautical miles closer than other PNW ports), with the deepest natural harbour on the continent and on-dock rail. Intermodal volumes through Prince Rupert surged 20% in 2025, reaching ~886,000 TEUs. CN has the gentlest grade through the Rockies of any West Coast-serving railroad." },
+  { title: "Prairie Corridor", text: "The spine of CN's bulk commodity business. Connects the grain elevator network across Alberta, Saskatchewan, and Manitoba to export terminals at Vancouver, Prince Rupert, and Thunder Bay. CN set an all-time record for Western Canadian grain shipments in 2025 at 32.7 million tonnes. Edmonton is a critical intermodal hub being expanded." },
+  { title: "Eastern Canada", text: "Serves the industrial heartland of Ontario and Quebec, connecting Toronto and Montreal to Halifax on the Atlantic coast. Handles manufactured goods, forest products, and chemicals. Critical for automotive traffic between Canadian plants and U.S. assembly facilities." },
+  { title: "U.S. Midwest & Gulf", text: "Following the 1998 Illinois Central acquisition, CN extends from Chicago south to New Orleans and Mobile, Alabama. Wisconsin Central (2001) added the Chicago-Duluth corridor. The U.S. network accounted for roughly 30% of CN's 2024 revenues (C$5.2B). Chicago intermodal hub investments are ongoing." },
+];
+
+export const revenueTable = [
+  { segment: "Intermodal", rev: "3,892", pct: "23%", yoy: "+4%", drivers: "Consumer goods, containers; Vancouver & Prince Rupert int'l +13% in Q4" },
+  { segment: "Grain & Fertilizers", rev: "3,658", pct: "22%", yoy: "+7%", drivers: "Record Western Canadian grain; potash exports; bumper crop" },
+  { segment: "Petroleum & Chemicals", rev: "3,478", pct: "21%", yoy: "+2%", drivers: "NGLs via Prince Rupert, refined products, plastics" },
+  { segment: "Metals & Minerals", rev: "~2,000", pct: "12%", yoy: "~0%", drivers: "Iron ore, steel, aggregates; sensitive to construction cycle" },
+  { segment: "Forest Products", rev: "~1,800", pct: "11%", yoy: "-1%", drivers: "Lumber, pulp, paper; soft on U.S. housing & tariff headwinds" },
+  { segment: "Coal", rev: "~920", pct: "6%", yoy: "-9%", drivers: "Met coal (steel-making) & thermal coal; declining secular trend" },
+  { segment: "Automotive", rev: "~820", pct: "5%", yoy: "-20%", drivers: "Finished vehicles, parts; weak due to tariff uncertainty" },
+];
+
+export const operatingMetrics = [
+  { metric: "Operating Ratio (adj.)", fy23: "60.8%", fy24: "62.9%", fy25: "61.7%", trend: "Improving" },
+  { metric: "Revenue (C$B)", fy23: "16.8", fy24: "17.0", fy25: "17.3", trend: "+2% CAGR" },
+  { metric: "Adj. Diluted EPS (C$)", fy23: "7.28", fy24: "7.10", fy25: "7.63", trend: "+7% YoY" },
+  { metric: "Free Cash Flow (C$B)", fy23: "3.9", fy24: "3.1", fy25: "3.3", trend: "+8% YoY" },
+  { metric: "RTMs (B)", fy23: "232.6", fy24: "235.5", fy25: "238.2", trend: "+1% YoY" },
+  { metric: "Adj. ROIC", fy23: "14.5%", fy24: "13.1%", fy25: "~13.0%", trend: "Stable" },
+];
+
+export const capitalAllocation = [
+  { item: "Capital Expenditure", amount: "~C$3.4B", detail: "~20% of revenue. Track, signals, yards, capacity expansion (Prince Rupert corridor, Edmonton intermodal, Chicago hub)" },
+  { item: "Dividends", amount: "~C$2.1B", detail: "29th consecutive year of increases; 5% hike in 2025; ~47% payout ratio; ~2.8% yield" },
+  { item: "Share Buybacks", amount: "~C$2.0B", detail: "~15M shares repurchased in 2025; new NCIB authorised for 20M shares through Feb 2026" },
+  { item: "Net Debt / EBITDA Target", amount: "2.5x", detail: "Current leverage ~2.4x; investment-grade credit (A-rated). Conservative among Class I peers" },
+];
+
+export const peerComparison = [
+  { peer: "CN", miles: "~20,000", geo: "CAN + U.S.", triCoast: "Unique", rev: "C$17.3B", or: "61.7%", yield: "~2.8%", leverage: "~2.4x" },
+  { peer: "CPKC", miles: "~20,000", geo: "CAN + U.S. + MEX", triCoast: "—", rev: "C$14.6B", or: "~63%", yield: "~0.8%", leverage: "~2.8x" },
+  { peer: "Union Pacific", miles: "~32,000", geo: "Western U.S.", triCoast: "—", rev: "US$24.3B", or: "~60%", yield: "~2.3%", leverage: "~2.8x" },
+  { peer: "BNSF", miles: "~32,500", geo: "Western U.S.", triCoast: "—", rev: "~US$23B", or: "~61%", yield: "Private (BRK)", leverage: "N/A" },
+];
+
+export const businessRisks = [
+  { title: "Tariff & Trade Disruption", text: "U.S.-Canada trade tensions directly impact CN's cross-border traffic. Management estimated tariffs and trade uncertainty cost over C$350M in FY2025 revenue. Forest products, automotive, and international intermodal are most exposed. CN guides to flat volumes in 2026 as a result." },
+  { title: "Labour & Operations", text: "The August 2024 lockout (both CN and CPKC simultaneously) highlighted labour risk. Harsh Canadian winters regularly disrupt service. The 2023 wildfire season and port worker strikes also impacted operations. Unionised workforce introduces recurring negotiation risk." },
+  { title: "Macro / Volume Sensitivity", text: "Rail volumes are cyclical, tied to industrial production, housing, consumer spending, and agricultural output. A recession would hit carloads across nearly all segments. CN's operating leverage means margin compression accelerates when volumes fall." },
+  { title: "Regulatory & Competitive", text: "Canada's Transportation Modernization Act increases regulatory scrutiny on service levels and pricing. CPKC's Mexico access is a structural competitive threat CN cannot replicate organically. The grain revenue cap limits upside pricing on the highest-volume commodity." },
+];
