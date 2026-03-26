@@ -28,3 +28,4 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 @keyframes drawLine {
   to { stroke-dashoffset: 0; }
 }
+/* GitHub → Vercel pipeline test */
