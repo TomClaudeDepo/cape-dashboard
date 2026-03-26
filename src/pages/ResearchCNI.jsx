@@ -10,6 +10,7 @@ import {
   moatSources, moatComparison, qualityScorecard, kpiScorecard,
   peerORComparison, variantBull, variantBear, valuationHistory,
   peerValuationTable, riskMatrix, s3Catalysts,
+  channelChecks, channelSummary,
 } from "../data/research-cni";
 
 /* ─── SVG chart helpers ─── */
@@ -864,6 +865,72 @@ export default function ResearchCNI({ T }) {
             <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8 }}>What is genuinely mispriced?</div>
             <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>
               The market likely underprices Prince Rupert's long-term optionality and the near-term FCF inflection from capex reduction. It likely overprices the sustainability of record grain volumes. It appropriately prices tariff risk at current levels — though a CUSMA resolution could trigger rapid re-rating.
+            </p>
+          </Card>
+        </div>
+      </Section>
+
+      {/* S3-04b: Channel Checks */}
+      <Section id="s3-channels">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-04b / CHANNEL CHECKS</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Primary-source intelligence</h2>
+          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 24, maxWidth: 720 }}>
+            Shipper sentiment, competitor earnings call references, supplier/partner commentary, and independent operational data — the kind of channel checks that separate desk analysis from actionable buy-side work.
+          </p>
+
+          {channelChecks.map((cat, ci) => (
+            <div key={ci} style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: T.deepBlue, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 12 }}>
+                {cat.category}
+              </div>
+              {cat.items.map((item, ii) => (
+                <Expandable key={ii} T={T}
+                  title={item.title}
+                  tag={item.signal === "positive" ? "Positive" : item.signal === "negative" ? "Negative" : "Mixed"}
+                  content={item.detail + "\n\nImplication: " + item.implication}
+                  color={item.signal === "positive" ? "green" : item.signal === "negative" ? "capRed" : "orange"}
+                />
+              ))}
+            </div>
+          ))}
+
+          {/* Summary table */}
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 12 }}>Channel check summary</div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["Source", "Signal", "Implication for CN"].map(h => (
+                    <th key={h} style={{ textAlign: "left", padding: "8px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {channelSummary.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                    <td style={{ padding: "8px 10px", fontWeight: 500, color: T.text }}>{r.source}</td>
+                    <td style={{ padding: "8px 10px" }}>
+                      <Pill T={T}
+                        color={r.signal.includes("Strongly positive") ? T.green : r.signal.includes("Positive") ? T.green : r.signal.includes("Negative") ? T.capRed : T.orange}
+                        bg={r.signal.includes("positive") ? T.greenBg : r.signal.includes("Negative") ? T.redBg : "rgba(234,88,12,0.08)"}>
+                        {r.signal}
+                      </Pill>
+                    </td>
+                    <td style={{ padding: "8px 10px", color: T.textSec, fontSize: 11 }}>{r.implication}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+
+          <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.orange}` }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8 }}>Key takeaway for position sizing</div>
+            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, marginBottom: 10 }}>
+              Channel checks reveal a bifurcated service story: CN is genuinely struggling on grain car supply (reputational and regulatory risk), but excelling on intermodal execution — the higher-growth, higher-margin segment. The Prince Rupert growth thesis is corroborated by port data, customer capital commitments, and independent metrics.
+            </p>
+            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>
+              The grain car supply data is the most concerning — it creates headline risk and potential for regulatory tightening. Want to see Ag Transport data normalize above 85% for several consecutive weeks before giving full confidence to the operational improvement narrative.
             </p>
           </Card>
         </div>

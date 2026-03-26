@@ -419,3 +419,71 @@ export const s3Catalysts = [
   { label: "OR Momentum", date: "Throughout 2026", detail: "Q4 2025's 60.1% was best in years. 400 mgmt layoffs (C$75M savings), 5% headcount cut. Could approach high-59% range." },
   { label: "Capital Return Acceleration", date: "Feb 2026-Feb 2027", detail: "24M shares authorized for buyback — largest NCIB in recent memory. ~C$3.5B potential repurchases, roughly equal to annual FCF." },
 ];
+
+// ─── CHANNEL CHECKS ───
+
+export const channelChecks = [
+  {
+    category: "Shipper / Customer",
+    items: [
+      { source: "Ag Transport Coalition (grain shippers)", signal: "negative",
+        title: "Grain service is genuinely poor — worse than CPKC",
+        detail: "Since mid-November 2024, CN supplied on average only 56% of all cars ordered by shippers in the week ordered. For Prince Rupert specifically, performance averaged 53%, falling as low as 19% in one week. CN has rationed over 12,000 shipper orders this grain year, including 8,600 in the last 2.5 months. CN has been below the 90% car supply threshold for 30+ consecutive weeks. Most recent data (late March 2026) shows improvement to 86%, but still below 90% for a fifth straight week.",
+        implication: "Contradicts management's 'run the plan' service narrative. Louis Dreyfus precedent ($23M damages for 2013-14 failures) creates litigation exposure if sub-90% performance persists." },
+      { source: "RailState (intermodal data)", signal: "positive",
+        title: "CN outperforming CPKC at Vancouver",
+        detail: "CN achieved a 25% increase in daily TEU movement at Deltaport by adding trains and expanding average train size, leading to consistent declines in dwell times. CPKC is surprisingly moving less volume YoY, driven by smaller trains carrying 15% fewer TEUs on average. CN's TEUs per day up 11.4% from March 2024 and 25.2% from February, with TEUs per train up 9.1% YoY. CN enjoys 0.6% grade through the Rockies vs CPKC's 2.4% — a permanent physical advantage for heavier intermodal trains.",
+        implication: "Operational superiority in intermodal — the higher-growth, higher-margin segment. Directly supports CN's intermodal growth thesis." },
+    ],
+  },
+  {
+    category: "Key Customer / Partner",
+    items: [
+      { source: "AltaGas (largest CN energy customer at Prince Rupert)", signal: "positive",
+        title: "AltaGas: $2.9B/yr LPG exports, REEF adding 62 cars/day",
+        detail: "AltaGas CEO Vern Yu's commentary is unambiguously bullish on CN-Prince Rupert. Exporting $2.9B/year of LPG to Asia — 11% of Japan's imports, 6% of China's propane, 13% of South Korea's. REEF terminal (C$1.35B, opening late 2026) will add ~62 tank cars per day. China tariff dynamic is actually a tailwind — China's demand for non-U.S. propane increased after the trade war, growing from zero to 8% of imports.",
+        implication: "Captive, growing, high-margin customer locked into CN's monopoly corridor." },
+      { source: "Prince Rupert Port Authority", signal: "positive",
+        title: "26.3M tonnes (+14%), $3B+ infrastructure pipeline",
+        detail: "Prince Rupert handled 26.3M tonnes in 2025, up 14% over 2024. Intermodal traffic through Fairview rose 20% YoY to 885,797 TEUs. CN launched Zanardi Rapids Bridge Expansion (1,600-foot two-track bridge, completion 2027). CANXPORT (400K TEU, mid-2026), South Kaien Logistics Park (100K+ TEU), and REEF collectively represent >$3B in customer-funded infrastructure where CN is sole rail carrier.",
+        implication: "Third-party capital commitments validate CN's corridor economics and monopoly position." },
+    ],
+  },
+  {
+    category: "Competitor",
+    items: [
+      { source: "CPKC (Keith Creel, Q4 2025 earnings call)", signal: "mixed",
+        title: "CPKC: 55.9% Q4 OR, Mexico winning traffic, but weaker at Vancouver",
+        detail: "CPKC achieved industry-best 55.9% Q4 OR, 120bp improvement YoY. Expects mid-single-digit volume growth and low double-digit earnings growth for 2026. Creel highlighted the unique growth drivers from connecting Canada, US, and Mexico — pointed differentiation vs CN. However, RailState data confirms CPKC's operational execution at Vancouver is weaker: fewer trains, smaller train sizes, declining volumes.",
+        implication: "Strategic threat on Mexico corridor is real. But CN is winning the operational battle at Canadian ports — the more immediately relevant competitive frontier." },
+    ],
+  },
+  {
+    category: "Regulatory / Institutional",
+    items: [
+      { source: "CTA 2024-25 Annual Report", signal: "mixed",
+        title: "CPKC fined on grain revenue; interswitching expanded",
+        detail: "CPKC exceeded its Maximum Revenue Entitlement for 2023-24 crop year, triggering $1.9M in penalties. CN's revenues remained below its cap — suggesting CN is pricing more conservatively or ceding volume. CTA rejected all CN/CPKC arguments to restrict interswitching eligibility, expanding access to all traffic types including empty cars and intermodal.",
+        implication: "Modest negative for CN's pricing power on captive shippers within 30km, but practical impact is limited since most facilities are beyond interchange range." },
+    ],
+  },
+  {
+    category: "Supply Chain / Sub-Supplier",
+    items: [
+      { source: "DP World / Ray-Mont / IntermodeX", signal: "positive",
+        title: "Three major logistics players investing >$1B in CN-served corridor",
+        detail: "DP World: 885,797 TEUs in 2025 (+20%), funding terminal expansion to 1.8M TEU capacity. Ray-Mont: relocating and expanding to operate CANXPORT starting mid-2026, adding 400K TEU of export transloading. IntermodeX: committed to 100K+ TEU annual capacity at South Kaien with 200 new jobs.",
+        implication: "Independent logistics providers are all doubling down on CN's Prince Rupert corridor — strong validation of the growth thesis." },
+    ],
+  },
+];
+
+export const channelSummary = [
+  { source: "Ag Transport Coalition", signal: "Negative", implication: "Service quality risk, regulatory/litigation exposure" },
+  { source: "RailState (intermodal)", signal: "Positive", implication: "Operational superiority at Vancouver; winning share" },
+  { source: "AltaGas (energy customer)", signal: "Strongly positive", implication: "Captive, growing, high-margin traffic" },
+  { source: "Prince Rupert Port Authority", signal: "Strongly positive", implication: "Validates monopoly corridor growth" },
+  { source: "CPKC (competitor)", signal: "Mixed", implication: "Strategic threat on Mexico; CN winning at ports" },
+  { source: "CTA (regulator)", signal: "Mildly negative", implication: "Shipper access expanding, but limited practical impact" },
+  { source: "DP World / Ray-Mont / IntermodeX", signal: "Strongly positive", implication: "Third-party capital validates corridor economics" },
+];
