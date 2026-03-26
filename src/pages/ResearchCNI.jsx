@@ -1019,6 +1019,60 @@ export default function ResearchCNI({ T }) {
         </div>
       </Card>
 
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/* STAGE 4: VALUATION & FINANCIALS (Coming Soon)         */}
+      {/* ═══════════════════════════════════════════════════════ */}
+
+      <Section id="s4-valuation">
+        <div style={{ borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 32 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+            <Pill T={T} color={T.purple} bg="rgba(67,56,202,0.08)">STAGE 4</Pill>
+            <Pill T={T}>Valuation & Financials</Pill>
+            <Pill T={T} color={T.orange} bg="rgba(234,88,12,0.08)">IN PROGRESS</Pill>
+          </div>
+          <h2 style={{ fontFamily: Fn, fontSize: 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
+            DCF model, financial deep dive & scenario analysis
+          </h2>
+          <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
+            This section is under construction. The DCF model workbook is available for download below. Full financial analysis including revenue build, margin bridge, FCF waterfall, and scenario-weighted valuation will be completed in the next update.
+          </p>
+        </div>
+
+        <Card T={T} style={{ padding: "28px", textAlign: "center", marginBottom: 24, background: T.bg, border: `2px dashed ${T.border}` }}>
+          <div style={{ fontSize: 32, marginBottom: 12, opacity: 0.4 }}>📊</div>
+          <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>DCF Model Available</div>
+          <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.6, marginBottom: 16, maxWidth: 500, margin: "0 auto 16px" }}>
+            Full discounted cash flow model with revenue projections, margin assumptions, WACC calculation, and scenario analysis.
+          </p>
+          <a href="/research/CN_Rail_DCF_Model.xlsx" download style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "12px 24px", background: T.deepBlue, color: "#fff",
+            borderRadius: T.radiusSm, fontSize: 13, fontFamily: Fn, fontWeight: 600,
+            textDecoration: "none", transition: "opacity 0.2s",
+          }}
+            onMouseEnter={e => e.currentTarget.style.opacity = "0.85"}
+            onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
+            📥 Download CN Rail DCF Model (.xlsx)
+          </a>
+        </Card>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 32 }}>
+          {[
+            { title: "Revenue Build", desc: "Segment-by-segment revenue projections through 2030, including potash ramp, intermodal recovery, and tariff scenarios.", status: "Pending" },
+            { title: "Margin Bridge", desc: "Operating ratio walk from 61.7% to target range, decomposed by labor, fuel, depreciation, and volume leverage.", status: "Pending" },
+            { title: "Scenario Analysis", desc: "Bear / Base / Bull weighted valuation with probability-adjusted fair value and sensitivity tables.", status: "Pending" },
+          ].map((s, i) => (
+            <Card key={i} T={T} style={{ padding: "18px", opacity: 0.65 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn }}>{s.title}</div>
+                <Pill T={T} color={T.textTer}>{s.status}</Pill>
+              </div>
+              <p style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, lineHeight: 1.6, margin: 0 }}>{s.desc}</p>
+            </Card>
+          ))}
+        </div>
+      </Section>
+
       {/* Disclaimer */}
       <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, maxWidth: 700, paddingBottom: 40 }}>
         This analysis is for informational purposes only and does not constitute investment advice. Data sourced from CN investor relations, AAR, STB, CTA, FHWA, NERC, IEA, and industry reports. All figures reflect publicly available data as of March 2026.
