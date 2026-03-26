@@ -244,6 +244,79 @@ export const monitoringPoints = [
   { metric: "US data center electricity consumption", next: "IEA/EIA semi-annual", why: "Macro validation. If actual trends track 300-600 TWh by 2030, structural thesis intact." },
 ];
 
+/* ─── Nuclear Fleet Detail ─── */
+export const nuclearFleetIllinois = [
+  { station: "Braidwood", units: 2, capacity: "~2,386 MW", type: "PWR", location: "Will County", license: "2046/2047" },
+  { station: "Byron", units: 2, capacity: "~2,347 MW", type: "PWR", location: "Ogle County", license: "2044/2046" },
+  { station: "Clinton", units: 1, capacity: "~1,065 MW", type: "BWR", location: "DeWitt County", license: "~2047" },
+  { station: "Dresden", units: 2, capacity: "~1,845 MW", type: "BWR", location: "Grundy County", license: "2049/2051" },
+  { station: "LaSalle", units: 2, capacity: "~2,320 MW", type: "BWR", location: "LaSalle County", license: "2042/2043" },
+  { station: "Quad Cities", units: "2 (75%)", capacity: "~1,403 MW", type: "BWR", location: "Rock Island", license: "2032" },
+];
+export const nuclearFleetMidAtlantic = [
+  { station: "Calvert Cliffs", units: 2, capacity: "~1,756 MW", type: "PWR", location: "Maryland", license: "2034/2036" },
+  { station: "Limerick", units: 2, capacity: "~2,317 MW", type: "BWR", location: "Pennsylvania", license: "2044/2049" },
+  { station: "Peach Bottom", units: "2 (50%)", capacity: "~1,335 MW", type: "BWR", location: "Pennsylvania", license: "2053/2054" },
+  { station: "Salem", units: "2 (42.6%)", capacity: "~1,055 MW", type: "PWR", location: "New Jersey", license: "2036/2040" },
+  { station: "Crane (TMI-1)", units: "1 — Restart", capacity: "~835 MW", type: "PWR", location: "Pennsylvania", license: "Target 2027–28", highlight: true },
+];
+export const nuclearFleetOther = [
+  { station: "FitzPatrick", units: 1, capacity: "~838 MW", type: "BWR", location: "New York", license: "2034" },
+  { station: "Nine Mile Point", units: "2 (82%)", capacity: "~1,323 MW", type: "BWR", location: "New York", license: "2029/2046" },
+  { station: "Ginna", units: 1, capacity: "~582 MW", type: "PWR", location: "New York", license: "2029" },
+  { station: "South Texas Project", units: "2 (44%)", capacity: "~1,164 MW", type: "PWR", location: "Texas", license: "2047/2048" },
+];
+
+/* ─── Calpine Acquisition ─── */
+export const calpineCards = [
+  { icon: "⚡", title: "~25,000 MW Natural Gas", color: "orange", text: "Advanced combined-cycle gas turbines (60% efficiency) and peakers. Largest gas fleet in North America. ~9,000+ MW in ERCOT (~12% of Texas installed capacity)." },
+  { icon: "▲", title: "725 MW Geothermal — The Geysers", color: "green", text: "World's largest geothermal complex. 13 plants across 45 sq. miles in California. 24/7 clean baseload. ~40% of all US geothermal energy." },
+  { icon: "⇄", title: "Strategic Rationale", color: "deepBlue", text: "Gas provides dispatchable complement to nuclear. ERCOT & California diversify from PJM. Combined retail platform becomes US largest. Only company offering full clean & flexible power." },
+];
+
+/* ─── Geographic Segments ─── */
+export const geoSegments = [
+  { name: "Mid-Atlantic", market: "Eastern PJM", color: "capRed", text: "NJ, MD, VA, WV, DE, DC, PA. Key assets: Calvert Cliffs, Limerick, Peach Bottom, Salem, Crane. PJM is the world's largest wholesale electricity market. Northern Virginia = world's largest data center market." },
+  { name: "Midwest", market: "Western PJM & MISO", color: "deepBlue", text: "Illinois, Ohio, IN, MI, WI. Largest generation concentration: Braidwood, Byron, Clinton, Dresden, LaSalle, Quad Cities. Clinton hosts the 20-yr Meta PPA (1,121 MW)." },
+  { name: "New York", market: "NYISO", color: "purple", text: "FitzPatrick, Nine Mile Point, Ginna. Benefits from NY Zero Emission Credits. NY Climate Act targets 100% zero-emission electricity by 2040 — nuclear is essential." },
+  { name: "ERCOT (Texas)", market: "Texas-only grid", color: "capRed", text: "STP nuclear (44% owned). Post-Calpine: 9,000+ MW gas. Energy-only market. Explosive load growth from data centers, LNG export, Permian Basin." },
+  { name: "Other Regions", market: "ISO-NE, SE, CAISO, CA", color: "green", text: "Gas, wind, solar, hydro. Post-Calpine: The Geysers geothermal (725 MW) and significant California gas fleet." },
+];
+
+/* ─── Revenue Streams ─── */
+export const revenueStreams = [
+  { title: "Energy Sales", icon: "⚡", color: "capRed", text: "The largest component. Nuclear provides ~67% of ~270 TWh total sales volume. Sold into day-ahead and real-time wholesale markets at Locational Marginal Prices, plus retail contracts." },
+  { title: "Capacity Payments", icon: "△", color: "deepBlue", text: "PJM Base Residual Auctions pay generators for availability. Prices surged 10x to $329–333/MW-day. CEG cleared ~17,950 MW in 2027/28 BRA = ~$2.2B annually." },
+  { title: "Nuclear PTCs", icon: "■", color: "green", text: "IRA Section 45U: up to $15/MWh. Phases in when prices fall, out when they rise. $2.1B in FY2024, $45M in H1 2025. Asymmetric floor mechanism." },
+  { title: "State Credits (ZECs/CMCs)", icon: "★", color: "purple", text: "Illinois Zero Emission Credits and Carbon Mitigation Credits support IL fleet. NY ZECs support upstate plants. Gradually replaced by federal PTCs and PPAs." },
+  { title: "RECs & EFECs", icon: "◈", color: "orange", text: "Renewable Energy Certificates from wind/solar/hydro and Emission-Free Energy Certificates from nuclear. Sold to corporate ESG buyers. Growing premium market." },
+  { title: "Energy Services", icon: "◆", color: "deepBlue", text: "Energy management, sustainability consulting, demand response, EV charging, battery/microgrid solutions. Deepens relationships and creates recurring fees." },
+];
+
+/* ─── Hedging Stats ─── */
+export const hedgingStats = [
+  { value: "85–95%", label: "Near-term generation hedged at locked-in prices", color: "capRed" },
+  { value: "~$43.75", label: "$/MWh effective floor from IRA PTC mechanism", color: "green" },
+  { value: "~200 TWh", label: "Retail load providing natural hedge to generation", color: "deepBlue" },
+];
+
+/* ─── Quality Assessment ─── */
+export const qualityCards = [
+  { title: "ROIC vs WACC", text: "Reported ~8% understates replacement value of depreciated nuclear. Marginal returns exceptional: Crane restart ($1.6B) generates ~$300–400M/yr gross margin = 20%+ unlevered return." },
+  { title: "Margin Profile", text: "GAAP gross margin ~18% suppressed by purchased power & M2M. Adjusted nuclear gross margin alone: ~80%+. High stability from hedging." },
+  { title: "FCF Conversion", text: "GAAP OCF distorted by decommissioning trusts, DPP, and collateral. FCFbG (correct metric): $5.7–6.1B for 2024–25 combined. Maintenance capex + fuel: ~$2.0–2.5B/yr." },
+];
+export const mgmtQuality = "Capital allocation: Excellent. Since spin-off — 25%+ dividend initiation then 10%/yr growth, $992M buyback in FY2024, STP acquisition at attractive $/MW, Microsoft & Meta PPAs at premium pricing, Calpine acquisition doubling the fleet, $1.6B Crane restart at 20%+ returns. CEO compensation tied to adjusted operating earnings, FCFbG, and TSR.";
+
+/* ─── Variants (Bull/Bear) ─── */
+export const variants = [
+  { type: "bull", title: "PPA Pricing Is Being Underestimated", text: "Microsoft at ~$100+/MWh. Meta at ~$70/MWh. If demand persists, the next wave could clear $80–120/MWh. Each incremental 1,000 MW PPA at $90/MWh adds ~$300M in annual gross margin. The repricing cycle is just beginning." },
+  { type: "bull", title: "PJM Capacity Prices Are Artificially Capped", text: "The 2027/28 BRA hit the FERC cap at $333/MW-day and still fell 6,623 MW short. Without the cap: $389–530/MW-day. If FERC raises or removes the cap, capacity revenue could increase 20–60% from already-record levels." },
+  { type: "bull", title: "Crane Restart Could Be Transformational", text: "835 MW at $100+/MWh PPA could deliver $500M+ annual gross margin on $1.6B investment — a 30%+ return on capital. If NRC review accelerates, this hits earnings sooner than consensus." },
+  { type: "bear", title: "AI Power Demand Decelerates", text: "If model efficiency improves faster than compute demand grows, the 'power shortage' narrative moderates. PJM load forecasts revised down. This is the single biggest risk to the thesis." },
+  { type: "bear", title: "Calpine Integration & Debt Burden", text: "$26.6B deal adds ~$15B in debt. Total now ~$21B+ against $105B market cap. Integration of 72 assets and 2,500 employees is complex. Forced PJM divestiture to LS Power (~$5B) reduces strategic optionality." },
+];
+
 export const chartData = {
   capacityPrices: {
     labels: ["2024/25", "2025/26", "2026/27", "2027/28", "Est. w/o cap"],

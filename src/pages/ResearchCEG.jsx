@@ -5,6 +5,9 @@ import {
   cegSnapshot, heroStats, thesisCards, thesisSections,
   moatAnalysis, competitorTable, riskTiers, kpiTree,
   monitoringPoints, chartData,
+  nuclearFleetIllinois, nuclearFleetMidAtlantic, nuclearFleetOther,
+  calpineCards, geoSegments, revenueStreams, hedgingStats,
+  qualityCards, mgmtQuality, variants,
 } from "../data/research-ceg";
 
 /* ─── SVG chart helpers ─── */
@@ -251,6 +254,182 @@ export default function ResearchCEG({ T }) {
           </div>
         </Section>
       ))}
+
+      {/* ═══ BUSINESS PRIMER SECTIONS ═══ */}
+
+      {/* Nuclear Fleet Detail */}
+      <Section id="fleet">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>CROWN JEWEL</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>The nuclear fleet</h2>
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, marginBottom: 20, lineHeight: 1.7, maxWidth: 720 }}>14 stations, 25 reactor units, 6 states — the largest and best-operated fleet in the United States.</p>
+
+          <Card T={T} style={{ padding: "16px 20px", marginBottom: 16, borderLeft: `4px solid ${T.green}` }}>
+            <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.75, fontFamily: Fn, margin: 0 }}>
+              <strong style={{ color: T.text }}>Unit economics:</strong> Nuclear plants run 24/7 at ~95% capacity factor with ~$5.50/MWh fuel cost. At $50/MWh wholesale (set by gas), margin is ~$44.50/MWh. The IRA PTC floors revenue at ~$43.75/MWh when prices are low — downside protected, full upside preserved. Every 1% capacity factor improvement across 22 GW at $50/MWh = ~$96M in annual revenue.
+            </p>
+          </Card>
+
+          {[
+            { label: "Illinois Fleet (Midwest)", data: nuclearFleetIllinois },
+            { label: "Mid-Atlantic Fleet", data: nuclearFleetMidAtlantic },
+            { label: "New York & Texas", data: nuclearFleetOther },
+          ].map((fleet, fi) => (
+            <div key={fi} style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: T.green, fontFamily: Fn, letterSpacing: "0.05em", marginBottom: 8, textTransform: "uppercase" }}>{fleet.label}</div>
+              <Card T={T} style={{ padding: "12px 16px", overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+                  <thead>
+                    <tr style={{ borderBottom: "2px solid " + T.border }}>
+                      {["Station", "Units", "Capacity", "Type", "Location", "License"].map(h => (
+                        <th key={h} style={{ textAlign: "left", padding: "8px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {fleet.data.map((r, i) => (
+                      <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                        <td style={{ padding: "8px 10px", fontWeight: 600, color: r.highlight ? T.green : T.text }}>{r.station}</td>
+                        <td style={{ padding: "8px 10px", color: T.textSec }}>{r.units}</td>
+                        <td style={{ padding: "8px 10px", color: T.green, fontWeight: 600, fontFeatureSettings: '"tnum"' }}>{r.capacity}</td>
+                        <td style={{ padding: "8px 10px", color: T.textTer }}>{r.type}</td>
+                        <td style={{ padding: "8px 10px", color: T.textSec }}>{r.location}</td>
+                        <td style={{ padding: "8px 10px", color: T.textTer, fontFeatureSettings: '"tnum"' }}>{r.license}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Card>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Calpine Acquisition */}
+      <Section id="calpine">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>TRANSFORMATIVE DEAL</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>The Calpine acquisition</h2>
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, marginBottom: 20, lineHeight: 1.7, maxWidth: 720 }}>
+            $26.6B deal creating a 55 GW integrated platform. On January 7, 2026, Constellation completed its acquisition of Calpine, adding ~23 GW across 72 generating and battery storage assets, ~62 TWh of additional retail load, and ~2,500 employees.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+            {calpineCards.map((c, i) => (
+              <Card key={i} T={T} style={{ padding: "20px", borderTop: `3px solid ${colorMap[c.color] || T.capRed}` }}>
+                <div style={{ fontSize: 20, marginBottom: 10 }}>{c.icon}</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{c.title}</div>
+                <p style={{ fontSize: 12, color: T.textSec, lineHeight: 1.65, fontFamily: Fn, margin: 0 }}>{c.text}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* Geographic Segments */}
+      <Section id="segments">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>GEOGRAPHIC REACH</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Five operating segments</h2>
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, marginBottom: 20, lineHeight: 1.7 }}>Each segment represents a distinct RTO/ISO market region.</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
+            {geoSegments.map((seg, i) => (
+              <Card key={i} T={T} style={{ padding: "18px", borderLeft: `3px solid ${colorMap[seg.color] || T.capRed}` }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 2 }}>{seg.name}</div>
+                <Pill T={T} color={colorMap[seg.color]} bg={bgMap[seg.color]}>{seg.market}</Pill>
+                <p style={{ fontSize: 12, color: T.textSec, lineHeight: 1.65, fontFamily: Fn, marginTop: 8, margin: "8px 0 0" }}>{seg.text}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* Revenue Mechanics */}
+      <Section id="revenue">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>REVENUE MECHANICS</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>How Constellation makes money</h2>
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, marginBottom: 20, lineHeight: 1.7 }}>Six interlocking revenue streams creating a resilient earnings architecture.</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+            {revenueStreams.map((rs, i) => (
+              <Card key={i} T={T} style={{ padding: "18px", borderTop: `3px solid ${colorMap[rs.color] || T.capRed}` }}>
+                <div style={{ fontSize: 18, marginBottom: 8 }}>{rs.icon}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{rs.title}</div>
+                <p style={{ fontSize: 12, color: T.textSec, lineHeight: 1.65, fontFamily: Fn, margin: 0 }}>{rs.text}</p>
+              </Card>
+            ))}
+          </div>
+          <Card T={T} style={{ marginTop: 16, padding: "16px 20px", borderLeft: `4px solid ${T.deepBlue}` }}>
+            <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.75, fontFamily: Fn, margin: 0 }}>
+              <strong style={{ color: T.text }}>Gross margin mechanism:</strong> The key profitability metric is adjusted gross margin — the spread between selling price and generation/procurement cost. For nuclear alone, this margin is ~80%+ because marginal fuel cost is ~$5.50/MWh while selling prices are $40–60/MWh or higher.
+            </p>
+          </Card>
+        </div>
+      </Section>
+
+      {/* Hedging Architecture */}
+      <Section id="hedging">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>RISK MANAGEMENT</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>The hedging architecture</h2>
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, marginBottom: 20, lineHeight: 1.7, maxWidth: 720 }}>
+            Constellation forward-sells 85–95% of expected near-term generation at locked-in prices. The hedging ratio declines for future years, preserving upside optionality. The retail book provides an additional natural hedge. The IRA nuclear PTC functions as a "government put option" — creating a business with a well-defined earnings floor and significant upside.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+            {hedgingStats.map((h, i) => (
+              <Card key={i} T={T} style={{ padding: "20px", textAlign: "center" }}>
+                <div style={{ fontSize: 26, fontWeight: 300, fontFamily: Fn, color: colorMap[h.color] || T.text, lineHeight: 1.2 }}>{h.value}</div>
+                <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 8, lineHeight: 1.5 }}>{h.label}</div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* Quality Assessment */}
+      <Section id="quality">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>QUALITY ASSESSMENT</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>What kind of business is this?</h2>
+
+          <div style={{ fontSize: 12, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", marginBottom: 10, textTransform: "uppercase" }}>Financial quality</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
+            {qualityCards.map((qc, i) => (
+              <Card key={i} T={T} style={{ padding: "18px" }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{qc.title}</div>
+                <p style={{ fontSize: 12, color: T.textSec, lineHeight: 1.7, fontFamily: Fn, margin: 0 }}>{qc.text}</p>
+              </Card>
+            ))}
+          </div>
+
+          <div style={{ fontSize: 12, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", marginBottom: 10, textTransform: "uppercase" }}>Management quality</div>
+          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.8, fontFamily: Fn, marginBottom: 20, maxWidth: 720 }}>{mgmtQuality}</p>
+
+          <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.green}` }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8 }}>Quality score: <span style={{ color: T.green }}>High</span></div>
+            <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.75, fontFamily: Fn, margin: 0 }}>
+              The core nuclear business is one of the highest-quality power generation businesses in the world. Near-zero marginal cost, 95% utilisation, policy-protected downside, structural demand tailwinds, and superb management execution.
+            </p>
+          </Card>
+        </div>
+      </Section>
+
+      {/* Variants & Alpha */}
+      <Section id="variants">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>ALPHA GENERATION</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Variants & differentiated insights</h2>
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, marginBottom: 20, lineHeight: 1.7 }}>Consensus: 14 Buy, 5 Hold, 0 Sell. Avg PT ~$397 vs ~$300 price. What could the market be missing?</p>
+          {variants.map((v, i) => (
+            <Card key={i} T={T} style={{ padding: "18px 20px", marginBottom: 12, borderLeft: `4px solid ${v.type === "bull" ? T.green : T.capRed}` }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <Pill T={T} color={v.type === "bull" ? T.green : T.capRed} bg={v.type === "bull" ? T.greenBg : T.redBg}>{v.type === "bull" ? "Bull" : "Bear"}</Pill>
+                <span style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn }}>{v.title}</span>
+              </div>
+              <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.75, fontFamily: Fn, margin: 0 }}>{v.text}</p>
+            </Card>
+          ))}
+        </div>
+      </Section>
 
       {/* Moat Analysis */}
       <Section id="moat">
