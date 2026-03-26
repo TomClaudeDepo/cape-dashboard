@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Structural Growth Trends — Booking Holdings (BKNG) | Cape Capital Research</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#07090d;--bg-el:#0d1017;--bg-card:#111520;--bg-card-h:#161c2a;--bg-surf:#1a2030;--bdr:#1c2235;--bdr-l:#2a3248;--bdr-a:#3a4560;--tx:#e4e8f0;--tx2:#9aa0b8;--txm:#6b7394;--txd:#454d68;--acc:#6ee7b7;--acc-m:#3da87e;--acc-bg:rgba(110,231,183,0.08);--acc-bg2:rgba(110,231,183,0.15);--amb:#fbbf24;--amb-bg:rgba(251,191,36,0.08);--amb-bg2:rgba(251,191,36,0.15);--cor:#fb7185;--cor-bg:rgba(251,113,133,0.08);--cor-bg2:rgba(251,113,133,0.15);--blu:#60a5fa;--blu-bg:rgba(96,165,250,0.08);--blu-bg2:rgba(96,165,250,0.15);--pur:#a78bfa;--tea:#2dd4bf;--tea-bg:rgba(45,212,191,0.08);--tea-bg2:rgba(45,212,191,0.15);--pnk:#f472b6;--pnk-bg:rgba(244,114,182,0.08);--pnk-bg2:rgba(244,114,182,0.15);--up:#34d399;--dn:#f87171;--sf:'DM Serif Display',Georgia,serif;--sn:'DM Sans',-apple-system,sans-serif;--mn:'JetBrains Mono',monospace;--r:12px;--rs:8px;--tr:0.3s cubic-bezier(0.4,0,0.2,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--sn);background:var(--bg);color:var(--tx);line-height:1.75;font-size:15px;-webkit-font-smoothing:antialiased}
+.nav{position:sticky;top:0;z-index:100;background:rgba(7,9,13,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr);padding:0 24px}
+.nav-in{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-br{font-weight:600;font-size:14px;color:var(--tx2);display:flex;align-items:center;gap:10px}
+.nav-br .d{width:8px;height:8px;border-radius:50%;background:var(--acc)}
+.nav-lk{display:flex;gap:4px;overflow-x:auto}
+.nav-lk a{color:var(--txm);text-decoration:none;font-size:12px;font-weight:500;padding:6px 12px;border-radius:6px;white-space:nowrap;transition:var(--tr);letter-spacing:.3px}
+.nav-lk a:hover,.nav-lk a.act{color:var(--tx);background:var(--bg-surf)}
+.sp{position:fixed;top:56px;left:0;right:0;height:2px;z-index:99;background:var(--bdr)}.sp-f{height:100%;background:var(--acc);width:0;transition:width .1s}
+.pg{max-width:1120px;margin:0 auto;padding:0 24px}
+.hero{padding:72px 0 56px}
+.hero-g{display:grid;grid-template-columns:1fr 380px;gap:48px;align-items:end}
+.hero-ey{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--acc);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.hero-ey::before{content:'';width:24px;height:1px;background:var(--acc)}
+.hero h1{font-family:var(--sf);font-size:clamp(34px,4.5vw,52px);font-weight:400;line-height:1.15;margin-bottom:20px}
+.hero h1 em{font-style:italic;color:var(--acc)}
+.hero-bd{font-size:16px;color:var(--tx2);max-width:620px;line-height:1.8}
+.hero-r{background:var(--bg-card);border:1px solid var(--bdr);border-radius:var(--r);padding:28px}
+.hero-r h4{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--txd);margin-bottom:16px}
+.tk-row{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
+.tk-sym{font-family:var(--mn);font-size:20px;font-weight:500}.tk-pr{font-family:var(--sf);font-size:32px}
+.tk-ch{font-size:13px;font-weight:500;padding:3px 8px;border-radius:4px;background:rgba(248,113,113,0.15);color:var(--dn)}
+.km-g{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.km-i{padding:12px;background:rgba(255,255,255,0.02);border-radius:var(--rs);border:1px solid var(--bdr)}
+.km-v{font-family:var(--mn);font-size:16px;font-weight:500;color:var(--acc)}.km-l{font-size:11px;color:var(--txd);margin-top:2px}
+.rd{font-size:12px;color:var(--txd);display:flex;align-items:center;gap:6px;margin-top:14px}
+.rd::before{content:'';width:16px;height:1px;background:var(--txd)}
+.ss{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--bdr);border-radius:var(--r);overflow:hidden;margin:40px 0}
+.sc{background:var(--bg-card);padding:24px 20px;text-align:center;transition:var(--tr);cursor:default}.sc:hover{background:var(--bg-card-h)}
+.sc .sv{font-family:var(--sf);font-size:28px;line-height:1.2}.sc .sl{font-size:11px;color:var(--txm);margin-top:6px}
+.sec{padding:64px 0;border-top:1px solid var(--bdr);opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.sec.vis{opacity:1;transform:translateY(0)}
+.sh{margin-bottom:36px}
+.sn{font-family:var(--mn);font-size:12px;color:var(--txd);margin-bottom:8px;letter-spacing:1px}
+.sh h2{font-family:var(--sf);font-size:clamp(26px,3vw,36px);font-weight:400;line-height:1.25;margin-bottom:16px}
+.sh .ld{font-size:16px;color:var(--tx2);max-width:780px;line-height:1.8}
+.pr{max-width:780px}.pr p{color:var(--tx2);margin-bottom:18px;line-height:1.85}.pr p strong{color:var(--tx);font-weight:500}
+.pr .hl{font-family:var(--sf);font-size:22px;color:var(--tx);line-height:1.5;margin:32px 0;padding-left:20px;border-left:3px solid var(--acc)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.cc{background:var(--bg-card);border:1px solid var(--bdr);border-radius:var(--r);padding:28px;margin:24px 0}
+.cc h4{font-size:13px;font-weight:600;color:var(--tx2);margin-bottom:4px}
+.cc .cs{font-size:11px;color:var(--txd);margin-bottom:20px}
+.mr{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:24px 0}
+.mb{background:rgba(255,255,255,0.02);border:1px solid var(--bdr);border-radius:var(--rs);padding:18px}
+.mb .mv{font-family:var(--sf);font-size:24px;margin-bottom:4px}.mb .ml{font-size:11px;color:var(--txd);line-height:1.4}
+.cl{background:var(--bg-card);border:1px solid var(--bdr);border-radius:var(--r);padding:32px;margin:28px 0;position:relative}
+.cl::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
+.cl-a::before{background:var(--acc)}.cl-am::before{background:var(--amb)}.cl-co::before{background:var(--cor)}.cl-bl::before{background:var(--blu)}.cl-te::before{background:var(--tea)}.cl-pk::before{background:var(--pnk)}
+.cl h4{font-family:var(--sf);font-size:20px;font-weight:400;margin-bottom:14px}
+.cl p{color:var(--tx2);margin-bottom:12px;font-size:14px;line-height:1.8;max-width:100%}.cl p:last-child{margin-bottom:0}
+.og{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin:32px 0}
+.oc{background:var(--bg-card);border:1px solid var(--bdr);border-radius:var(--r);padding:28px 24px;position:relative;overflow:hidden;transition:var(--tr);cursor:pointer;text-decoration:none;color:inherit;display:block}
+.oc:hover{background:var(--bg-card-h);border-color:var(--bdr-l);transform:translateY(-2px)}
+.oc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.oc .on{font-family:var(--mn);font-size:11px;color:var(--txd);margin-bottom:12px}
+.oc h3{font-family:var(--sf);font-size:19px;font-weight:400;margin-bottom:8px}
+.oc .om{font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;display:inline-block;margin-bottom:12px}
+.oc p{font-size:13px;color:var(--txm);line-height:1.7}
+.oc .rm{margin-top:14px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:4px}
+.c-am::before{background:var(--amb)}.c-am .om{background:var(--amb-bg2);color:var(--amb)}.c-am .rm{color:var(--amb)}
+.c-co::before{background:var(--cor)}.c-co .om{background:var(--cor-bg2);color:var(--cor)}.c-co .rm{color:var(--cor)}
+.c-bl::before{background:var(--blu)}.c-bl .om{background:var(--blu-bg2);color:var(--blu)}.c-bl .rm{color:var(--blu)}
+.c-te::before{background:var(--tea)}.c-te .om{background:var(--tea-bg2);color:var(--tea)}.c-te .rm{color:var(--tea)}
+.c-pk::before{background:var(--pnk)}.c-pk .om{background:var(--pnk-bg2);color:var(--pnk)}.c-pk .rm{color:var(--pnk)}
+.c-ac::before{background:var(--acc)}.c-ac .om{background:var(--acc-bg2);color:var(--acc)}.c-ac .rm{color:var(--acc)}
+.tw{overflow-x:auto;margin:24px 0;border-radius:var(--r);border:1px solid var(--bdr)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:12px 18px;font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--txd);background:var(--bg-card);border-bottom:1px solid var(--bdr);white-space:nowrap}
+td{padding:12px 18px;border-bottom:1px solid var(--bdr);color:var(--tx2);white-space:nowrap}
+tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,0.02)}
+td:first-child{color:var(--tx);font-weight:500}
+.ca{color:var(--acc)!important;font-weight:600!important;font-family:var(--mn)}.cu{color:var(--up)!important}
+.tb{display:flex;gap:4px;margin-bottom:24px;flex-wrap:wrap}
+.tbn{padding:8px 16px;border-radius:6px;border:1px solid var(--bdr);background:transparent;color:var(--txm);font-size:13px;font-family:var(--sn);font-weight:500;cursor:pointer;transition:var(--tr)}
+.tbn:hover{border-color:var(--bdr-l);color:var(--tx2)}.tbn.act{background:var(--acc-bg2);border-color:var(--acc-m);color:var(--acc)}
+.tp{display:none}.tp.act{display:block}
+.ec{background:var(--bg-card);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:12px;overflow:hidden;transition:var(--tr)}
+.ec:hover{border-color:var(--bdr-l)}
+.eh{padding:20px 24px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none}
+.eh h3{font-size:16px;font-weight:500;display:flex;align-items:center;gap:12px}
+.eh .tg{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.ev{width:24px;height:24px;border-radius:50%;background:var(--bg-surf);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--txm);transition:transform .3s ease;flex-shrink:0}
+.ec.op .ev{transform:rotate(180deg)}
+.eb{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.ebi{padding:0 24px 24px}
+.ebi p{color:var(--tx2);margin-bottom:14px;font-size:14px;line-height:1.8}.ebi p strong{color:var(--tx);font-weight:500}
+.pb{margin:20px 0}.pi{margin-bottom:14px}.pih{display:flex;justify-content:space-between;margin-bottom:6px}
+.pil{font-size:13px;color:var(--tx2)}.piv{font-family:var(--mn);font-size:13px;font-weight:500}
+.pt{height:6px;background:var(--bg-surf);border-radius:3px;overflow:hidden}
+.pf{height:100%;border-radius:3px;width:0;transition:width 1.2s ease}
+.ft{padding:48px 0;border-top:1px solid var(--bdr);margin-top:20px}
+.fti{display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap}
+.ftd{font-size:12px;color:var(--txd);line-height:1.7;max-width:640px}
+.fts{font-size:11px;color:var(--txd)}.fts strong{color:var(--txm)}
+@media(max-width:900px){.hero-g{grid-template-columns:1fr;gap:32px}.two{grid-template-columns:1fr}.og{grid-template-columns:1fr}.nav-lk{display:none}}
+@media(max-width:600px){.ss{grid-template-columns:repeat(2,1fr)}.mr{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><div class="nav-br"><span class="d"></span>Cape Capital Research</div><div class="nav-lk"><a href="#overview">Overview</a><a href="#middle-class">Middle class</a><a href="#experience">Experience economy</a><a href="#digital">Digital shift</a><a href="#remote">Remote work</a><a href="#boomers">Silver tsunami</a><a href="#apac">APAC aviation</a><a href="#convergence">Convergence</a></div></div></nav>
+<div class="sp"><div class="sp-f" id="spf"></div></div>
+<div class="pg">
+
+<header class="hero" id="overview">
+<div class="hero-g">
+<div>
+<div class="hero-ey">Structural thesis — Booking Holdings (BKNG)</div>
+<h1>Six mega-trends converging on a <em>single platform</em></h1>
+<p class="hero-bd">Booking Holdings isn't simply riding a travel recovery cycle. It sits at the intersection of six structural demographic, cultural, technological, and geographic shifts that are compounding simultaneously — expanding the total addressable market for the next decade and beyond. This research page maps each trend with hard data, interactive charts, and explains precisely how Booking captures them.</p>
+<div class="rd">18 min read · Updated March 2026</div>
+</div>
+<div class="hero-r">
+<h4>Snapshot</h4>
+<div class="tk-row"><span class="tk-sym">BKNG</span><span class="tk-pr">$4,350</span><span class="tk-ch">-20.6% YTD</span></div>
+<div class="km-g">
+<div class="km-i"><div class="km-v">~16x</div><div class="km-l">Forward P/E</div></div>
+<div class="km-i"><div class="km-v">0.95</div><div class="km-l">PEG ratio</div></div>
+<div class="km-i"><div class="km-v">$9.1B</div><div class="km-l">Free cash flow</div></div>
+<div class="km-i"><div class="km-v">6.3%</div><div class="km-l">FCF yield</div></div>
+<div class="km-i"><div class="km-v">$26.9B</div><div class="km-l">FY2025 revenue</div></div>
+<div class="km-i"><div class="km-v">$186B</div><div class="km-l">Gross bookings</div></div>
+</div>
+</div>
+</div>
+</header>
+
+<div class="ss">
+<div class="sc"><div class="sv" style="color:var(--acc)">$11.7T</div><div class="sl">Global travel GDP (2025)</div></div>
+<div class="sc"><div class="sv" style="color:var(--amb)">4B+</div><div class="sl">Global middle class</div></div>
+<div class="sc"><div class="sv" style="color:var(--blu)">76%</div><div class="sl">Travel online by 2030</div></div>
+<div class="sc"><div class="sv" style="color:var(--cor)">40M+</div><div class="sl">Digital nomads</div></div>
+<div class="sc"><div class="sv" style="color:var(--pnk)">$76T</div><div class="sl">Boomer net worth</div></div>
+<div class="sc"><div class="sv" style="color:var(--tea)">390M</div><div class="sl">APAC passengers (2025)</div></div>
+</div>
+
+<!-- OVERVIEW CARDS -->
+<section class="sec" id="trends-ov">
+<div class="sh"><div class="sn">00 / Overview</div><h2>Six structural tailwinds — at a glance</h2><p class="ld">These aren't cyclical factors that reverse in a downturn. They are decade-long shifts that compound on each other. Click any card to jump to the deep dive.</p></div>
+<div class="og">
+<a class="oc c-am" href="#middle-class"><div class="on">01</div><h3>Rising global middle class</h3><div class="om">+1B people by 2035</div><p>The middle class surpassed 4 billion in 2025. Two-thirds will be Asian by 2030. Travel is the first luxury purchase when crossing into the consumer class. 106 million new entrants per year.</p><div class="rm">Read deep dive &#8594;</div></a>
+<a class="oc c-co" href="#experience"><div class="on">02</div><h3>Experience economy</h3><div class="om">29% of income → travel</div><p>Millennials and Gen Z average ~5 trips/year and treat travel as identity, not indulgence. 55% will travel even while cutting other spending. "Gig-tripping" creates entirely new booking occasions.</p><div class="rm">Read deep dive &#8594;</div></a>
+<a class="oc c-bl" href="#digital"><div class="on">03</div><h3>Digital migration</h3><div class="om">72% prefer online booking</div><p>Online travel heading to $1T+ by 2030. Mobile is 61% of accommodation bookings and accelerating in emerging markets where walk-in reservations still dominate.</p><div class="rm">Read deep dive &#8594;</div></a>
+<a class="oc c-te" href="#remote"><div class="on">04</div><h3>Remote work revolution</h3><div class="om">40M+ digital nomads</div><p>153% growth since 2019. Extended stays of 5.7 weeks per location feed demand for alternative accommodations — Booking's 8.6M listings growing at 16% CAGR.</p><div class="rm">Read deep dive &#8594;</div></a>
+<a class="oc c-pk" href="#boomers"><div class="on">05</div><h3>Silver tsunami</h3><div class="om">$6,800 per trip average</div><p>80% of luxury travel spending. 10.5 day average trips. 84% book online. Europe is #1 destination — Booking's stronghold. The wealthiest retirees in history, traveling for 10-15 more years.</p><div class="rm">Read deep dive &#8594;</div></a>
+<a class="oc c-ac" href="#apac"><div class="on">06</div><h3>APAC aviation boom</h3><div class="om">19,560 new aircraft by 2044</div><p>390M APAC passengers in 2025 (+9.4%). India has 0.1 air trips per capita vs 2.1 in the US. Booking expanding aggressively through Agoda subsidiary.</p><div class="rm">Read deep dive &#8594;</div></a>
+</div>
+</section>
+
+<!-- TREND 1 -->
+<section class="sec" id="middle-class">
+<div class="sh"><div class="sn">01 / Structural trend</div><h2>The rising global middle class</h2><p class="ld">The single most powerful structural tailwind for travel demand. Over 100 million people join the consumer class every year — and travel is the first "luxury" they reach for.</p></div>
+<div class="two">
+<div class="cc" style="margin:0"><h4>Global middle class population</h4><div class="cs">Billions of people, 2020–2035 projected</div><canvas id="c1" height="260"></canvas></div>
+<div class="cc" style="margin:0"><h4>Middle class spending by segment</h4><div class="cs">Trillions USD, stacked by income tier</div><canvas id="c2" height="260"></canvas></div>
+</div>
+<div class="pr" style="margin-top:28px">
+<p>The World Economic Forum reports that the global middle and rich classes now total <strong>4.4 billion people</strong>, outnumbering the 3.6 billion poor for the first time in human history. They collectively spend over $60 trillion annually. In 2025 alone, 106 million individuals are projected to join the consumer class — and despite being the slowest expansion since the pandemic, another billion are expected within the next decade.</p>
+<div class="hl">By 2030, middle-class households are expected to spend $62 trillion — roughly 50% more than in 2020. Two in three middle-class members will be Asian.</div>
+<p>The geographic concentration is critical for Booking. China's middle class exceeds 700 million. India's will add another 17.8% to close in on half a billion. In 2024, China and India together accounted for over half the global increase — 31 and 33 million newly middle-class people respectively. An Expedia survey found that <strong>39% of mass-affluent Asian travelers would prioritize travel over purchasing a new car or upgrading electronics</strong>.</p>
+<p>The travel connection is direct and well-documented: when people cross from poverty into the consumer class, one of the first expenditures they make is air travel. Colombia's El Dorado Airport saw flights double from 24.5 million in 2009 to 56.5 million in 2024 — a pattern repeating across emerging economies worldwide.</p>
+</div>
+<div class="cl cl-am"><h4>How Booking captures this trend</h4><p><strong>Dual-brand Asia strategy:</strong> Booking.com for international travelers and brand-conscious bookers, plus Agoda (fully owned) as a locally-tuned platform with deep Asian inventory, local payment methods, and language support across Southeast Asia, China, India, and Japan.</p><p><strong>Merchant revenue model (66% of total, +26% YoY):</strong> By processing payments directly, Booking can offer WeChat Pay, UPI, GrabPay, and dozens of other local methods — removing the friction of international credit cards for first-time digital travelers.</p><p><strong>Connected Trip:</strong> Bundles flights + hotels + attractions into a single transaction. Purpose-built for first-time international travelers who need guidance across multiple booking categories. Flights serve as a customer acquisition channel — 68 million airline tickets booked in FY2025 (+37%).</p></div>
+</section>
+
+<!-- TREND 2 -->
+<section class="sec" id="experience">
+<div class="sh"><div class="sn">02 / Structural trend</div><h2>The experience economy</h2><p class="ld">Travel has fundamentally shifted from a yearly vacation into a lifestyle constant. For younger generations, it's identity — not indulgence — and it's remarkably recession-resistant.</p></div>
+<div class="mr">
+<div class="mb"><div class="mv" style="color:var(--cor)">~5</div><div class="ml">Trips/year for Gen Z & Millennials</div></div>
+<div class="mb"><div class="mv" style="color:var(--cor)">29%</div><div class="ml">Of income allocated to travel</div></div>
+<div class="mb"><div class="mv" style="color:var(--cor)">55%</div><div class="ml">Will travel while cutting other spend</div></div>
+<div class="mb"><div class="mv" style="color:var(--cor)">76%</div><div class="ml">Millennials likely to use AI for travel</div></div>
+</div>
+<div class="pr">
+<p>McKinsey reports that Millennials and Gen Z travel more frequently than older cohorts, averaging <strong>close to five trips per year</strong> compared to fewer than four among Gen X and Baby Boomers. They allocate approximately 29% of their income to travel — nearly a third of earnings directed at exactly the market Booking operates in. And this spending persists through downturns: over 55% say they plan to travel even during periods of austerity.</p>
+<p>The behavior is fundamentally different from previous generations. Travel is no longer a single, fixed event requiring long-term planning. It's approached as a <strong>continuous process</strong> where searching, booking, changing plans, and cancelling are all parts of one ongoing cycle. A ticket purchase is often treated as an option that preserves flexibility, not a firm commitment.</p>
+<div class="hl">"Gig-tripping" — planning travel around concerts, festivals, and sporting events — is creating entirely new booking occasions that didn't exist a decade ago.</div>
+<p>During 2024 Carnival in Rio de Janeiro, nontravel spending increased by 156% compared to normal levels (Mastercard). Hotel demand in Manchester surged around the planned Oasis reunion. Sports drive massive travel: NFL games, the Olympic Games in Paris, Champions League matches. Gen Z is especially fond of anchoring travel around a central event — and Booking's Connected Trip (flights + hotels + experiences in one transaction) is purpose-built for this behavior.</p>
+<p>Gen Z was the only consumer segment that spent more on travel year-over-year, averaging more than $11,000 per trip in 2024. Their global spending is projected to surge from $2.7 trillion in 2024 to $12.6 trillion by 2030. Meanwhile, 76% of millennials say they are likely to use an AI agent tool for travel recommendations — directly aligning with Booking's AI Trip Planner rollout across 10+ countries.</p>
+</div>
+
+<!-- Generational tabs -->
+<div style="margin-top:32px">
+<div class="tb"><button class="tbn act" data-tab="gz">Gen Z</button><button class="tbn" data-tab="ml">Millennials</button><button class="tbn" data-tab="gx">Gen X</button><button class="tbn" data-tab="bm">Boomers</button></div>
+<div class="tp act" id="t-gz"><div class="cl cl-co"><h4>Gen Z travelers (18–28)</h4><p><strong>Travel intent:</strong> 55% plan to travel during holidays — tied with millennials for highest. 45% say "now is a good time to spend on leisure travel" — 12 points above non-Gen Z. The only generation increasing travel spend YoY, averaging $11,000+ per trip in 2024.</p><p><strong>Behavior:</strong> Plans anchored around events ("gig-tripping"). Over 42% use TikTok to plan trips. 52% splurge on experiences while traveling. Heavy reliance on mobile apps — digital-native from day one. Prioritize experiences above material consumption.</p><p><strong>Significance for Booking:</strong> Gen Z's global spending will reach $12.6T by 2030. As earning power grows, already-high travel frequency compounds with larger budgets. AI Trip Planner adoption rates are highest in this cohort. They represent the next 30+ years of booking volume.</p></div></div>
+<div class="tp" id="t-ml"><div class="cl cl-co"><h4>Millennial travelers (29–44)</h4><p><strong>Travel intent:</strong> 55% plan travel even while cutting discretionary spending. Pioneered the experience economy — prioritizing moments over possessions. Travel is a regular lifestyle choice, not a rare fixed event. Will account for one-third of global social media shopping spend in 2025.</p><p><strong>Behavior:</strong> Average ~5 trips/year. 47% splurge on experiences while traveling. 76% likely to use AI agent tools for travel recommendations. Most influenced by social media and peer content for destination selection. Increasingly blending work with leisure.</p><p><strong>Significance for Booking:</strong> Now in peak earning years. As they start families, multigenerational trips expand booking size per transaction. Already the core volume engine for OTAs — and their preference for digital booking, flexible cancellation, and bundled trips aligns perfectly with Connected Trip.</p></div></div>
+<div class="tp" id="t-gx"><div class="cl cl-co"><h4>Gen X travelers (45–60)</h4><p><strong>Travel intent:</strong> 39% plan to travel during holidays. Spending flat YoY — the "steady state" generation. Balancing career peak with family responsibilities, seeking convenience and value over novelty.</p><p><strong>Behavior:</strong> 60% opt for all-inclusive family resorts. Increasingly blending work with leisure ("bleisure"). Budget-conscious but willing to pay for convenience. 33% of spending goes to groceries (practical orientation), but travel remains a top priority.</p><p><strong>Significance for Booking:</strong> Gen X's family travel creates high-value multi-room bookings. Serves as the "connector" generation organizing multigenerational trips for both parents and children. Strong preference for hotel + resort properties with comprehensive amenities.</p></div></div>
+<div class="tp" id="t-bm"><div class="cl cl-co"><h4>Baby Boomer travelers (61–79)</h4><p><strong>Travel intent:</strong> 41% cite travel as their #1 splurge category — the highest of any generation. 44% plan to increase vacation spending next year. 37% booking "gap year" style major trips post-pandemic. 56% willing to pay extra for luxury.</p><p><strong>Behavior:</strong> $6,800/trip average — 70% more than millennials. 10.5 day average trips. 80% of all luxury travel spending. 74% want to bundle reservations. 27 days per year traveling. 84% book online. Europe #1 destination (41% of international trips).</p><p><strong>Significance for Booking:</strong> The highest per-transaction revenue of any generation. Structurally insulated from rate hikes ($76T net worth, paid-off homes). 10-15 more years of peak travel ahead. And Europe — their preferred destination — is Booking's absolute stronghold.</p></div></div>
+</div>
+</section>
+
+<!-- TREND 3 -->
+<section class="sec" id="digital">
+<div class="sh"><div class="sn">03 / Structural trend</div><h2>The digital migration of travel booking</h2><p class="ld">The shift from offline to online is far from complete — especially in emerging markets where walk-in and phone reservations still dominate. Online travel is heading to $1 trillion+ by 2030.</p></div>
+<div class="cc"><h4>Online travel booking market growth</h4><div class="cs">USD billions — global online travel market and projections to 2030</div><canvas id="c3" height="280"></canvas></div>
+<div class="tw"><table><thead><tr><th>Sub-market</th><th>2024 size</th><th>2030 target</th><th>CAGR</th><th>Key driver</th></tr></thead><tbody>
+<tr><td>Online travel (global)</td><td>$654B</td><td class="ca">$1T+</td><td class="cu">~10%</td><td>Digital adoption in emerging markets</td></tr>
+<tr><td>Online accommodation</td><td>$341B</td><td class="ca">$459B</td><td class="cu">~6%</td><td>AI personalization, mobile-first UX</td></tr>
+<tr><td>Mobile travel booking</td><td>$228B</td><td class="ca">$526B</td><td class="cu">~11%</td><td>Smartphone penetration, mobile wallets</td></tr>
+<tr><td>Alt. accommodations</td><td>—</td><td>—</td><td class="cu">~16%</td><td>Experience-seeking guests, unique stays</td></tr>
+<tr><td>APAC online accommodation</td><td>—</td><td>—</td><td class="cu">~13%</td><td>Rising incomes, LCC expansion, mobile pay</td></tr>
+</tbody></table></div>
+<div class="pr" style="margin-top:24px">
+<p>The worldwide online travel industry reached an estimated <strong>$654 billion in 2024</strong> and is forecast to exceed $1 trillion by 2030. Online channels will generate 76% of total travel revenue by 2030. In many emerging markets, the transition is from walk-in and phone reservations directly to mobile apps, skipping desktop entirely.</p>
+<p>Mobile applications held <strong>61% of the online accommodation booking market</strong> in 2025 and are advancing at a 13% CAGR through 2030. Mobile devices made up 70.5% of online travel traffic in 2024. Travel apps generated $629 billion in revenue — a 13% increase year-over-year. 72% of travelers now prefer booking online, versus only 12% who favor traditional agencies.</p>
+<p>Booking.com is consistently among the most-downloaded travel apps globally with ~560 million monthly visits. Its <strong>mid-60% direct channel booking mix</strong> (unpaid traffic through app and direct web) is a critical cost advantage that widens as mobile usage grows — every direct booking avoids performance marketing spend.</p>
+</div>
+<div class="cl cl-bl"><h4>Online booking penetration by region</h4><p>The enormous headroom in emerging markets is where the next leg of growth comes from.</p>
+<div class="pb" id="pbb">
+<div class="pi"><div class="pih"><span class="pil">North America</span><span class="piv" style="color:var(--blu)">~74%</span></div><div class="pt"><div class="pf" data-w="74" style="background:var(--blu)"></div></div></div>
+<div class="pi"><div class="pih"><span class="pil">Europe</span><span class="piv" style="color:var(--blu)">~69%</span></div><div class="pt"><div class="pf" data-w="69" style="background:var(--blu)"></div></div></div>
+<div class="pi"><div class="pih"><span class="pil">Asia-Pacific</span><span class="piv" style="color:var(--acc)">~55%</span></div><div class="pt"><div class="pf" data-w="55" style="background:var(--acc)"></div></div></div>
+<div class="pi"><div class="pih"><span class="pil">Latin America</span><span class="piv" style="color:var(--amb)">~38%</span></div><div class="pt"><div class="pf" data-w="38" style="background:var(--amb)"></div></div></div>
+<div class="pi"><div class="pih"><span class="pil">Middle East & Africa</span><span class="piv" style="color:var(--cor)">~25%</span></div><div class="pt"><div class="pf" data-w="25" style="background:var(--cor)"></div></div></div>
+</div></div>
+</section>
+
+<!-- TREND 4 -->
+<section class="sec" id="remote">
+<div class="sh"><div class="sn">04 / Structural trend</div><h2>The remote work revolution</h2><p class="ld">A genuinely new demand category that didn't meaningfully exist before 2020. Digital nomadism has gone from niche experiment to 12% of the US workforce — and it's still growing.</p></div>
+<div class="two">
+<div>
+<div class="mr" style="grid-template-columns:1fr 1fr">
+<div class="mb"><div class="mv" style="color:var(--tea)">40–60M</div><div class="ml">Digital nomads worldwide</div></div>
+<div class="mb"><div class="mv" style="color:var(--tea)">153%</div><div class="ml">Growth since 2019</div></div>
+<div class="mb"><div class="mv" style="color:var(--tea)">5.7 wks</div><div class="ml">Avg stay per location</div></div>
+<div class="mb"><div class="mv" style="color:var(--tea)">64+</div><div class="ml">Countries with nomad visas</div></div>
+</div>
+<div class="pr" style="margin-top:20px">
+<p>The number of US digital nomads has increased from 7.3 million in 2019 to <strong>18.1 million in 2025</strong> — a 148% increase. Globally, estimates put the count at 40–60 million. MBO Partners confirms digital nomadism now comprises approximately 12% of the US workforce.</p>
+<p>What makes this relevant for Booking is the <strong>type of travel</strong> generated. Nomads visited an average of 6.6 locations in 2024, spending 5.7 weeks per location. That's extended-stay travel requiring long-duration accommodations — mapping perfectly to Booking's 8.6 million alternative listings.</p>
+<p>The trend is being <strong>institutionalized</strong>: 64+ countries offer digital nomad visas, companies are adopting nomad-friendly policies, and Gen Z is entering the workforce expecting location independence. "Bleisure" travel — extending business trips — means every corporate trip is a potential additional OTA booking.</p>
+</div>
+</div>
+<div class="cc" style="margin:0"><h4>US digital nomads (millions)</h4><div class="cs">Source: MBO Partners annual reports, 2019–2025</div><canvas id="c4" height="280"></canvas></div>
+</div>
+<div class="cl cl-te"><h4>How Booking captures this trend</h4><p><strong>8.6 million alternative accommodation listings</strong> — apartments, villas, unique stays — representing 36% of total room nights and growing at ~16% CAGR. This inventory serves extended-stay travelers who need kitchens, workspaces, and residential amenities.</p><p><strong>Utilization advantage:</strong> While Airbnb has ~7M unique listings, Booking's utilization is materially higher — it booked an estimated 114 million alternative lodging nights in Q2 2025 alone, approaching 85% of Airbnb's total. Booking dominates European alternative accommodations with 48% market share.</p></div>
+</section>
+
+<!-- TREND 5 -->
+<section class="sec" id="boomers">
+<div class="sh"><div class="sn">05 / Structural trend</div><h2>The silver tsunami</h2><p class="ld">Baby boomers are the highest-value travelers in the entire ecosystem. They book the expensive rooms, stay the longest, and travel with the deepest pockets. This wave has 10–15 more years of peak spending ahead.</p></div>
+<div class="ss">
+<div class="sc"><div class="sv" style="color:var(--pnk)">$157B</div><div class="sl">Annual US boomer travel spend</div></div>
+<div class="sc"><div class="sv" style="color:var(--pnk)">$6,800</div><div class="sl">Average per-trip spend</div></div>
+<div class="sc"><div class="sv" style="color:var(--pnk)">80%</div><div class="sl">Of luxury travel spending</div></div>
+<div class="sc"><div class="sv" style="color:var(--pnk)">10.5d</div><div class="sl">Average trip length</div></div>
+<div class="sc"><div class="sv" style="color:var(--pnk)">84%</div><div class="sl">Book travel online</div></div>
+</div>
+<div class="cc"><h4>Travel spending per trip by generation</h4><div class="cs">USD — boomers outspend every other generation by 20–70%</div><canvas id="c5" height="260"></canvas></div>
+<div class="pr">
+<p>Baby boomers spend <strong>$157 billion annually on travel</strong> in the US alone. They make up nearly a third of all leisure travelers, spending $6,600–$6,800 per trip — that's 20–50% more than Gen X or millennials. 23% spend more than $6,000 per trip, and they contribute a staggering <strong>80% of all luxury travel spending</strong> globally.</p>
+<p>The accommodation premium is striking: boomers spend <strong>over double what millennials do on hotels</strong> ($1,540 vs. $675 per trip). They travel 27 days per year on average, with trips lasting 10.5 days. Europe is their #1 international destination at 41% — precisely Booking.com's strongest market.</p>
+<div class="hl">Baby boomers hold a record $76 trillion in net worth. Most have paid-off homes and carry less consumer debt than any other generation. Their travel budgets are structurally insulated from rate hikes and recessions.</div>
+<p>The digital-averse stereotype is outdated: <strong>84% use online services to book travel</strong>. And their behavior maps perfectly to Booking's platform: 74% prefer to bundle reservations (Connected Trip), 79% comparison-shop for deals (OTA transparency), and 66% prefer hotels for international travel (Booking's core inventory). 95% want to know they have the best possible deal before booking.</p>
+</div>
+<div class="ec" role="button" tabindex="0"><div class="eh"><h3>Why boomer travel is recession-resistant <span class="tg" style="background:var(--pnk-bg2);color:var(--pnk)">Key insight</span></h3><div class="ev">&#9660;</div></div><div class="eb"><div class="ebi">
+<p>Boomers are structurally insulated from economic pressures hitting younger travelers. <strong>Most have locked in mortgage rates or paid off homes entirely.</strong> They aren't burdened with student loans. They carry less consumer debt than any other generation.</p>
+<p>Ed Yardeni of Yardeni Research: "The baby boom generation has started to retire with a record $76 trillion in net worth. They are spending on restaurants, cruises, traveling, and healthcare." This creates a <strong>structural floor under travel demand</strong> that the market may be underpricing at 16x forward earnings.</p>
+<p>The youngest boomers are only 61–62. This wave has <strong>10–15 years of peak travel spending ahead</strong>. 44% plan to increase vacation spending next year. Post-pandemic, 37% booked "gap year" style major trips. The urgency of "someday is now" is a permanent psychological shift.</p>
+</div></div></div>
+<div class="ec" role="button" tabindex="0"><div class="eh"><h3>The multigenerational multiplier <span class="tg" style="background:var(--pnk-bg2);color:var(--pnk)">Growth vector</span></h3><div class="ev">&#9660;</div></div><div class="eb"><div class="ebi">
+<p>Boomers increasingly fund and organize <strong>multigenerational trips</strong>, pulling adult children and grandchildren into the ecosystem. A villa in Tuscany for the whole family is a high-value, multi-room booking — often in alternative accommodations. These trips are longer, more expensive, and involve multiple service categories.</p>
+<p>81% travel with a spouse/partner, and "skip-generation" trips (grandparents + grandchildren) are a fast-growing sub-category. Each multigenerational trip represents the highest per-transaction revenue density on the platform.</p>
+</div></div></div>
+</section>
+
+<!-- TREND 6 -->
+<section class="sec" id="apac">
+<div class="sh"><div class="sn">06 / Structural trend</div><h2>The Asia-Pacific aviation boom</h2><p class="ld">The single biggest geographic growth story in global travel — and arguably the most underappreciated part of the Booking thesis for Western investors.</p></div>
+<div class="mr">
+<div class="mb"><div class="mv" style="color:var(--acc)">390M</div><div class="ml">APAC passengers 2025 (+9.4%)</div></div>
+<div class="mb"><div class="mv" style="color:var(--acc)">7.9%</div><div class="ml">Growth rate — highest globally</div></div>
+<div class="mb"><div class="mv" style="color:var(--acc)">19,560</div><div class="ml">New aircraft needed by 2044</div></div>
+<div class="mb"><div class="mv" style="color:var(--acc)">$161B</div><div class="ml">APAC aviation market by 2030</div></div>
+</div>
+<div class="two" style="margin-top:24px">
+<div class="cc" style="margin:0"><h4>Air trips per capita — the penetration gap</h4><div class="cs">Yearly flights per person — India has 20x the US runway</div><canvas id="c6" height="240"></canvas></div>
+<div class="pr">
+<p>Asia-Pacific carriers carried <strong>390 million passengers in 2025</strong>, up 9.4%. Demand rose 11% by revenue passenger kilometers, and load factors hit a record 82.2%. IATA forecasts APAC growth at 7.9% — the highest globally.</p>
+<p>The penetration gap tells the real story. India: <strong>0.1 yearly air trips per capita</strong> vs China's 0.5 and the US's 2.1. Even by 2043, India reaches only 0.4. India will surpass China in traffic growth (10.5% vs 8.9% in 2026). China targets 810M passenger trips in 2026.</p>
+<p>Airbus forecasts <strong>19,560 new aircraft deliveries</strong> in APAC over 20 years — 46% of global demand. Southeast Asian markets (Vietnam, Indonesia, Philippines) are structurally shifting from rail/bus to air.</p>
+</div>
+</div>
+<div class="ec" role="button" tabindex="0"><div class="eh"><h3>China: 810M passenger target for 2026 <span class="tg" style="background:var(--acc-bg2);color:var(--acc)">Recovery</span></h3><div class="ev">&#9660;</div></div><div class="eb"><div class="ebi">
+<p>Chinese domestic capacity is now <strong>14% above 2019 levels</strong>. The fleet has grown to 4,394 registered transport aircraft linking 263 cities in 90 countries. International traffic is recovering — up 21.6% YoY — but still only at ~90% of pre-pandemic levels. The outbound recovery is where the real upside lies: traffic to Latin America surged 109%, Africa +39%, Central Asia +59%.</p>
+<p><strong>Booking's opening:</strong> Trip.com faces an anti-monopoly investigation (launched Jan 2026), creating a window for Booking/Agoda to gain share without the same regulatory scrutiny.</p>
+</div></div></div>
+<div class="ec" role="button" tabindex="0"><div class="eh"><h3>India: 0.1 trips per capita — 20x the US runway <span class="tg" style="background:var(--acc-bg2);color:var(--acc)">Explosive</span></h3><div class="ev">&#9660;</div></div><div class="eb"><div class="ebi">
+<p>India operates 159 airports with 50 more planned. Airlines have ordered <strong>1,700+ new planes</strong>. Growth rate will hit 10.5% in 2026, surpassing China. But the real story is penetration: 0.1 trips per capita means India has barely begun. Even after two decades of growth, India in 2043 will still be at less than one-fifth of current US levels.</p>
+<p><strong>Booking's play:</strong> Merchant revenue with UPI integration removes the credit card barrier. India's mobile-first consumers skip desktop entirely.</p>
+</div></div></div>
+<div class="ec" role="button" tabindex="0"><div class="eh"><h3>Southeast Asia: the low-cost carrier revolution <span class="tg" style="background:var(--acc-bg2);color:var(--acc)">Structural shift</span></h3><div class="ev">&#9660;</div></div><div class="eb"><div class="ebi">
+<p>Southeast Asia leads APAC growth. Vietnam, Indonesia, Philippines are <strong>shifting from rail/bus/ferry to air travel</strong> on domestic and short-haul routes. Low-cost carriers (AirAsia, VietJet, Lion Air) have democratized flying for hundreds of millions of first-time passengers.</p>
+<p><strong>Booking's play:</strong> Agoda has deep local inventory across Southeast Asia with GrabPay, GoPay, and regional wallet integrations. The brand is significantly stronger than Expedia in APAC. Every new budget route creates accommodation demand at the destination.</p>
+</div></div></div>
+</section>
+
+<!-- CONVERGENCE -->
+<section class="sec" id="convergence">
+<div class="sh"><div class="sn">07 / Investment thesis</div><h2>Why all six trends converge on Booking</h2><p class="ld">Most companies ride one or two structural tailwinds. Booking has built specific product capabilities to capture each of the six — and they compound against each other.</p></div>
+<div class="tw"><table><thead><tr><th>Structural trend</th><th>Booking's capture mechanism</th><th>Key metric</th></tr></thead><tbody>
+<tr><td style="color:var(--amb)">Rising middle class</td><td>Merchant revenue + local payments in 220+ countries</td><td class="ca">Merchant rev. 66%, +26% YoY</td></tr>
+<tr><td style="color:var(--cor)">Experience economy</td><td>Connected Trip (flights + hotels + experiences)</td><td class="ca">68M tickets (+37%), attractions +80%</td></tr>
+<tr><td style="color:var(--blu)">Digital migration</td><td>Mobile-first app, AI Trip Planner in 10+ countries</td><td class="ca">Mid-60% direct channel mix</td></tr>
+<tr><td style="color:var(--tea)">Remote work era</td><td>8.6M alternative accommodation listings</td><td class="ca">36% of room nights, +8% listings</td></tr>
+<tr><td style="color:var(--pnk)">Silver tsunami</td><td>Genius loyalty, premium hotels, Europe dominance</td><td class="ca">Europe = #1 boomer destination</td></tr>
+<tr><td style="color:var(--acc)">APAC aviation</td><td>Agoda + localized Connected Trip expansion</td><td class="ca">Low double-digit APAC room growth</td></tr>
+</tbody></table></div>
+<div class="cl cl-a" style="margin-top:32px">
+<h4>The valuation disconnect</h4>
+<p>Booking captures roughly <strong>$27 billion of an $11.7 trillion global travel market</strong> — barely 2–3% of a market growing at 7%+ annually with six secular tailwinds compounding underneath.</p>
+<p>The stock trades at <strong>~16x forward earnings</strong> with a PEG ratio under 1.0, an FCF yield of 6.3%, and total shareholder yield above 5%. The market is pricing cyclical risk and AI disruption fear, while largely ignoring the underlying demand runway is longer and wider than it's ever been.</p>
+<p><strong>The middle class doesn't shrink back. Gen Z doesn't stop valuing experiences. Remote work doesn't fully return to the office. Boomers don't un-retire. Asia doesn't stop building airports.</strong> These are decade-long structural shifts — and Booking is positioned at their convergence.</p>
+</div>
+<div class="cc"><h4>Booking Holdings — revenue trajectory & forward estimates</h4><div class="cs">USD billions — FY2021–FY2026E, 25% CAGR from pandemic recovery through sustained growth</div><canvas id="c7" height="280"></canvas></div>
+</section>
+
+<footer class="ft"><div class="fti"><p class="ftd">This analysis is for informational purposes only and does not constitute investment advice. Data sourced from SEC filings, IATA, World Economic Forum, Brookings Institution, WTTC, MBO Partners, ACI, Airbus, OAG, McKinsey, PwC, Mastercard Economics Institute, and various industry reports. All figures reflect the most recent publicly available data as of March 2026. Past performance is not indicative of future results.</p><div class="fts"><strong>Cape Capital Research</strong><br>Updated March 2026</div></div></footer>
+</div>
+
+<script>
+// Scroll progress
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  document.getElementById('spf').style.width = (window.scrollY / h * 100) + '%';
+});
+
+// Scroll reveal
+const obs = new IntersectionObserver(e => {
+  e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.sec').forEach(s => obs.observe(s));
+
+// Active nav
+const secs = document.querySelectorAll('.sec[id]');
+const nls = document.querySelectorAll('.nav-lk a');
+window.addEventListener('scroll', () => {
+  let c = '';
+  secs.forEach(s => { if (window.scrollY >= s.offsetTop - 120) c = s.id; });
+  nls.forEach(a => {
+    a.classList.remove('act');
+    if (a.getAttribute('href') === '#' + c) a.classList.add('act');
+  });
+});
+
+// Expandable cards - using event delegation
+document.querySelectorAll('.ec').forEach(card => {
+  card.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const b = this.querySelector('.eb');
+    const i = this.querySelector('.ebi');
+    this.classList.toggle('op');
+    if (this.classList.contains('op')) {
+      b.style.maxHeight = i.scrollHeight + 'px';
+    } else {
+      b.style.maxHeight = '0';
+    }
+    return false;
+  });
+});
+
+// Tab buttons
+document.querySelectorAll('.tbn').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const tabId = this.getAttribute('data-tab');
+    document.querySelectorAll('.tp').forEach(p => p.classList.remove('act'));
+    document.querySelectorAll('.tbn').forEach(b => b.classList.remove('act'));
+    document.getElementById('t-' + tabId).classList.add('act');
+    this.classList.add('act');
+    return false;
+  });
+});
+
+// Progress bars
+const bobs = new IntersectionObserver(e => {
+  e.forEach(x => {
+    if (x.isIntersecting) {
+      x.target.querySelectorAll('.pf').forEach(f => {
+        f.style.width = f.dataset.w + '%';
+      });
+    }
+  });
+}, { threshold: 0.3 });
+const pb = document.getElementById('pbb');
+if (pb) bobs.observe(pb);
+
+// Charts
+const ff = "'DM Sans', sans-serif";
+Chart.defaults.font.family = ff;
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#6b7394';
+const gc = 'rgba(28,34,53,0.8)';
+const go = { color: gc, drawBorder: false };
+const ng = { display: false };
+
+new Chart(document.getElementById('c1'), {
+  type: 'bar',
+  data: {
+    labels: ['2020','2022','2024','2025','2027E','2030E','2035E'],
+    datasets: [{ data: [3.6,3.9,4.2,4.4,4.7,5.1,5.7], backgroundColor: ['#fbbf24','#fbbf24','#fbbf24','#fbbf24','rgba(251,191,36,0.5)','rgba(251,191,36,0.5)','rgba(251,191,36,0.5)'], borderRadius: 4, barPercentage: 0.6 }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: go, beginAtZero: false, min: 3 }, x: { grid: ng } } }
+});
+
+new Chart(document.getElementById('c2'), {
+  type: 'bar',
+  data: {
+    labels: ['2020','2025E','2030E'],
+    datasets: [
+      { label: 'Lower middle', data: [20,26,33], backgroundColor: '#fbbf24', borderRadius: 4 },
+      { label: 'Upper middle', data: [16,20,24], backgroundColor: '#f59e0b', borderRadius: 4 },
+      { label: 'Rich', data: [8,9,10], backgroundColor: '#d97706', borderRadius: 4 }
+    ]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { boxWidth: 12, padding: 16 } } }, scales: { y: { stacked: true, grid: go, title: { display: true, text: 'USD trillions' } }, x: { stacked: true, grid: ng } } }
+});
+
+new Chart(document.getElementById('c3'), {
+  type: 'line',
+  data: {
+    labels: ['2020','2021','2022','2023','2024','2025E','2026E','2027E','2028E','2029E','2030E'],
+    datasets: [{ label: 'Online travel ($B)', data: [368,420,475,513,654,720,800,870,940,1010,1100], borderColor: '#60a5fa', backgroundColor: 'rgba(96,165,250,0.08)', fill: true, tension: 0.35, pointRadius: 4, pointBackgroundColor: '#60a5fa' }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: go, title: { display: true, text: 'USD billions' } }, x: { grid: ng } } }
+});
+
+new Chart(document.getElementById('c4'), {
+  type: 'bar',
+  data: {
+    labels: ['2019','2020','2021','2022','2023','2024','2025'],
+    datasets: [{ data: [7.3,10.9,15.5,16.9,17.3,18.1,18.1], backgroundColor: '#2dd4bf', borderRadius: 4, barPercentage: 0.65 }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: go, beginAtZero: true }, x: { grid: ng } } }
+});
+
+new Chart(document.getElementById('c5'), {
+  type: 'bar',
+  data: {
+    labels: ['Baby Boomers','Gen X','Millennials','Gen Z'],
+    datasets: [
+      { label: 'Avg per trip ($)', data: [6800,5200,4000,3781], backgroundColor: ['#f472b6','#a78bfa','#60a5fa','#2dd4bf'], borderRadius: 6, barPercentage: 0.55 },
+      { label: 'Accommodation ($)', data: [1540,1100,675,700], backgroundColor: ['rgba(244,114,182,0.4)','rgba(167,139,250,0.4)','rgba(96,165,250,0.4)','rgba(45,212,191,0.4)'], borderRadius: 6, barPercentage: 0.55 }
+    ]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { boxWidth: 12, padding: 16 } } }, scales: { y: { grid: go, beginAtZero: true, title: { display: true, text: 'USD' } }, x: { grid: ng } } }
+});
+
+new Chart(document.getElementById('c6'), {
+  type: 'bar',
+  data: {
+    labels: ['India (2023)','Indonesia','China','Europe avg','USA','India (2043E)'],
+    datasets: [{ data: [0.1,0.15,0.5,1.3,2.1,0.4], backgroundColor: ['#6ee7b7','#6ee7b7','#6ee7b7','#6ee7b7','#6ee7b7','rgba(110,231,183,0.4)'], borderRadius: 4, barPercentage: 0.6 }]
+  },
+  options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: go, beginAtZero: true, title: { display: true, text: 'Yearly air trips per capita' } }, y: { grid: ng } } }
+});
+
+new Chart(document.getElementById('c7'), {
+  type: 'bar',
+  data: {
+    labels: ['FY2021','FY2022','FY2023','FY2024','FY2025','FY2026E'],
+    datasets: [{ label: 'Revenue ($B)', data: [11.0,17.1,21.4,23.7,26.9,30.5], backgroundColor: ['#6ee7b7','#6ee7b7','#6ee7b7','#6ee7b7','#6ee7b7','rgba(110,231,183,0.5)'], borderRadius: 6, barPercentage: 0.55 }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: go, beginAtZero: true, title: { display: true, text: 'USD billions' } }, x: { grid: ng } } }
+});
+</script>
+</body>
+</html>
