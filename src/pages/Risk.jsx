@@ -2,36 +2,38 @@ import { useState } from "react";
 import { Fn } from "../theme";
 import { Card, Pill, TabBar } from "../components/shared";
 
-const NAV_DATE = "24 March 2026";
-const FUND_NAV = 392488342.84;
+const NAV_DATE = "25 Mar 2026";
+const FUND_NAV = 396214471.12;
 
 const positions = [
-  { name: "Novartis", isin: "CH0012005267", country: "Switzerland", sector: "Pharmaceuticals", ccy: "CHF", mv: 16538353.25, pct: 4.21 },
-  { name: "Siemens", isin: "DE0007236101", country: "Germany", sector: "Electrical", ccy: "EUR", mv: 8953760, pct: 2.28 },
-  { name: "Air Liquide", isin: "FR0000120073", country: "France", sector: "Chemicals", ccy: "EUR", mv: 13922037.16, pct: 3.55 },
-  { name: "Veolia", isin: "FR0000124141", country: "France", sector: "Utilities", ccy: "EUR", mv: 8940441, pct: 2.28 },
-  { name: "Hitachi", isin: "JP3788600009", country: "Japan", sector: "Electronics", ccy: "JPY", mv: 19629003.56, pct: 5.00 },
-  { name: "Alibaba", isin: "KYG017191142", country: "China (HK-listed)", sector: "Internet & Tech", ccy: "HKD", mv: 15212427.18, pct: 3.88 },
-  { name: "Tencent", isin: "KYG875721634", country: "China (HK-listed)", sector: "Internet & Tech", ccy: "HKD", mv: 16076676.96, pct: 4.10 },
-  { name: "Akzo Nobel", isin: "NL0013267909", country: "Netherlands", sector: "Chemicals", ccy: "EUR", mv: 5902164, pct: 1.50 },
-  { name: "Volvo", isin: "SE0000115446", country: "Sweden", sector: "Vehicles", ccy: "SEK", mv: 12504848.65, pct: 3.19 },
-  { name: "Epiroc", isin: "SE0015658109", country: "Sweden", sector: "Industrials", ccy: "SEK", mv: 15889422.72, pct: 4.05 },
-  { name: "Alphabet", isin: "US02079K1079", country: "USA", sector: "Internet & Tech", ccy: "USD", mv: 15336742.1, pct: 3.91 },
-  { name: "Amazon", isin: "US0231351067", country: "USA", sector: "Retail", ccy: "USD", mv: 15608333.05, pct: 3.98 },
-  { name: "Broadcom", isin: "US11135F1012", country: "USA", sector: "Semiconductors", ccy: "USD", mv: 7834915.36, pct: 2.00 },
-  { name: "Corning", isin: "US2193501051", country: "USA", sector: "Telecom", ccy: "USD", mv: 11480511.31, pct: 2.93 },
-  { name: "ICE", isin: "US45866F1049", country: "USA", sector: "Financials", ccy: "USD", mv: 18410931.08, pct: 4.69 },
-  { name: "JP Morgan", isin: "US46625H1005", country: "USA", sector: "Banks", ccy: "USD", mv: 17514199.34, pct: 4.46 },
-  { name: "MSCI", isin: "US55354G1004", country: "USA", sector: "Financials", ccy: "USD", mv: 18667757.82, pct: 4.76 },
-  { name: "Microsoft", isin: "US5949181045", country: "USA", sector: "Internet & Tech", ccy: "USD", mv: 17725915.01, pct: 4.52 },
-  { name: "Netflix", isin: "US64110L1061", country: "USA", sector: "Internet & Tech", ccy: "USD", mv: 18697574.71, pct: 4.76 },
-  { name: "NVIDIA", isin: "US67066G1040", country: "USA", sector: "Internet & Tech", ccy: "USD", mv: 18476351.7, pct: 4.71 },
-  { name: "Pfizer", isin: "US7960508882", country: "USA", sector: "Pharmaceuticals", ccy: "USD", mv: 19212900.33, pct: 4.90 },
-  { name: "Rockwell Auto.", isin: "US7743411016", country: "USA", sector: "Industrials", ccy: "USD", mv: 13103506.65, pct: 3.34 },
-  { name: "Samsung (GDR)", isin: "US7960508882", country: "South Korea", sector: "Electronics", ccy: "USD", mv: 17495681.46, pct: 4.46 },
-  { name: "ServiceNow", isin: "US81762P1021", country: "USA", sector: "Internet & Tech", ccy: "USD", mv: 7438845.22, pct: 1.90 },
-  { name: "TSMC (ADR)", isin: "US8740391003", country: "Taiwan", sector: "Semiconductors", ccy: "USD", mv: 19240736.74, pct: 4.90 },
-  { name: "Thermo Fisher", isin: "US8835561023", country: "USA", sector: "Life Sciences", ccy: "USD", mv: 17857600.02, pct: 4.55 },
+  { name: "NOVARTIS", pct: 4.25 },
+  { name: "SIEMENS", pct: 2.29 },
+  { name: "AIR LIQUIDE", pct: 3.56 },
+  { name: "VEOLIA", pct: 2.30 },
+  { name: "HITACHI", pct: 5.02 },
+  { name: "ALIBABA", pct: 4.02 },
+  { name: "TENCENT", pct: 4.00 },
+  { name: "AKZO NOBEL", pct: 1.53 },
+  { name: "VOLVO", pct: 3.20 },
+  { name: "EPIROC", pct: 4.10 },
+  { name: "ALPHABET", pct: 3.88 },
+  { name: "AMAZON", pct: 4.03 },
+  { name: "BROADCOM", pct: 1.98 },
+  { name: "CORNING", pct: 2.99 },
+  { name: "ICE", pct: 4.68 },
+  { name: "JP MORGAN", pct: 4.47 },
+  { name: "MSCI", pct: 4.66 },
+  { name: "MICROSOFT", pct: 4.46 },
+  { name: "NETFLIX", pct: 4.79 },
+  { name: "NVIDIA", pct: 4.76 },
+  { name: "PFIZER", pct: 4.91 },
+  { name: "ROCKWELL", pct: 3.30 },
+  { name: "SAMSUNG", pct: 4.29 },
+  { name: "SERVICENOW", pct: 1.85 },
+  { name: "TAIWAN SEMI", pct: 4.92 },
+  { name: "THERMO FISHER", pct: 4.51 },
+  { type: "Cash & Liquidity", pct: 2.02 }, { type: "Current Assets", pct: 0.04 },,
+  { type: "Forwards", pct: -0.74 }, { type: "Current Liabilities", pct: -0.07 },
 ];
 
 const currencyExposure = [
@@ -55,29 +57,31 @@ const countryAllocation = [
 
 // Cash breakdown from NAV report (Liquidity_at_sight sheet)
 const cashBreakdown = [
-  { ccy: "CHF", type: "Cash Account", mvLocal: 3589113.93, fx: 1.091286, mvEur: 3910202.36, pctNav: 1.00 },
-  { ccy: "DKK", type: "Cash Account", mvLocal: 21494.75, fx: 0.133841, mvEur: 2876.88, pctNav: 0.00 },
-  { ccy: "EUR", type: "Cash Account", mvLocal: -11121992.29, fx: 1.0, mvEur: -11121992.29, pctNav: -2.83 },
-  { ccy: "GBP", type: "Cash Account", mvLocal: 32433.58, fx: 1.155869, mvEur: 37482.47, pctNav: 0.01 },
-  { ccy: "HKD", type: "Cash Account", mvLocal: 63144406.92, fx: 0.110327, mvEur: 6966505.62, pctNav: 1.77 },
-  { ccy: "JPY", type: "Cash Account", mvLocal: 390749410.00, fx: 0.005435, mvEur: 2123866.84, pctNav: 0.54 },
-  { ccy: "KRW", type: "Cash Account", mvLocal: -209.00, fx: 0.000578, mvEur: -0.12, pctNav: 0.00 },
-  { ccy: "NOK", type: "Cash Account", mvLocal: 731.68, fx: 0.089115, mvEur: 65.20, pctNav: 0.00 },
-  { ccy: "SEK", type: "Cash Account", mvLocal: 28282830.46, fx: 0.092567, mvEur: 2618053.36, pctNav: 0.67 },
-  { ccy: "USD", type: "Cash Account", mvLocal: 24367893.76, fx: 0.863707, mvEur: 21046721.16, pctNav: 5.36 },
+  { ccy: "CHF", type: "Cash Account", mvLocal: 3583113.93, fx: 1.091703, mvEur: 3911696.43, pctNav: 0.99 },
+  { ccy: "DKK", type: "Cash Account", mvLocal: 21494.75, fx: 0.133820, mvEur: 2876.42, pctNav: 0.00 },
+  { ccy: "EUR", type: "Cash Account", mvLocal: -11977248.22, fx: 1.000000, mvEur: -11977248.22, pctNav: -3.02 },
+  { ccy: "GBP", type: "Cash Account", mvLocal: 32433.58, fx: 1.155735, mvEur: 37484.63, pctNav: 0.01 },
+  { ccy: "HKD", type: "Cash Account", mvLocal: 63144406.92, fx: 0.110542, mvEur: 6980097.71, pctNav: 1.76 },
+  { ccy: "JPY", type: "Cash Account", mvLocal: 390749410.00, fx: 0.005428, mvEur: 2121130.21, pctNav: 0.54 },
+  { ccy: "KRW", type: "Cash Account", mvLocal: -209.00, fx: 0.000576, mvEur: -0.12, pctNav: 0.00 },
+  { ccy: "NOK", type: "Cash Account", mvLocal: 731.68, fx: 0.089158, mvEur: 65.24, pctNav: 0.00 },
+  { ccy: "SEK", type: "Cash Account", mvLocal: 28282830.46, fx: 0.092490, mvEur: 2615874.07, pctNav: 0.66 },
+  { ccy: "USD", type: "Cash Account", mvLocal: 24367893.76, fx: 0.864304, mvEur: 21061273.78, pctNav: 5.32 },
 ];
-const cashCollateral = { desc: "UBS AG London Branch", ccy: "EUR", mvEur: 1220000.00, pctNav: 0.31 };
+const cashCollateral = { desc: "UBS AG London Branch", ccy: "EUR", mvEur: 2020000.00, pctNav: 0.51 };
 const cashReceivables = [
-  { desc: "Rec. for Sales of Invest.", ccy: "CHF", mvEur: 3553947.81, pctNav: 0.91 },
-  { desc: "Rec. for Sales of Invest.", ccy: "EUR", mvEur: 6546237.20, pctNav: 1.67 },
-  { desc: "Rec. for Sales of Invest.", ccy: "SEK", mvEur: 6027320.34, pctNav: 1.54 },
-  { desc: "Rec. for Sales of Invest.", ccy: "USD", mvEur: 3841378.48, pctNav: 0.98 },
+  { desc: "Rec. Sales of Invest.", ccy: "CHF", mvEur: 3555305.76, pctNav: 0.90 },
+  { desc: "Rec. Sales of Invest.", ccy: "EUR", mvEur: 6546237.20, pctNav: 1.65 },
+  { desc: "Rec. Sales of Invest.", ccy: "SEK", mvEur: 6022303.15, pctNav: 1.52 },
+  { desc: "Rec. Sales of Invest.", ccy: "USD", mvEur: 3844034.57, pctNav: 0.97 },
 ];
-const cashSpotRec = { desc: "Cash Rec. from Spot 'Ach'", ccy: "CHF", mvEur: 17448572.95, pctNav: 4.45 };
+const cashSpotRec = { desc: "Cash Rec. from Spot 'Ach'", ccy: "CHF", mvEur: 18303093.87, pctNav: 4.62 };
 const cashPayables = [
-  { desc: "Pay. for Redemptions", ccy: "EUR", mvEur: -21243516.39, pctNav: -5.41 },
-  { desc: "Pay. for Redemptions 'Ach'", ccy: "CHF", mvEur: -17448572.97, pctNav: -4.45 },
-  { desc: "Cash Payables Spot 'Ach'", ccy: "EUR", mvEur: -17555323.99, pctNav: -4.47 },
+  { desc: "PAY. FOR REDEMPTIONS", ccy: "EUR", mvEur: -21243516.39, pctNav: -5.36 },
+  { desc: "PAY. FOR REDEMPTIONS 'Ach'", ccy: "CHF", mvEur: -17400654.93, pctNav: -4.39 },
+  { desc: "CASH PAYABLES SPOT", ccy: "USD", mvEur: -16995693.43, pctNav: -4.29 },
+  { desc: "CASH PAYABLES SPOT 'Ach'", ccy: "CHF", mvEur: -899563.23, pctNav: -0.23 },
+  { desc: "CASH PAYABLES SPOT 'Ach'", ccy: "EUR", mvEur: -17502452.57, pctNav: -4.42 },
 ];
 const totalLiquidity = { mvEur: 7973824.71, pctNav: 2.03 };
 
@@ -102,7 +106,7 @@ const shareClasses = [
 const riskChecks = [
   { id: "mkt_exposure", label: "Equity Market Exposure", description: "90-100% under ordinary conditions", current: 98.77, min: 90, max: 100, unit: "%" },
   { id: "china_a", label: "China A-Shares (Stock Connect)", description: "Max 20% via Stock Connect Scheme", current: 0, min: 0, max: 20, unit: "%" },
-  { id: "liquidity", label: "Ancillary Liquid Assets", description: "Max 10% of NAV on a temporary basis", current: 2.03, min: 0, max: 10, unit: "%" },
+  { id: "liquidity", label: "Ancillary Liquid Assets", description: "Max 10% of NAV on a temporary basis", current: 2.02, min: 0, max: 10, unit: "%" },
   { id: "single_issuer", label: "Single Issuer Concentration", description: "UCITS: max 10% in any single issuer", current: Math.max(...positions.map(p => p.pct)), min: 0, max: 10, unit: "%" },
   { id: "ucits_5_40", label: "UCITS 5/10/40 Rule (>5% bucket)", description: "Sum of positions >5% must not exceed 40%", current: positions.filter(p => p.pct > 5).reduce((s, p) => s + p.pct, 0), min: 0, max: 40, unit: "%" },
   { id: "global_exposure", label: "Global Exposure (Commitment)", description: "Must not exceed 100% of NAV", current: 98.77 + 0.77, min: 0, max: 100, unit: "%" },
