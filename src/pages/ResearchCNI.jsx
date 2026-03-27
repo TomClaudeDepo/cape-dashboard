@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Fn } from "../theme";
 import { Card, Label, Pill } from "../components/shared";
 import InteractiveDCF from "../components/InteractiveDCF";
+import InteractiveExitValuation from "../components/InteractiveExitValuation";
 import {
   cniSnapshot, heroStats, thesisCards, thesisSections,
   competitorTable, commodityMix, riskTiers, railVsTrucking,
@@ -11,7 +12,7 @@ import {
   moatSources, moatComparison, qualityScorecard, kpiScorecard,
   peerORComparison, variantBull, variantBear, valuationHistory,
   peerValuationTable, riskMatrix, s3Catalysts,
-  channelChecks, channelSummary, exitValuation,
+  channelChecks, channelSummary,
 } from "../data/research-cni";
 
 /* ─── SVG chart helpers ─── */
@@ -1111,70 +1112,16 @@ export default function ResearchCNI({ T }) {
       {/* S4-02: Exit Valuation / Expected Total Return */}
       <Section id="s4-exit-valuation">
         <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S4-02 / EXIT VALUATION</div>
-          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 16 }}>Exit valuation</h2>
-          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 14, maxWidth: 720 }}>
-            We assume an exit valuation of {exitValuation.exitPE}x P/E in FY 2030E, in line with CN's five-year average multiple and consistent with a premium-quality Class I franchise. We believe this is justified by:
-          </p>
-          <ul style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 24, maxWidth: 720, paddingLeft: 20 }}>
-            {exitValuation.justification.map((j, i) => (
-              <li key={i} style={{ marginBottom: 6 }}>{j}</li>
-            ))}
-          </ul>
-
-          <div style={{ fontSize: 11, fontWeight: 700, fontFamily: Fn, color: T.text, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 12 }}>
-            Expected Total Return
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+            <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", fontWeight: 600 }}>S4-02 / EXIT VALUATION</div>
+            <Pill T={T} color={T.green} bg={T.greenBg}>INTERACTIVE</Pill>
           </div>
-
-          <Card T={T} style={{ padding: "0", overflowX: "auto", marginBottom: 16 }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn, minWidth: 520 }}>
-              <thead>
-                <tr style={{ borderBottom: "2px solid " + T.border }}>
-                  {[`${exitValuation.currency}`, "Mar 2025", "FY 2025E", "FY 2030E"].map((h, i) => (
-                    <th key={h} style={{
-                      textAlign: i === 0 ? "left" : "right",
-                      padding: "12px 16px",
-                      fontSize: 9,
-                      color: i === 0 ? T.textTer : T.text,
-                      fontWeight: 600,
-                      letterSpacing: "0.06em",
-                      textTransform: i === 0 ? "uppercase" : "none",
-                      fontStyle: i === 0 ? "italic" : "normal",
-                    }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {exitValuation.rows.map((r, i) => (
-                  <tr key={i} style={{
-                    borderBottom: "1px solid " + T.border,
-                    background: r.highlight ? T.bg : "transparent",
-                  }}>
-                    <td style={{
-                      padding: "10px 16px",
-                      fontWeight: r.bold ? 700 : 400,
-                      color: r.bold ? T.text : r.accent ? T.deepBlue : T.textSec,
-                      fontSize: r.bold ? 13 : 12,
-                      fontStyle: r.accent ? "italic" : "normal",
-                    }}>{r.label}</td>
-                    <td style={{ padding: "10px 16px", textAlign: "right", color: T.text, fontWeight: 500 }}>{r.jun2025}</td>
-                    <td style={{ padding: "10px 16px", textAlign: "right", color: T.text, fontWeight: 500 }}>{r.fy2025e}</td>
-                    <td style={{
-                      padding: "10px 16px", textAlign: "right",
-                      color: r.bold ? T.deepBlue : T.text,
-                      fontWeight: r.bold ? 700 : 500,
-                      fontSize: r.bold ? 13 : 12,
-                    }}>{r.fy2030e}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Card>
-
-          <p style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, lineHeight: 1.6, maxWidth: 720, marginTop: 4 }}>
-            Source: S&P Capital IQ, Cape Capital estimates. Dividends accumulated assuming ~5% annual growth from C$3.44 base. Buyback accretion assumes 24M-share annual NCIB at average prices.
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Exit valuation & expected total return</h2>
+          <p style={{ fontSize: 14, color: T.textSec, marginTop: 4, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720, marginBottom: 24 }}>
+            Adjust EPS growth, exit multiple, dividend assumptions, and time horizon — the model recalculates in real time. Default assumptions: 9% EPS CAGR, 20x exit P/E, 5% dividend growth.
           </p>
         </div>
+        <InteractiveExitValuation T={T} />
       </Section>
 
       {/* Disclaimer */}
