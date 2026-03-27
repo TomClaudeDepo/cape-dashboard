@@ -487,3 +487,30 @@ export const channelSummary = [
   { source: "CTA (regulator)", signal: "Mildly negative", implication: "Shipper access expanding, but limited practical impact" },
   { source: "DP World / Ray-Mont / IntermodeX", signal: "Strongly positive", implication: "Third-party capital validates corridor economics" },
 ];
+
+/* ═══════════════════════════════════════════════ */
+/* EXIT VALUATION / EXPECTED TOTAL RETURN          */
+/* ═══════════════════════════════════════════════ */
+
+export const exitValuation = {
+  currency: "CAD",
+  exitPE: 20.0,
+  justification: [
+    "Forecast adjusted EPS CAGR of ~9% from FY 2025 to FY 2030E, driven by pricing discipline and volume leverage.",
+    "Rising ROIC from ~13% in FY 2025 to ~15% in FY 2030E as capex normalises and FCF inflects.",
+    "Prospects for further operating ratio improvement and share gains on Prince Rupert and Gulf Coast corridors.",
+  ],
+  rows: [
+    { label: "Current share price", jun2025: "152.00", fy2025e: "", fy2030e: "", highlight: true },
+    { label: "Adj. diluted EPS", jun2025: "", fy2025e: "7.63", fy2030e: "11.74", highlight: false },
+    { label: "Current P/E multiple", jun2025: "", fy2025e: "19.9x", fy2030e: "12.9x", highlight: true },
+    { label: "Exit NTM P/E multiple", jun2025: "", fy2025e: "", fy2030e: "20.0x", highlight: false },
+    { label: "Share price FY 2030E", jun2025: "", fy2025e: "", fy2030e: "234.80", highlight: true },
+    { label: "Share price return %", jun2025: "", fy2025e: "", fy2030e: "54.5%", highlight: false, accent: true },
+    { label: "Accumulated dividends per share", jun2025: "", fy2025e: "", fy2030e: "19.0", highlight: false },
+    { label: "Buyback accretion per share", jun2025: "", fy2025e: "", fy2030e: "6.5", highlight: false },
+    { label: "Total return %", jun2025: "", fy2025e: "", fy2030e: "67.4%", highlight: true, bold: true },
+    { label: "Time horizon in years", jun2025: "", fy2025e: "", fy2030e: "5.0", highlight: false },
+    { label: "Annualized total return %", jun2025: "", fy2025e: "", fy2030e: "10.8%", highlight: true, bold: true },
+  ],
+};
