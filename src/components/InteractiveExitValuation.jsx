@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Fn } from "../theme";
 import { Card } from "./shared";
+import { useMobile } from "../hooks/useMobile";
 
 /* ── slider reusable ── */
 function Slider({ label, value, onChange, min, max, step, format, T }) {
@@ -96,6 +97,7 @@ function compute(p) {
 }
 
 export default function InteractiveExitValuation({ T }) {
+  const mob = useMobile();
   const [p, setP] = useState({ ...DEFAULTS });
   const set = (k, v) => setP(prev => ({ ...prev, [k]: v }));
   const result = useMemo(() => compute(p), [p]);
@@ -106,7 +108,7 @@ export default function InteractiveExitValuation({ T }) {
   return (
     <div>
       {/* KPI strip */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: T.border, borderRadius: T.radiusSm, overflow: "hidden", marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: mob ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 1, background: T.border, borderRadius: T.radiusSm, overflow: "hidden", marginBottom: 24 }}>
         {[
           { l: "Exit Price", v: `C$${result.exitPrice.toFixed(0)}`, c: T.text },
           { l: "Price Return", v: `${(result.priceReturn * 100).toFixed(1)}%`, c: result.priceReturn >= 0 ? T.green : T.capRed },
@@ -121,7 +123,7 @@ export default function InteractiveExitValuation({ T }) {
       </div>
 
       {/* Two-column: sliders + table */}
-      <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 24, alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "300px 1fr", gap: 24, alignItems: "start" }}>
 
         {/* Left: Assumptions */}
         <Card T={T} style={{ padding: "20px" }}>

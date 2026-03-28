@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Fn } from "../theme";
 import { Card, Pill, TabBar } from "./shared";
+import { useMobile } from "../hooks/useMobile";
 import { dcfDefaults, years, computeDCF, keyAssumptions, valuationMethods } from "../data/research-cni-dcf";
 
 function SliderInput({ label, value, onChange, min, max, step, format, T }) {
@@ -32,6 +33,7 @@ function pct2(v) { return (v * 100).toFixed(2) + "%"; }
 function price(v) { return "C$" + v.toFixed(2); }
 
 export default function InteractiveDCF({ T }) {
+  const mob = useMobile();
   const [tab, setTab] = useState("model");
   const [params, setParams] = useState({});
   const [editYear, setEditYear] = useState(0); // which year's assumptions to edit
@@ -62,7 +64,7 @@ export default function InteractiveDCF({ T }) {
       </div>
 
       {/* Key output strip */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 1, background: T.border, borderRadius: T.radiusSm, overflow: "hidden", marginBottom: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: mob ? "repeat(2, 1fr)" : "repeat(5, 1fr)", gap: 1, background: T.border, borderRadius: T.radiusSm, overflow: "hidden", marginBottom: 20 }}>
         {[
           { l: "Implied Price", v: price(result.impliedPrice), c: upColor },
           { l: "Upside / Downside", v: (result.upside >= 0 ? "+" : "") + pct(result.upside), c: upColor },
@@ -122,7 +124,7 @@ export default function InteractiveDCF({ T }) {
           </table>
 
           {/* Summary below table */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginTop: 16, padding: "12px 0", borderTop: "2px solid " + T.border }}>
+          <div style={{ display: "grid", gridTemplateColumns: mob ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 10, marginTop: 16, padding: "12px 0", borderTop: "2px solid " + T.border }}>
             {[
               { l: "Sum PV of UFCFs", v: "C$" + fmt(result.sumPvUFCF) },
               { l: "PV of Terminal Value", v: "C$" + fmt(result.pvTV) },
@@ -140,7 +142,7 @@ export default function InteractiveDCF({ T }) {
 
       {/* TAB: Assumptions */}
       {tab === "assumptions" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 16 }}>
           <Card T={T} style={{ padding: "20px" }}>
             <div style={{ fontSize: 11, fontWeight: 600, color: T.deepBlue, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 16 }}>WACC Inputs</div>
             <SliderInput T={T} label="Risk-Free Rate" value={p.riskFreeRate} min={0.01} max={0.06} step={0.001} format={pct2} onChange={v => set("riskFreeRate", v)} />
@@ -179,7 +181,7 @@ export default function InteractiveDCF({ T }) {
                 ))}
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 16 }}>
               <ArraySlider T={T} label="Rev Growth" values={p.revenueGrowth} index={editYear} min={-0.05} max={0.1} step={0.005} format={pct} onChange={v => set("revenueGrowth", v)} />
               <ArraySlider T={T} label="Op. Ratio" values={p.operatingRatio} index={editYear} min={0.55} max={0.68} step={0.002} format={pct} onChange={v => set("operatingRatio", v)} />
               <ArraySlider T={T} label="D&A %" values={p.daPercent} index={editYear} min={0.07} max={0.12} step={0.001} format={pct} onChange={v => set("daPercent", v)} />
@@ -245,7 +247,7 @@ export default function InteractiveDCF({ T }) {
         <div>
           <Card T={T} style={{ padding: "20px 24px", marginBottom: 16 }}>
             <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 16 }}>Multi-methodology valuation</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
               {[
                 { l: "DCF Implied", v: price(result.impliedPrice), sub: "10-year Gordon Growth", c: T.deepBlue },
                 { l: "Current Price", v: "C$" + p.currentPrice, sub: "TSX, Mar 2026", c: T.textSec },

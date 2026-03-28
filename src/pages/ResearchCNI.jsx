@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Fn } from "../theme";
 import { Card, Label, Pill } from "../components/shared";
+import { useMobile } from "../hooks/useMobile";
 import InteractiveDCF from "../components/InteractiveDCF";
 import InteractiveExitValuation from "../components/InteractiveExitValuation";
 import {
@@ -85,6 +86,7 @@ function Section({ id, children }) {
 }
 
 export default function ResearchCNI({ T }) {
+  const mob = useMobile();
   const scrollTo = id => {
     const el = document.getElementById("cni-" + id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -101,7 +103,7 @@ export default function ResearchCNI({ T }) {
           <Pill T={T}>Thematic Analysis</Pill>
           <Pill T={T}>March 2026</Pill>
         </div>
-        <h1 style={{ fontFamily: Fn, fontSize: 32, fontWeight: 300, letterSpacing: "-0.03em", color: T.text, margin: 0, lineHeight: 1.3 }}>
+        <h1 style={{ fontFamily: Fn, fontSize: mob ? 22 : 32, fontWeight: 300, letterSpacing: "-0.03em", color: T.text, margin: 0, lineHeight: 1.3 }}>
           Canadian National Railway <span style={{ color: T.textTer, fontWeight: 400 }}>(CNI)</span>
         </h1>
         <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
@@ -114,10 +116,10 @@ export default function ResearchCNI({ T }) {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
             <span style={{ fontSize: 13, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.05em" }}>CNI</span>
-            <span style={{ fontSize: 28, fontWeight: 300, fontFamily: Fn, color: T.text }}>{cniSnapshot.price}</span>
+            <span style={{ fontSize: mob ? 22 : 28, fontWeight: 300, fontFamily: Fn, color: T.text }}>{cniSnapshot.price}</span>
             <Pill T={T} color={T.capRed} bg={T.redBg}>{cniSnapshot.ytdChg} YTD</Pill>
           </div>
-          <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: mob ? 12 : 20, flexWrap: "wrap" }}>
             {[
               { l: "Revenue", v: cniSnapshot.revenue },
               { l: "Op. Ratio", v: cniSnapshot.operatingRatio },
@@ -135,7 +137,7 @@ export default function ResearchCNI({ T }) {
       </Card>
 
       {/* Hero stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10, marginBottom: 32 }}>
+      <div style={{ display: "grid", gridTemplateColumns: mob ? "repeat(2, 1fr)" : "repeat(6, 1fr)", gap: 10, marginBottom: 32 }}>
         {heroStats.map((s, i) => (
           <div key={i} style={{ background: T.card, border: "1px solid " + T.border, borderRadius: T.radius, padding: "16px 14px", textAlign: "center", boxShadow: T.shadow }}>
             <div style={{ fontSize: 22, fontWeight: 300, fontFamily: Fn, color: T[s.color] || T.text, lineHeight: 1.2 }}>{s.value}</div>
@@ -146,7 +148,7 @@ export default function ResearchCNI({ T }) {
 
       {/* Thesis overview grid */}
       <Label T={T}>Seven secular forces converging on freight rail</Label>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 48 }}>
+      <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(3, 1fr)", gap: 12, marginBottom: 48 }}>
         {thesisCards.map((card, i) => (
           <div key={i} onClick={() => scrollTo(card.id)} style={{
             background: T.card, border: "1px solid " + T.border, borderRadius: T.radius,
@@ -174,7 +176,7 @@ export default function ResearchCNI({ T }) {
               <p style={{ fontSize: 14, color: T.textSec, fontFamily: Fn, marginTop: 8, lineHeight: 1.7, maxWidth: 700 }}>{sec.lead}</p>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 24 }}>
+            <div style={{ display: "grid", gridTemplateColumns: mob ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 10, marginBottom: 24 }}>
               {sec.metrics.map((m, i) => (
                 <div key={i} style={{ background: T.bg, borderRadius: T.radiusSm, padding: "14px 16px", border: "1px solid " + T.border }}>
                   <div style={{ fontSize: 20, fontWeight: 300, color: colorMap[thesisCards[si]?.color] || T.text, fontFamily: Fn }}>{m.value}</div>
@@ -344,7 +346,7 @@ export default function ResearchCNI({ T }) {
         <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
           <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>11 / MONITORING</div>
           <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>3 key datapoints to watch</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
             {monitoringPoints.map((mp, i) => (
               <Card key={i} T={T} style={{ padding: "20px", borderTop: `3px solid ${T.deepBlue}` }}>
                 <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{mp.label}</div>
@@ -387,7 +389,7 @@ export default function ResearchCNI({ T }) {
           <Pill T={T} color={T.deepBlue} bg="rgba(29,78,216,0.08)">STAGE 2</Pill>
           <Pill T={T}>Business Primer</Pill>
         </div>
-        <h2 style={{ fontFamily: Fn, fontSize: 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
+        <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
           How does the only tri-coastal railroad actually work?
         </h2>
         <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
@@ -406,7 +408,7 @@ export default function ResearchCNI({ T }) {
           <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 20, maxWidth: 720 }}>
             Privatised in 1995 after 76 years as a Crown corporation, CN has since transformed into one of the most efficiently-run railroads on the continent. It handles approximately 15,000 shipments daily, employing around 24,700 people.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 1, background: T.border, borderRadius: T.radiusSm, overflow: "hidden", marginBottom: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: mob ? "repeat(2, 1fr)" : "repeat(5, 1fr)", gap: 1, background: T.border, borderRadius: T.radiusSm, overflow: "hidden", marginBottom: 24 }}>
             {primerSnapshot.map((s, i) => (
               <div key={i} style={{ background: T.card, padding: "20px 16px", textAlign: "center" }}>
                 <div style={{ fontSize: 22, fontWeight: 300, fontFamily: Fn, color: T.text, lineHeight: 1.2 }}>{s.value}</div>
@@ -425,7 +427,7 @@ export default function ResearchCNI({ T }) {
           <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 20, maxWidth: 720 }}>
             CN's competitive identity is defined by its network geography. Unlike any other Class I railroad, CN connects three coastlines, giving it unmatched optionality for international trade routing.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12, marginBottom: 20 }}>
             {networkCards.map((c, i) => (
               <Card key={i} T={T} style={{ padding: "20px" }}>
                 <div style={{ fontSize: 11, fontWeight: 600, color: T.deepBlue, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>{c.title}</div>
@@ -499,7 +501,7 @@ export default function ResearchCNI({ T }) {
           <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 20, maxWidth: 720 }}>
             CN's operating model is built on scheduled railroading — a disciplined approach where trains run on fixed schedules (like an airline), rather than waiting until enough cars accumulate.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12, marginBottom: 20 }}>
             <Card T={T} style={{ padding: "20px" }}>
               <div style={{ fontSize: 11, fontWeight: 600, color: T.deepBlue, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>Velocity & Dwell</div>
               <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>
@@ -645,7 +647,7 @@ export default function ResearchCNI({ T }) {
         <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
           <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S2-08 / KEY BUSINESS RISKS</div>
           <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Key Business Risks</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12 }}>
             {businessRisks.map((r, i) => (
               <Card key={i} T={T} style={{ padding: "20px" }}>
                 <div style={{ fontSize: 11, fontWeight: 600, color: T.capRed, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>{r.title}</div>
@@ -665,7 +667,7 @@ export default function ResearchCNI({ T }) {
           <Pill T={T} color={T.orange} bg="rgba(234,88,12,0.08)">STAGE 3</Pill>
           <Pill T={T}>Institutional Equity Analysis</Pill>
         </div>
-        <h2 style={{ fontFamily: Fn, fontSize: 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
+        <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
           Moat, quality, variants & valuation
         </h2>
         <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
@@ -761,7 +763,7 @@ export default function ResearchCNI({ T }) {
             </table>
           </Card>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12, marginBottom: 16 }}>
             <Card T={T} style={{ padding: "18px" }}>
               <div style={{ fontSize: 11, fontWeight: 600, color: T.orange, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>Balance Sheet</div>
               <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>
@@ -1099,7 +1101,7 @@ export default function ResearchCNI({ T }) {
             <Pill T={T}>Valuation & Financials</Pill>
             <Pill T={T} color={T.green} bg={T.greenBg}>INTERACTIVE</Pill>
           </div>
-          <h2 style={{ fontFamily: Fn, fontSize: 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
+          <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
             Interactive DCF model
           </h2>
           <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
