@@ -5,8 +5,18 @@ import ResearchBKNG from "./ResearchBKNG";
 import ResearchCEG from "./ResearchCEG";
 import ResearchCNI from "./ResearchCNI";
 import ResearchGold from "./ResearchGold";
+import ResearchThematicMap from "./ResearchThematicMap";
 
 const reports = [
+  {
+    id: "thematic", ticker: "CEF", name: "Global Thematic Portfolio Map", sector: "Cross-Sector / Strategy",
+    tagline: "56 structural themes across 10 GICS sectors mapped to ~160 best-in-class global companies",
+    date: "March 2026", type: "Thematic Map", color: "purple",
+    stats: [
+      { l: "Themes", v: "56" }, { l: "Sectors", v: "10" },
+      { l: "Companies", v: "~160" }, { l: "Positions", v: "26" },
+    ],
+  },
   {
     id: "cni", ticker: "CNI", name: "Canadian National Railway", sector: "Freight Rail / Industrials",
     tagline: "North American freight rail: structural forces shaping CN's positioning",
@@ -56,6 +66,7 @@ const backBtn = (T, setActive) => (
 );
 
 const reportComponents = {
+  thematic: ResearchThematicMap,
   bkng: ResearchBKNG,
   ceg: ResearchCEG,
   cni: ResearchCNI,
@@ -86,7 +97,7 @@ export default function ResearchPg({ T }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16 }}>
         {reports.map(r => {
-          const bgColor = r.color === "green" ? T.greenBg : r.color === "deepBlue" ? "rgba(29,78,216,0.08)" : T.redBg;
+          const bgColor = r.color === "green" ? T.greenBg : r.color === "deepBlue" ? "rgba(29,78,216,0.08)" : r.color === "purple" ? T.purple100 || "rgba(67,56,202,0.08)" : T.redBg;
           return (
             <div key={r.id}
               onClick={() => setActive(r.id)}
