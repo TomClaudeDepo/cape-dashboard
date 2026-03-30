@@ -514,3 +514,70 @@ export const exitValuation = {
     { label: "Annualized total return %", jun2025: "", fy2025e: "", fy2030e: "10.8%", highlight: true, bold: true },
   ],
 };
+
+
+/* ═══════════════════════════════════════════════ */
+/* STAGE 5: FINANCIALS & RELATIVE VALUATION        */
+/* Bloomberg data as of 27-Mar-2026                */
+/* ═══════════════════════════════════════════════ */
+
+export const bloombergPeerOverview = [
+  { peer: "CN", ticker: "CNR CN", mktCap: "86.34B", lastPx: 140.82, chg1D: 0.13, chg1M: -8.00, revGr1Y: 1.51, epsGr1Y: 6.60, pe: 18.58, roe: 22.15, divYield: 2.54 },
+  { peer: "Union Pacific", ticker: "UNP US", mktCap: "196.98B", lastPx: 331.81, chg1D: -0.17, chg1M: -9.88, revGr1Y: 1.07, epsGr1Y: 8.03, pe: 19.95, roe: 40.38, divYield: 2.30 },
+  { peer: "CSX", ticker: "CSX US", mktCap: "102.50B", lastPx: 55.12, chg1D: 0.30, chg1M: -7.07, revGr1Y: -3.08, epsGr1Y: -12.19, pe: 25.01, roe: 23.24, divYield: 1.34 },
+  { peer: "CPKC", ticker: "CP CN", mktCap: "97.53B", lastPx: 108.64, chg1D: -0.72, chg1M: -9.04, revGr1Y: 3.66, epsGr1Y: 8.65, pe: 23.53, roe: 9.04, divYield: 0.84 },
+  { peer: "Norfolk Southern", ticker: "NSC US", mktCap: "88.36B", lastPx: 393.58, chg1D: -0.01, chg1M: -10.01, revGr1Y: 0.47, epsGr1Y: -0.35, pe: 22.87, roe: 18.71, divYield: 1.91 },
+];
+
+export const bloombergProfitability = [
+  { peer: "CN", salesGr: 1.51, ebitdaGr: 3.75, ebitdaMgn: 49.27, opMgn: 38.07, niGr: 4.76, netMgn: 27.28, capexS: 21.14, roic: 8.33, roa: 8.16, roe: 22.15 },
+  { peer: "Union Pacific", salesGr: 1.07, ebitdaGr: 1.65, ebitdaMgn: 50.23, opMgn: 40.17, niGr: 5.80, netMgn: 29.12, capexS: 15.47, roic: 11.84, roa: 10.39, roe: 40.38 },
+  { peer: "CSX", salesGr: -3.08, ebitdaGr: -9.20, ebitdaMgn: 45.11, opMgn: 33.19, niGr: -15.25, netMgn: 21.16, capexS: 20.59, roic: 8.77, roa: 6.90, roe: 23.24 },
+  { peer: "CPKC", salesGr: 3.66, ebitdaGr: 7.41, ebitdaMgn: 53.53, opMgn: 40.14, niGr: 6.92, netMgn: 28.10, capexS: 20.57, roic: 4.67, roa: 4.88, roe: 9.04 },
+  { peer: "Norfolk Southern", salesGr: 0.47, ebitdaGr: 10.67, ebitdaMgn: 46.84, opMgn: 35.40, niGr: 18.38, netMgn: 22.92, capexS: 18.10, roic: 8.14, roa: 6.28, roe: 18.71 },
+];
+
+export const bloombergBalanceSheet = [
+  { peer: "CN", netDebtEbitda: 2.50, totalDebtEbitda: 2.54, netDebtEquity: 98.66, totalDebtAssets: 36.94, ebitdaInterest: 9.52 },
+  { peer: "Union Pacific", netDebtEbitda: 2.54, totalDebtEbitda: 2.67, netDebtEquity: 169.52, totalDebtAssets: 47.09, ebitdaInterest: 9.64 },
+  { peer: "CSX", netDebtEbitda: 2.95, totalDebtEbitda: 3.05, netDebtEquity: 142.43, totalDebtAssets: 44.46, ebitdaInterest: 7.54 },
+  { peer: "CPKC", netDebtEbitda: 2.90, totalDebtEbitda: 2.92, netDebtEquity: 50.00, totalDebtAssets: 27.46, ebitdaInterest: null },
+  { peer: "Norfolk Southern", netDebtEbitda: 2.77, totalDebtEbitda: 3.03, netDebtEquity: 101.47, totalDebtAssets: 38.25, ebitdaInterest: 6.79 },
+];
+
+export const consensusGrowth = [
+  { metric: "EPS, Adj+", fy2025: 7.46, fy2026: 3.08, fy2027: 10.74, fy2028: 10.23, fy2029: 6.81 },
+  { metric: "EPS, GAAP", fy2025: 7.99, fy2026: 3.76, fy2027: 10.73, fy2028: 9.17, fy2029: 8.06 },
+  { metric: "Revenue", fy2025: 1.51, fy2026: 2.23, fy2027: 4.84, fy2028: 5.41, fy2029: 4.08 },
+  { metric: "Gross Margin %", fy2025: 3.87, fy2026: 0.33, fy2027: 0.89, fy2028: null, fy2029: null },
+  { metric: "Operating Income", fy2025: 4.92, fy2026: 2.39, fy2027: 7.30, fy2028: 7.59, fy2029: 6.32 },
+  { metric: "EBITDA", fy2025: 4.35, fy2026: 0.92, fy2027: 6.49, fy2028: 5.97, fy2029: 6.00 },
+  { metric: "Pre-Tax Profit", fy2025: 7.04, fy2026: 1.13, fy2027: 7.16, fy2028: 8.27, fy2029: 5.25 },
+  { metric: "Net Income Adj+", fy2025: 5.55, fy2026: -0.34, fy2027: 7.70, fy2028: 8.18, fy2029: 5.43 },
+  { metric: "Free Cash Flow", fy2025: 7.65, fy2026: 21.58, fy2027: 10.43, fy2028: 3.34, fy2029: 6.09 },
+  { metric: "CAPEX", fy2025: 3.07, fy2026: -22.40, fy2027: 3.13, fy2028: 7.32, fy2029: 6.85 },
+  { metric: "DPS", fy2025: 5.03, fy2026: 3.24, fy2027: 5.29, fy2028: 7.17, fy2029: 13.57 },
+  { metric: "Return on Equity %", fy2025: 2.50, fy2026: 1.12, fy2027: 8.70, fy2028: 2.07, fy2029: -1.92 },
+  { metric: "Return on Assets %", fy2025: 0.71, fy2026: -1.89, fy2027: 4.86, fy2028: 3.44, fy2029: 4.75 },
+];
+
+export const consensusMultiples = [
+  { metric: "Price/EPS, Adj+", ltm: 18.46, ntm: 18.01, fy2026: 17.90, fy2027: 16.17, fy2028: 14.67 },
+  { metric: "Price/Book", ltm: 4.00, ntm: 4.07, fy2026: 4.07, fy2027: 3.91, fy2028: 3.61 },
+  { metric: "Price/Cash Flow", ltm: 12.43, ntm: 12.51, fy2026: 12.52, fy2027: 11.12, fy2028: 10.79 },
+  { metric: "EV/Revenue", ltm: 6.22, ntm: 6.09, fy2026: 6.08, fy2027: 5.80, fy2028: 5.51 },
+  { metric: "EV/EBITDA", ltm: 12.38, ntm: 12.16, fy2026: 12.16, fy2027: 11.42, fy2028: 10.78 },
+  { metric: "EV/EBIT", ltm: 16.29, ntm: 15.88, fy2026: 15.84, fy2027: 14.76, fy2028: 13.72 },
+  { metric: "Dividend Yield", ltm: 2.52, ntm: 2.61, fy2026: 2.60, fy2027: 2.74, fy2028: 2.94 },
+];
+
+export const peerValuationMultiples = {
+  "P/E": { cn: 18.58, unp: 19.95, csx: 25.01, cpkc: 23.53, nsc: 22.87 },
+  "EV/EBITDA": { cn: 12.16, unp: 14.00, csx: 14.40, cpkc: 15.30, nsc: 13.50 },
+  "EV/EBIT": { cn: 15.84, unp: 17.20, csx: 19.10, cpkc: 19.80, nsc: 17.90 },
+  "P/Book": { cn: 4.07, unp: 8.06, csx: 5.81, cpkc: 2.13, nsc: 4.28 },
+  "EV/Revenue": { cn: 6.08, unp: 7.90, csx: 6.60, cpkc: 8.20, nsc: 6.30 },
+  "Div Yield (%)": { cn: 2.54, unp: 2.30, csx: 1.34, cpkc: 0.84, nsc: 1.91 },
+  "ROIC (%)": { cn: 8.33, unp: 11.84, csx: 8.77, cpkc: 4.67, nsc: 8.14 },
+  "ROE (%)": { cn: 22.15, unp: 40.38, csx: 23.24, cpkc: 9.04, nsc: 18.71 },
+};

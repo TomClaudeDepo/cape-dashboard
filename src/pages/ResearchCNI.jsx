@@ -4,6 +4,7 @@ import { Card, Label, Pill } from "../components/shared";
 import { useMobile } from "../hooks/useMobile";
 import InteractiveDCF from "../components/InteractiveDCF";
 import InteractiveExitValuation from "../components/InteractiveExitValuation";
+import FinancialsRelVal from "../components/FinancialsRelVal";
 import {
   cniSnapshot, heroStats, thesisCards, thesisSections,
   competitorTable, commodityMix, riskTiers, railVsTrucking,
@@ -123,6 +124,12 @@ const stageNav = [
     subs: [
       { id: "s4-valuation", label: "DCF Model" },
       { id: "s4-exit-valuation", label: "Exit Valuation" },
+    ]},
+  { id: "stage-5", label: "Financials & RelVal", shortLabel: "Financials", color: "deepBlue",
+    subs: [
+      { id: "s5-peers", label: "Peer Comparison" },
+      { id: "s5-consensus", label: "Consensus" },
+      { id: "s5-valcomp", label: "Val Comparison" },
     ]},
 ];
 
@@ -1247,9 +1254,30 @@ export default function ResearchCNI({ T }) {
         <InteractiveExitValuation T={T} />
       </Section>
 
+      {/* ═══════════════════════════════════════════════ */}
+      {/* STAGE 5 — FINANCIALS & RELATIVE VALUATION       */}
+      {/* ═══════════════════════════════════════════════ */}
+      <div id="cni-stage-5" style={{ scrollMarginTop: 120 }} />
+      <Section id="s5-peers">
+        <div style={{ borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 32 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+            <Pill T={T} color={T.deepBlue} bg="rgba(0,102,204,0.08)">STAGE 5</Pill>
+            <Pill T={T}>Financials & Relative Valuation</Pill>
+            <Pill T={T} color={T.green} bg={T.greenBg}>INTERACTIVE</Pill>
+          </div>
+          <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
+            Financials, consensus estimates & peer valuation
+          </h2>
+          <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
+            Bloomberg-sourced peer comparison across profitability, leverage, and valuation metrics for the five publicly traded North American Class I railroads. Consensus growth estimates and forward multiples from Bloomberg BEst. Interactive cross-peer valuation chart with selectable metrics and peers.
+          </p>
+        </div>
+        <FinancialsRelVal T={T} />
+      </Section>
+
       {/* Disclaimer */}
       <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, maxWidth: 700, paddingBottom: 40 }}>
-        This analysis is for informational purposes only and does not constitute investment advice. Data sourced from CN investor relations, AAR, STB, CTA, FHWA, NERC, IEA, and industry reports. All figures reflect publicly available data as of March 2026.
+        This analysis is for informational purposes only and does not constitute investment advice. Data sourced from CN investor relations, Bloomberg Intelligence, Bloomberg BEst consensus, AAR, STB, CTA, FHWA, NERC, IEA, and industry reports. All figures reflect publicly available data as of March 2026.
       </div>
     </div>
   );
