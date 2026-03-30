@@ -82,17 +82,79 @@ function Expandable({ title, tag, content, color, T }) {
 }
 
 function Section({ id, children }) {
-  return <div id={`cni-${id}`} style={{ scrollMarginTop: 80 }}>{children}</div>;
+  return <div id={`cni-${id}`} style={{ scrollMarginTop: 120 }}>{children}</div>;
 }
+
+/* ─── Stage nav config ─── */
+const stageNav = [
+  { id: "stage-1", label: "Thesis", shortLabel: "Thesis", color: "deepBlue",
+    subs: [
+      { id: "thesis-top", label: "Overview" },
+      { id: "competitors", label: "Competitors" },
+      { id: "commodity", label: "Commodity Mix" },
+      { id: "rail-vs-truck", label: "Rail vs Truck" },
+      { id: "risks", label: "Risks" },
+      { id: "monitor", label: "Monitoring" },
+      { id: "conclusion", label: "Conclusion" },
+    ]},
+  { id: "stage-2", label: "Business Primer", shortLabel: "Primer", color: "deepBlue",
+    subs: [
+      { id: "primer-snapshot", label: "Snapshot" },
+      { id: "primer-network", label: "Network" },
+      { id: "primer-revenue", label: "Revenue" },
+      { id: "primer-operations", label: "Operations" },
+      { id: "primer-capital", label: "Capital" },
+      { id: "primer-management", label: "Management" },
+      { id: "primer-competitive", label: "Competition" },
+      { id: "primer-risks", label: "Risks" },
+    ]},
+  { id: "stage-3", label: "Equity Analysis", shortLabel: "Analysis", color: "orange",
+    subs: [
+      { id: "s3-moat", label: "Moat" },
+      { id: "s3-quality", label: "Quality" },
+      { id: "s3-kpi", label: "KPIs" },
+      { id: "s3-variants", label: "Variants" },
+      { id: "s3-channels", label: "Channels" },
+      { id: "s3-valuation", label: "Valuation" },
+      { id: "s3-risks", label: "Risks" },
+      { id: "s3-catalysts", label: "Catalysts" },
+    ]},
+  { id: "stage-4", label: "Valuation", shortLabel: "Valuation", color: "purple",
+    subs: [
+      { id: "s4-valuation", label: "DCF Model" },
+      { id: "s4-exit-valuation", label: "Exit Valuation" },
+    ]},
+];
 
 export default function ResearchCNI({ T }) {
   const mob = useMobile();
+  const [activeStage, setActiveStage] = useState("stage-1");
+
   const scrollTo = id => {
     const el = document.getElementById("cni-" + id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  /* Track which stage is in view */
+  useEffect(() => {
+    const ids = stageNav.map(s => "cni-" + s.id);
+    const els = ids.map(id => document.getElementById(id)).filter(Boolean);
+    if (!els.length) return;
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const hit = e.target.id.replace("cni-", "");
+          setActiveStage(hit);
+        }
+      });
+    }, { rootMargin: "-80px 0px -60% 0px", threshold: 0 });
+    els.forEach(el => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
   const colorMap = { orange: T.orange, capRed: T.capRed, deepBlue: T.deepBlue, green: T.green, purple: T.purple };
   const bgMap = { orange: "rgba(234,88,12,0.08)", capRed: T.redBg, deepBlue: "rgba(29,78,216,0.08)", green: T.greenBg, purple: "rgba(67,56,202,0.08)" };
+  const activeConfig = stageNav.find(s => s.id === activeStage);
 
   return (
     <div>
@@ -110,6 +172,65 @@ export default function ResearchCNI({ T }) {
           North American freight rail: structural forces shaping CN's positioning. The continent's only tri-coastal network faces its most dynamic competitive period since Staggers Act deregulation in 1980.
         </p>
       </div>
+
+      {/* ─── Sticky Stage Navigation ─── */}
+      <div style={{
+        position: "sticky", top: 0, zIndex: 50,
+        background: T.bg,
+        borderBottom: "1px solid " + T.border,
+        marginBottom: 32,
+        marginLeft: mob ? -16 : -32, marginRight: mob ? -16 : -32, paddingLeft: mob ? 16 : 32, paddingRight: mob ? 16 : 32,
+      }}>
+        {/* Main tabs */}
+        <div style={{
+          display: "flex", gap: mob ? 0 : 4, overflow: "auto",
+          WebkitOverflowScrolling: "touch", msOverflowStyle: "none", scrollbarWidth: "none",
+        }}>
+          {stageNav.map(s => {
+            const active = activeStage === s.id;
+            const c = colorMap[s.color] || T.deepBlue;
+            return (
+              <button key={s.id} onClick={() => scrollTo(s.id)} style={{
+                background: "none", border: "none", cursor: "pointer",
+                padding: mob ? "12px 10px 10px" : "14px 18px 10px",
+                fontFamily: Fn, fontSize: mob ? 12 : 13, fontWeight: active ? 600 : 400,
+                color: active ? c : T.textTer,
+                borderBottom: active ? `2px solid ${c}` : "2px solid transparent",
+                transition: "all 0.2s", whiteSpace: "nowrap", flexShrink: 0,
+              }}>
+                {mob ? s.shortLabel : s.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Sub-section chips */}
+        {activeConfig?.subs && (
+          <div style={{
+            display: "flex", gap: 6, padding: "8px 0 10px",
+            overflow: "auto", WebkitOverflowScrolling: "touch",
+            msOverflowStyle: "none", scrollbarWidth: "none",
+          }}>
+            {activeConfig.subs.map(sub => (
+              <button key={sub.id} onClick={() => scrollTo(sub.id)} style={{
+                background: T.pillBg, border: "1px solid " + T.border,
+                borderRadius: 20, padding: "4px 12px",
+                fontFamily: Fn, fontSize: 11, color: T.textSec,
+                cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
+                transition: "all 0.15s",
+              }}
+                onMouseEnter={e => { e.currentTarget.style.background = colorMap[activeConfig.color] || T.deepBlue; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "transparent"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = T.pillBg; e.currentTarget.style.color = T.textSec; e.currentTarget.style.borderColor = T.border; }}>
+                {sub.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ─── STAGE 1: INVESTMENT THESIS ─── */}
+      <div id="cni-stage-1" style={{ scrollMarginTop: 120 }} />
+      <div id="cni-thesis-top" style={{ scrollMarginTop: 120 }} />
 
       {/* Snapshot */}
       <Card T={T} style={{ marginBottom: 24, padding: "20px 24px" }}>
@@ -384,7 +505,7 @@ export default function ResearchCNI({ T }) {
       {/* STAGE 2: BUSINESS PRIMER                              */}
       {/* ═══════════════════════════════════════════════════════ */}
 
-      <div style={{ borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 48 }}>
+      <div id="cni-stage-2" style={{ scrollMarginTop: 120, borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 48 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
           <Pill T={T} color={T.deepBlue} bg="rgba(29,78,216,0.08)">STAGE 2</Pill>
           <Pill T={T}>Business Primer</Pill>
@@ -662,7 +783,7 @@ export default function ResearchCNI({ T }) {
       {/* STAGE 3: INSTITUTIONAL EQUITY ANALYSIS                */}
       {/* ═══════════════════════════════════════════════════════ */}
 
-      <div style={{ borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 48 }}>
+      <div id="cni-stage-3" style={{ scrollMarginTop: 120, borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 48 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
           <Pill T={T} color={T.orange} bg="rgba(234,88,12,0.08)">STAGE 3</Pill>
           <Pill T={T}>Institutional Equity Analysis</Pill>
@@ -1094,6 +1215,7 @@ export default function ResearchCNI({ T }) {
       {/* STAGE 4: VALUATION & FINANCIALS (Coming Soon)         */}
       {/* ═══════════════════════════════════════════════════════ */}
 
+      <div id="cni-stage-4" style={{ scrollMarginTop: 120 }} />
       <Section id="s4-valuation">
         <div style={{ borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 32 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
