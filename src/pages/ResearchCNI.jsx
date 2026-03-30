@@ -1367,24 +1367,6 @@ export default function ResearchCNI({ T }) {
         </div>
       </Section>
 
-      {/* Stage 3 Conclusion */}
-      <Card T={T} style={{ padding: "24px", borderLeft: `4px solid ${T.deepBlue}`, marginBottom: 32 }}>
-        <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 12 }}>Investment conclusion</div>
-        <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 10 }}>
-          CN Rail is a wide-moat compounder with irreplaceable physical infrastructure, durable pricing power, and improving operational execution. The stock's ~12% discount to its five-year average and ~15% discount to peers creates an entry point rare for a franchise of this quality.
-        </p>
-        <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 10 }}>
-          Three observations suggest the discount is excessive: CN's 37% overseas revenue provides more tariff insulation than narrative implies; the C$600M capex reduction creates a tangible FCF inflection; and Q4 2025's 60.1% OR demonstrates structural recovery.
-        </p>
-        <div style={{
-          fontFamily: Fn, fontSize: 14, fontWeight: 500, color: T.text, lineHeight: 1.7,
-          margin: "16px 0 0", padding: "16px 20px", background: T.bg, borderRadius: T.radiusSm,
-          borderLeft: `3px solid ${T.deepBlue}`,
-        }}>
-          For a quality-focused fund, CN warrants a full position at current levels with a 12-month fair value target of US$115-120 (C$160-167), predicated on OR stabilization in the low 61s, FCF exceeding C$3.5B, and a constructive CUSMA outcome.
-        </div>
-      </Card>
-
       <Section id="monitor">
         <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
           <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>11 / MONITORING</div>
@@ -1398,28 +1380,6 @@ export default function ResearchCNI({ T }) {
               </Card>
             ))}
           </div>
-        </div>
-      </Section>
-
-      {/* Conclusion */}
-      <Section id="s7-conclusion">
-        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 32 }}>
-          <Card T={T} style={{ padding: "24px", borderLeft: `4px solid ${T.deepBlue}` }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 12 }}>Investment conclusion</div>
-            <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 10 }}>
-              CN's irreplaceable tri-coastal network, potash franchise, and Pacific gateway access are genuine, durable moats. C$3.34B in free cash flow, a sub-62% operating ratio, and position as the primary carrier for Saskatchewan's generational potash expansion provide a compelling base case.
-            </p>
-            <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 10 }}>
-              However, CPKC's tri-national network captures the nearshoring megatrend CN cannot access directly, tariff escalation has exposed cross-border concentration, and the proposed UP-NS merger signals potential industry restructuring.
-            </p>
-            <div style={{
-              fontFamily: Fn, fontSize: 14, fontWeight: 500, color: T.text, lineHeight: 1.7,
-              margin: "16px 0 0", padding: "16px 20px", background: T.bg, borderRadius: T.radiusSm,
-              borderLeft: `3px solid ${T.deepBlue}`,
-            }}>
-              The next 12-18 months — spanning the USMCA review, UP-NS merger proceedings, and US-Canada trade trajectory — will determine whether CN's moat is deepening or eroding. The risk register demands a wider-than-usual range of scenario outcomes.
-            </div>
-          </Card>
         </div>
       </Section>
 
