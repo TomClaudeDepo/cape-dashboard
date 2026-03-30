@@ -286,24 +286,37 @@ export default function ResearchCNI({ T }) {
           <Pill T={T} color={T.green} bg={T.greenBg}>BUY</Pill>
         </div>
         <h2 style={{ fontFamily: Fn, fontSize: mob ? 20 : 26, fontWeight: 300, color: T.text, margin: 0, marginBottom: 16, lineHeight: 1.35 }}>
-          High-quality franchise at a cyclically depressed valuation with above-average risk concentration
+          CN is a high-quality franchise trading at a cyclically depressed valuation, but the near-term risk profile is unusually concentrated.
         </h2>
 
         <div style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, maxWidth: 760 }}>
+          <p style={{ margin: "0 0 6px", fontWeight: 600, color: T.text, fontSize: 13.5 }}>Quality</p>
           <p style={{ margin: "0 0 14px" }}>
-            CN owns a physically irreplaceable asset — the only tri-coastal Class I railroad in North America — with monopoly rail access to Prince Rupert, the closest major port to Asia. The business generates nearly C$3.5 billion in annual free cash flow, earns a 27% net profit margin, and operates in a regulated Canadian duopoly where barriers to entry are effectively infinite. Over 85% of traffic originates on CN's own network, and trucking costs three to four times more per ton-mile, creating deeply captive shipper economics. These are the hallmarks of a durable compounder.
+            On the quality side, the case is compelling. CN owns a physically irreplaceable asset — the only tri-coastal Class I railroad in North America — with monopoly access to Prince Rupert, the closest major port to Asia. The business generates nearly C$3.5 billion in free cash flow annually, earns a 27% net margin, and operates in a regulated duopoly where barriers to entry are effectively infinite. The captive shipper economics are extraordinary: 85%+ of traffic originates on-network, and trucking costs 3–4x more per ton-mile. These are the hallmarks of a durable compounder.
+          </p>
+
+          <p style={{ margin: "0 0 6px", fontWeight: 600, color: T.text, fontSize: 13.5 }}>Valuation</p>
+          <p style={{ margin: "0 0 14px" }}>
+            On valuation, CN screens as meaningfully cheap relative to both its own history and its peers. At 18.6x trailing earnings versus a five-year average of ~20.6x, and 12.2x forward EV/EBITDA near the bottom of its historical range, the market is pricing in a lot of bad news. The dividend yield at 2.5% is near a decade high. The DCF and exit valuation models both point to 10–11% annualised total returns over five years on consensus assumptions, which is attractive for an asset of this quality.
+          </p>
+
+          <p style={{ margin: "0 0 6px", fontWeight: 600, color: T.capRed, fontSize: 13.5 }}>But the risk concentration gives us pause</p>
+          <p style={{ margin: "0 0 14px" }}>
+            Three of the top four risks are all elevated simultaneously:
           </p>
           <p style={{ margin: "0 0 14px" }}>
-            At 18.6x trailing earnings — a 10% discount to its five-year average of 20.6x and roughly 20% below the peer median of 23x — the market is pricing in a substantial amount of bad news. The dividend yield at 2.5% is near a decade high. The forward enterprise value-to-EBITDA multiple of 12.2x sits near the lower bound of its historical range. Both the discounted cash flow and exit valuation models point to annualised total returns of 10–11% over a five-year horizon on consensus assumptions, which is attractive for an asset of this quality.
+            First, the CUSMA renegotiation in July 2026 is a genuine binary event. Twenty-nine percent of revenue is cross-border US-Canada traffic. A hostile renegotiation could structurally impair that revenue stream — not just cyclically, but permanently if supply chains reroute. Management already flagged C$350 million in tariff-related revenue loss in FY 2025, and they're guiding flat volumes for 2026.
           </p>
           <p style={{ margin: "0 0 14px" }}>
-            The near-term catalyst is a free cash flow inflection: capital expenditure is dropping by roughly C$700 million in 2026, which should push FCF above C$3.5 billion. Management has authorised a 24-million-share buyback programme (approximately 4% of the float), which creates a price floor. The longer-term catalyst is Prince Rupert — CN envisions doubling mainline capacity from roughly 25 to 50 trains per day, with the CANXPORT terminal adding 400,000 twenty-foot equivalent units (TEU) by around 2027. The Keyera partnership targeting 45,000 annual carloads of natural gas liquids (NGL) via Prince Rupert and the emerging LNG Canada volumes represent optionality the market is not crediting.
+            Second, the Jasper corridor is a catastrophic single point of failure with no bypass. The July 2024 fire cut Vancouver traffic 46% and Prince Rupert traffic 42%. Climate models suggest this risk is growing, not shrinking. For a company whose moat rests on network geography, having a single mountain pass as the bottleneck for its most valuable corridor is a structural vulnerability.
           </p>
           <p style={{ margin: "0 0 14px" }}>
-            That said, the risk profile is unusually concentrated. Three of the top four risks are elevated simultaneously. The Canada-United States-Mexico Agreement (CUSMA) renegotiation in July 2026 is a genuine binary event — 29% of revenue is cross-border US-Canada traffic, and a hostile renegotiation could structurally impair that stream. The Jasper corridor remains a catastrophic single point of failure with no bypass; the July 2024 wildfire cut Vancouver and Prince Rupert traffic by 42–46%, and climate models suggest rising annual risk. Canadian Pacific Kansas City is becoming a formidable competitor: their single-line Canada-US-Mexico network captures nearshoring directly, their Q4 operating ratio of 57.1% is best-in-class, and they are tracking toward C$1.2 billion in annual merger synergies. CN's failed bid for Kansas City Southern means this competitive gap is permanent.
+            Third, CPKC is becoming a formidable competitor in a way that didn't exist five years ago. Their single-line Canada-US-Mexico network captures the nearshoring trend directly, their Q4 operating ratio of 57.1% is best-in-class, and they're tracking toward C$1.2 billion in annual merger synergies. CN's failed bid for KCS means this competitive gap is permanent.
           </p>
+
+          <p style={{ margin: "0 0 6px", fontWeight: 600, color: T.text, fontSize: 13.5 }}>Conclusion</p>
           <p style={{ margin: "0 0 0" }}>
-            The valuation discount more than compensates for these risks on a probability-weighted basis, but the correlation among them matters — a bad CUSMA outcome combined with another Jasper disruption in the same year would hit the stock hard. This is a position where sizing matters as much as direction. We initiate with a buy recommendation, with a five-year target price of approximately C$235 (based on 20x exit P/E on consensus FY 2030 earnings per share of C$11.74), implying a total return of roughly 67% including accumulated dividends — or approximately 11% annualised.
+            CN is probably a good investment at this price for a patient five-year holder — the valuation discount more than compensates for the risks on a probability-weighted basis, and the FCF inflection in 2026 (capex dropping C$700 million) provides a near-term catalyst and price floor via the 24-million-share buyback. But it's not a table-pounding conviction buy because the risk factors are correlated — a bad CUSMA outcome combined with another Jasper disruption in the same year would hit the stock hard and there's no structural hedge against that combination. The position sizing matters as much as the direction.
           </p>
         </div>
 
