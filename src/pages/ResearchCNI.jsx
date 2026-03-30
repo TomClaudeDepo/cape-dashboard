@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Fn } from "../theme";
 import { Card, Label, Pill } from "../components/shared";
 import { useMobile } from "../hooks/useMobile";
@@ -129,15 +130,28 @@ const stageNav = [
 export default function ResearchCNI({ T }) {
   const mob = useMobile();
   const [activeStage, setActiveStage] = useState("stage-1");
-  const [navFixed, setNavFixed] = useState(false);
-  const [navRect, setNavRect] = useState({ left: 0, width: 0, top: 0 });
-  const navRef = useRef(null);
+  const [navVisible, setNavVisible] = useState(false);
+  const [navPos, setNavPos] = useState({ left: 0, width: 0, top: 0 });
   const sentinelRef = useRef(null);
+  const scrollParentRef = useRef(null);
 
   const scrollTo = id => {
     const el = document.getElementById("cni-" + id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  /* Find scroll parent once */
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    let sp = sentinel.parentElement;
+    while (sp && sp !== document.body) {
+      const ov = getComputedStyle(sp).overflowY;
+      if (ov === "auto" || ov === "scroll") break;
+      sp = sp.parentElement;
+    }
+    scrollParentRef.current = sp && sp !== document.body ? sp : null;
+  }, []);
 
   /* Track which stage is in view */
   useEffect(() => {
@@ -156,45 +170,98 @@ export default function ResearchCNI({ T }) {
     return () => obs.disconnect();
   }, []);
 
-  /* Fix nav to top of scroll container when sentinel scrolls out */
-  const navFixedRef = useRef(false);
+  /* Show/hide portal nav based on scroll position */
   useEffect(() => {
     const sentinel = sentinelRef.current;
-    if (!sentinel) return;
-    /* Find the overflow:auto scroll parent */
-    let scrollParent = sentinel.parentElement;
-    while (scrollParent && scrollParent !== document.body) {
-      const ov = getComputedStyle(scrollParent).overflowY;
-      if (ov === "auto" || ov === "scroll") break;
-      scrollParent = scrollParent.parentElement;
-    }
-    if (!scrollParent || scrollParent === document.body) return;
-
+    const sp = scrollParentRef.current;
+    if (!sentinel || !sp) return;
+    const visRef = { current: false };
     const update = () => {
-      const sp = scrollParent.getBoundingClientRect();
-      const se = sentinel.getBoundingClientRect();
-      const shouldFix = se.top < sp.top;
-      if (shouldFix && !navFixedRef.current) {
-        navFixedRef.current = true;
-        setNavRect({ left: sp.left, width: sp.width, top: sp.top });
-        setNavFixed(true);
-      } else if (!shouldFix && navFixedRef.current) {
-        navFixedRef.current = false;
-        setNavFixed(false);
-      } else if (shouldFix) {
-        setNavRect(prev => (prev.left !== sp.left || prev.width !== sp.width || prev.top !== sp.top)
-          ? { left: sp.left, width: sp.width, top: sp.top } : prev);
+      const spR = sp.getBoundingClientRect();
+      const seR = sentinel.getBoundingClientRect();
+      const shouldShow = seR.top < spR.top;
+      if (shouldShow !== visRef.current) {
+        visRef.current = shouldShow;
+        setNavVisible(shouldShow);
+      }
+      if (shouldShow) {
+        setNavPos(prev => {
+          const nl = spR.left, nw = spR.width, nt = spR.top;
+          return (prev.left !== nl || prev.width !== nw || prev.top !== nt)
+            ? { left: nl, width: nw, top: nt } : prev;
+        });
       }
     };
-    scrollParent.addEventListener("scroll", update, { passive: true });
+    sp.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update, { passive: true });
     update();
-    return () => { scrollParent.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
+    return () => { sp.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
   }, []);
 
   const colorMap = { orange: T.orange, capRed: T.capRed, deepBlue: T.deepBlue, green: T.green, purple: T.purple };
   const bgMap = { orange: "rgba(234,88,12,0.08)", capRed: T.redBg, deepBlue: "rgba(29,78,216,0.08)", green: T.greenBg, purple: "rgba(67,56,202,0.08)" };
   const activeConfig = stageNav.find(s => s.id === activeStage);
+
+  /* Shared nav bar JSX */
+  const navInnerStyle = (isPortal) => ({
+    paddingLeft: mob ? 16 : 32, paddingRight: mob ? 16 : 32,
+    background: T.bg, borderBottom: "1px solid " + T.border,
+    boxShadow: isPortal ? "0 2px 12px rgba(0,0,0,0.08)" : "none",
+  });
+  const navContent = (isPortal) => (
+    <div style={isPortal ? {
+      position: "fixed", top: navPos.top, left: navPos.left, width: navPos.width,
+      zIndex: 9999, boxSizing: "border-box", ...navInnerStyle(true),
+    } : {
+      marginLeft: mob ? -16 : -32, marginRight: mob ? -16 : -32,
+      marginBottom: 32, ...navInnerStyle(false),
+    }}>
+      {/* Main tabs */}
+      <div style={{
+        display: "flex", gap: mob ? 0 : 4, overflow: "auto",
+        WebkitOverflowScrolling: "touch", msOverflowStyle: "none", scrollbarWidth: "none",
+      }}>
+        {stageNav.map(s => {
+          const active = activeStage === s.id;
+          const c = colorMap[s.color] || T.deepBlue;
+          return (
+            <button key={s.id} onClick={() => scrollTo(s.id)} style={{
+              background: "none", border: "none", cursor: "pointer",
+              padding: mob ? "12px 10px 10px" : "14px 18px 10px",
+              fontFamily: Fn, fontSize: mob ? 12 : 13, fontWeight: active ? 600 : 400,
+              color: active ? c : T.textTer,
+              borderBottom: active ? `2px solid ${c}` : "2px solid transparent",
+              transition: "all 0.2s", whiteSpace: "nowrap", flexShrink: 0,
+            }}>
+              {mob ? s.shortLabel : s.label}
+            </button>
+          );
+        })}
+      </div>
+      {/* Sub-section chips */}
+      {activeConfig?.subs && (
+        <div style={{
+          display: "flex", gap: 6, padding: "8px 0 10px",
+          overflow: "auto", WebkitOverflowScrolling: "touch",
+          msOverflowStyle: "none", scrollbarWidth: "none",
+        }}>
+          {activeConfig.subs.map(sub => (
+            <button key={sub.id} onClick={() => scrollTo(sub.id)} style={{
+              background: T.pillBg, border: "1px solid " + T.border,
+              borderRadius: 20, padding: "4px 12px",
+              fontFamily: Fn, fontSize: 11, color: T.textSec,
+              cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
+              transition: "all 0.15s",
+            }}
+              onMouseEnter={e => { e.currentTarget.style.background = colorMap[activeConfig.color] || T.deepBlue; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "transparent"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = T.pillBg; e.currentTarget.style.color = T.textSec; e.currentTarget.style.borderColor = T.border; }}>
+              {sub.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div>
@@ -213,68 +280,16 @@ export default function ResearchCNI({ T }) {
         </p>
       </div>
 
-      {/* ─── Sentinel + Sticky Stage Navigation ─── */}
+      {/* ─── Stage Navigation ─── */}
       <div ref={sentinelRef} style={{ height: 1, marginBottom: -1 }} />
-      {navFixed && <div style={{ height: navRef.current?.offsetHeight || 80, marginBottom: 32 }} />}
-      <div ref={navRef} style={{
-        ...(navFixed ? {
-          position: "fixed", top: navRect.top, left: navRect.left, width: navRect.width,
-          paddingLeft: mob ? 16 : 32, paddingRight: mob ? 16 : 32, boxSizing: "border-box",
-        } : {
-          marginLeft: mob ? -16 : -32, marginRight: mob ? -16 : -32,
-          paddingLeft: mob ? 16 : 32, paddingRight: mob ? 16 : 32,
-        }),
-        zIndex: 100, background: T.bg, borderBottom: "1px solid " + T.border,
-        marginBottom: navFixed ? 0 : 32,
-        boxShadow: navFixed ? "0 2px 12px rgba(0,0,0,0.08)" : "none",
-        transition: "box-shadow 0.2s",
-      }}>
-        {/* Main tabs */}
-        <div style={{
-          display: "flex", gap: mob ? 0 : 4, overflow: "auto",
-          WebkitOverflowScrolling: "touch", msOverflowStyle: "none", scrollbarWidth: "none",
-        }}>
-          {stageNav.map(s => {
-            const active = activeStage === s.id;
-            const c = colorMap[s.color] || T.deepBlue;
-            return (
-              <button key={s.id} onClick={() => scrollTo(s.id)} style={{
-                background: "none", border: "none", cursor: "pointer",
-                padding: mob ? "12px 10px 10px" : "14px 18px 10px",
-                fontFamily: Fn, fontSize: mob ? 12 : 13, fontWeight: active ? 600 : 400,
-                color: active ? c : T.textTer,
-                borderBottom: active ? `2px solid ${c}` : "2px solid transparent",
-                transition: "all 0.2s", whiteSpace: "nowrap", flexShrink: 0,
-              }}>
-                {mob ? s.shortLabel : s.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Sub-section chips */}
-        {activeConfig?.subs && (
-          <div style={{
-            display: "flex", gap: 6, padding: "8px 0 10px",
-            overflow: "auto", WebkitOverflowScrolling: "touch",
-            msOverflowStyle: "none", scrollbarWidth: "none",
-          }}>
-            {activeConfig.subs.map(sub => (
-              <button key={sub.id} onClick={() => scrollTo(sub.id)} style={{
-                background: T.pillBg, border: "1px solid " + T.border,
-                borderRadius: 20, padding: "4px 12px",
-                fontFamily: Fn, fontSize: 11, color: T.textSec,
-                cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-                transition: "all 0.15s",
-              }}
-                onMouseEnter={e => { e.currentTarget.style.background = colorMap[activeConfig.color] || T.deepBlue; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "transparent"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = T.pillBg; e.currentTarget.style.color = T.textSec; e.currentTarget.style.borderColor = T.border; }}>
-                {sub.label}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+      {navVisible ? (
+        <>
+          <div style={{ height: 80, marginBottom: 32 }} />
+          {createPortal(navContent(true), document.body)}
+        </>
+      ) : (
+        navContent(false)
+      )}
 
       {/* ─── STAGE 1: INVESTMENT THESIS ─── */}
       <div id="cni-stage-1" style={{ scrollMarginTop: 120 }} />
