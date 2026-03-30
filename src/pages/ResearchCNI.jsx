@@ -1292,6 +1292,32 @@ export default function ResearchCNI({ T }) {
           </p>
         </div>
         <PerformanceCharts T={T} />
+
+        {/* ── Performance commentary ── */}
+        <div style={{ marginTop: 36, borderTop: "1px solid " + T.border, paddingTop: 28 }}>
+          <h4 style={{ fontFamily: Fn, fontSize: mob ? 16 : 18, fontWeight: 400, color: T.text, margin: 0, marginBottom: 14 }}>
+            Why CN has been the weakest performer — and why CSX led the pack
+          </h4>
+          <div style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, maxWidth: 740 }}>
+            <p style={{ margin: "0 0 14px" }}>
+              Over the full ten-year period, CSX roughly quintupled in share price terms while CN barely doubled, making it the weakest of the five publicly traded North American Class I railroads. The divergence reflects a combination of structural, operational, and currency-related factors.
+            </p>
+
+            <p style={{ margin: "0 0 6px", fontWeight: 600, color: T.text, fontSize: 13.5 }}>CN's underperformance</p>
+            <p style={{ margin: "0 0 14px" }}>
+              CN's share price stagnation reflects several compounding headwinds. First, CN is priced in Canadian dollars, and the CAD weakened meaningfully against the USD over this period — so part of the gap versus the four US-listed peers is simply currency drag. But the fundamental picture matters more. CN's volume growth has been structurally slower, partly because Canada's economy is smaller and more resource-dependent. The company's heavy exposure to forest products (in secular decline as housing starts slowed and paper demand fell) and grain (where pricing is capped by the Maximum Revenue Entitlement) limited revenue upside. CN also faced a string of operational disruptions that weighed on sentiment and earnings — the 2023 wildfire season, the August 2024 simultaneous lockout with CPKC, recurring Jasper corridor closures, and most recently the US-Canada tariff overhang which management estimated cost over C$350 million in FY 2025 revenue. CN's operating ratio improvement stalled around 61–63% while peers pushed theirs meaningfully lower. The failed Kansas City Southern acquisition attempt in 2021 — which CPKC ultimately won — was also a sentiment inflection, as investors saw CN miss out on the transformative single-line Mexico access that would have structurally repositioned the network.
+            </p>
+
+            <p style={{ margin: "0 0 6px", fontWeight: 600, color: T.text, fontSize: 13.5 }}>CSX's outperformance</p>
+            <p style={{ margin: "0 0 14px" }}>
+              CSX's extraordinary run was largely a Hunter Harrison story and its aftermath. Harrison took over as chief executive in March 2017 and aggressively implemented Precision Scheduled Railroading (PSR), slashing CSX's operating ratio from the high-60s to the low-60s in under two years — a margin transformation unmatched by any peer in such a compressed timeframe. The stock re-rated massively: the price-to-earnings multiple expanded from roughly 13x at the start of the period to approximately 25x today, because the market recognised that CSX's earnings power had permanently stepped up. Even after Harrison's death in late 2017, the PSR playbook was entrenched and successors continued executing. CSX also benefited from its eastern US network positioning — less exposed to Canadian trade policy risk, closer to population centres, and a beneficiary of intermodal growth along the I-95 corridor. The stock carried a "proven turnaround" premium for years. It is worth noting that CSX's recent fundamentals have weakened (EPS declined 12% year on year, revenue fell 3%), which explains the pullback from its highs — the market is starting to question whether the elevated multiple is justified now that the easy efficiency gains are behind it.
+            </p>
+
+            <p style={{ margin: "0 0 0" }}>
+              In short, CN's underperformance is a product of currency drag, weaker volume growth, regulatory headwinds on its commodity mix, and repeated operational disruptions. CSX's outperformance was driven by the most dramatic operating efficiency transformation in recent railroad history, which caused a sustained P/E re-rating from the low-teens to the mid-20s.
+            </p>
+          </div>
+        </div>
       </Section>
 
       {/* Disclaimer */}
