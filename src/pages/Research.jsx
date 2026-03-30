@@ -4,6 +4,7 @@ import { Card, Pill, TabBar } from "../components/shared";
 import ResearchBKNG from "./ResearchBKNG";
 import ResearchCEG from "./ResearchCEG";
 import ResearchCNI from "./ResearchCNI";
+import ResearchGold from "./ResearchGold";
 
 const reports = [
   {
@@ -33,6 +34,15 @@ const reports = [
       { l: "FCF", v: "$9.1B" }, { l: "PEG", v: "0.95" },
     ],
   },
+  {
+    id: "gold", ticker: "XAU", name: "Gold", sector: "Commodities / Macro",
+    tagline: "Parabolic bull run, structural demand shift, and the March 2026 liquidity crisis",
+    date: "March 2026", type: "Thematic Analysis", color: "orange",
+    stats: [
+      { l: "Price", v: "$4,569" }, { l: "ATH", v: "$5,595" },
+      { l: "Rally", v: "+205%" }, { l: "CB Buying", v: "4,088t" },
+    ],
+  },
 ];
 
 const backBtn = (T, setActive) => (
@@ -49,6 +59,7 @@ const reportComponents = {
   bkng: ResearchBKNG,
   ceg: ResearchCEG,
   cni: ResearchCNI,
+  gold: ResearchGold,
 };
 
 export default function ResearchPg({ T }) {
