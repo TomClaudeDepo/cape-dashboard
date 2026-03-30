@@ -5,6 +5,7 @@ import { useMobile } from "../hooks/useMobile";
 import InteractiveDCF from "../components/InteractiveDCF";
 import InteractiveExitValuation from "../components/InteractiveExitValuation";
 import FinancialsRelVal from "../components/FinancialsRelVal";
+import PerformanceCharts from "../components/PerformanceCharts";
 import {
   cniSnapshot, heroStats, thesisCards, thesisSections,
   competitorTable, commodityMix, riskTiers, railVsTrucking,
@@ -130,6 +131,7 @@ const stageNav = [
       { id: "s5-peers", label: "Peer Comparison" },
       { id: "s5-consensus", label: "Consensus" },
       { id: "s5-valcomp", label: "Val Comparison" },
+      { id: "s5-performance", label: "Performance" },
     ]},
 ];
 
@@ -1273,6 +1275,23 @@ export default function ResearchCNI({ T }) {
           </p>
         </div>
         <FinancialsRelVal T={T} />
+      </Section>
+
+      {/* S5-04: Interactive Performance & Valuation Charts */}
+      <Section id="s5-performance">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 36, marginBottom: 32 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+            <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", fontWeight: 600 }}>S5-04 / PERFORMANCE & VALUATION HISTORY</div>
+            <Pill T={T} color={T.green} bg={T.greenBg}>INTERACTIVE</Pill>
+          </div>
+          <h3 style={{ fontFamily: Fn, fontSize: mob ? 18 : 22, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>
+            Price performance & valuation time-series
+          </h3>
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720, marginBottom: 20 }}>
+            Ten years of daily price history for the five North American Class I railroads, sourced from Bloomberg. Switch between share price (indexed to 100 at period start or in absolute terms), forward price-to-earnings, and trailing price-to-earnings multiples. Select any combination of companies and time ranges using the controls above the chart. Hover or tap to inspect values at any date. The stats strip below the price chart shows total return, period high, and drawdown from high for each selected company.
+          </p>
+        </div>
+        <PerformanceCharts T={T} />
       </Section>
 
       {/* Disclaimer */}
