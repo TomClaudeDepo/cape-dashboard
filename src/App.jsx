@@ -66,7 +66,7 @@ function Dashboard({ dark, setDark }) {
   ];
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: T.bg, fontFamily: Fn, transition: "background 0.3s" }}>
+    <div style={{ display: "flex", height: "100vh", background: T.bg, fontFamily: Fn, transition: "background 0.3s", overflow: "hidden" }}>
       {/* Mobile overlay */}
       {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} style={{ display: "none", position: "fixed", inset: 0, background: "rgba(0,0,0,0.25)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", zIndex: 9 }} />}
 
