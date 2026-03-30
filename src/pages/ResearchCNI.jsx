@@ -129,6 +129,10 @@ const stageNav = [
 export default function ResearchCNI({ T }) {
   const mob = useMobile();
   const [activeStage, setActiveStage] = useState("stage-1");
+  const [navFixed, setNavFixed] = useState(false);
+  const [navRect, setNavRect] = useState({ left: 0, width: 0, top: 0 });
+  const navRef = useRef(null);
+  const sentinelRef = useRef(null);
 
   const scrollTo = id => {
     const el = document.getElementById("cni-" + id);
@@ -152,6 +156,42 @@ export default function ResearchCNI({ T }) {
     return () => obs.disconnect();
   }, []);
 
+  /* Fix nav to top of scroll container when sentinel scrolls out */
+  const navFixedRef = useRef(false);
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    /* Find the overflow:auto scroll parent */
+    let scrollParent = sentinel.parentElement;
+    while (scrollParent && scrollParent !== document.body) {
+      const ov = getComputedStyle(scrollParent).overflowY;
+      if (ov === "auto" || ov === "scroll") break;
+      scrollParent = scrollParent.parentElement;
+    }
+    if (!scrollParent || scrollParent === document.body) return;
+
+    const update = () => {
+      const sp = scrollParent.getBoundingClientRect();
+      const se = sentinel.getBoundingClientRect();
+      const shouldFix = se.top < sp.top;
+      if (shouldFix && !navFixedRef.current) {
+        navFixedRef.current = true;
+        setNavRect({ left: sp.left, width: sp.width, top: sp.top });
+        setNavFixed(true);
+      } else if (!shouldFix && navFixedRef.current) {
+        navFixedRef.current = false;
+        setNavFixed(false);
+      } else if (shouldFix) {
+        setNavRect(prev => (prev.left !== sp.left || prev.width !== sp.width || prev.top !== sp.top)
+          ? { left: sp.left, width: sp.width, top: sp.top } : prev);
+      }
+    };
+    scrollParent.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    update();
+    return () => { scrollParent.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
+  }, []);
+
   const colorMap = { orange: T.orange, capRed: T.capRed, deepBlue: T.deepBlue, green: T.green, purple: T.purple };
   const bgMap = { orange: "rgba(234,88,12,0.08)", capRed: T.redBg, deepBlue: "rgba(29,78,216,0.08)", green: T.greenBg, purple: "rgba(67,56,202,0.08)" };
   const activeConfig = stageNav.find(s => s.id === activeStage);
@@ -173,13 +213,21 @@ export default function ResearchCNI({ T }) {
         </p>
       </div>
 
-      {/* ─── Sticky Stage Navigation ─── */}
-      <div style={{
-        position: "sticky", top: 0, zIndex: 50,
-        background: T.bg,
-        borderBottom: "1px solid " + T.border,
-        marginBottom: 32,
-        marginLeft: mob ? -16 : -32, marginRight: mob ? -16 : -32, paddingLeft: mob ? 16 : 32, paddingRight: mob ? 16 : 32,
+      {/* ─── Sentinel + Sticky Stage Navigation ─── */}
+      <div ref={sentinelRef} style={{ height: 1, marginBottom: -1 }} />
+      {navFixed && <div style={{ height: navRef.current?.offsetHeight || 80, marginBottom: 32 }} />}
+      <div ref={navRef} style={{
+        ...(navFixed ? {
+          position: "fixed", top: navRect.top, left: navRect.left, width: navRect.width,
+          paddingLeft: mob ? 16 : 32, paddingRight: mob ? 16 : 32, boxSizing: "border-box",
+        } : {
+          marginLeft: mob ? -16 : -32, marginRight: mob ? -16 : -32,
+          paddingLeft: mob ? 16 : 32, paddingRight: mob ? 16 : 32,
+        }),
+        zIndex: 100, background: T.bg, borderBottom: "1px solid " + T.border,
+        marginBottom: navFixed ? 0 : 32,
+        boxShadow: navFixed ? "0 2px 12px rgba(0,0,0,0.08)" : "none",
+        transition: "box-shadow 0.2s",
       }}>
         {/* Main tabs */}
         <div style={{
