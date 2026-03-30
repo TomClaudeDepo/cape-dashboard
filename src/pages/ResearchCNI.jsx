@@ -275,6 +275,57 @@ export default function ResearchCNI({ T }) {
         ))}
       </div>
 
+      {/* ─── INVESTMENT THESIS ─── */}
+      <div style={{
+        background: T.card, border: "1px solid " + T.border, borderRadius: T.radius,
+        padding: mob ? "24px 20px" : "32px 36px", marginBottom: 36,
+        borderLeft: `4px solid ${T.deepBlue}`,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.deepBlue, letterSpacing: "0.15em", fontWeight: 700 }}>INVESTMENT THESIS</div>
+          <Pill T={T} color={T.green} bg={T.greenBg}>BUY</Pill>
+        </div>
+        <h2 style={{ fontFamily: Fn, fontSize: mob ? 20 : 26, fontWeight: 300, color: T.text, margin: 0, marginBottom: 16, lineHeight: 1.35 }}>
+          High-quality franchise at a cyclically depressed valuation with above-average risk concentration
+        </h2>
+
+        <div style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, maxWidth: 760 }}>
+          <p style={{ margin: "0 0 14px" }}>
+            CN owns a physically irreplaceable asset — the only tri-coastal Class I railroad in North America — with monopoly rail access to Prince Rupert, the closest major port to Asia. The business generates nearly C$3.5 billion in annual free cash flow, earns a 27% net profit margin, and operates in a regulated Canadian duopoly where barriers to entry are effectively infinite. Over 85% of traffic originates on CN's own network, and trucking costs three to four times more per ton-mile, creating deeply captive shipper economics. These are the hallmarks of a durable compounder.
+          </p>
+          <p style={{ margin: "0 0 14px" }}>
+            At 18.6x trailing earnings — a 10% discount to its five-year average of 20.6x and roughly 20% below the peer median of 23x — the market is pricing in a substantial amount of bad news. The dividend yield at 2.5% is near a decade high. The forward enterprise value-to-EBITDA multiple of 12.2x sits near the lower bound of its historical range. Both the discounted cash flow and exit valuation models point to annualised total returns of 10–11% over a five-year horizon on consensus assumptions, which is attractive for an asset of this quality.
+          </p>
+          <p style={{ margin: "0 0 14px" }}>
+            The near-term catalyst is a free cash flow inflection: capital expenditure is dropping by roughly C$700 million in 2026, which should push FCF above C$3.5 billion. Management has authorised a 24-million-share buyback programme (approximately 4% of the float), which creates a price floor. The longer-term catalyst is Prince Rupert — CN envisions doubling mainline capacity from roughly 25 to 50 trains per day, with the CANXPORT terminal adding 400,000 twenty-foot equivalent units (TEU) by around 2027. The Keyera partnership targeting 45,000 annual carloads of natural gas liquids (NGL) via Prince Rupert and the emerging LNG Canada volumes represent optionality the market is not crediting.
+          </p>
+          <p style={{ margin: "0 0 14px" }}>
+            That said, the risk profile is unusually concentrated. Three of the top four risks are elevated simultaneously. The Canada-United States-Mexico Agreement (CUSMA) renegotiation in July 2026 is a genuine binary event — 29% of revenue is cross-border US-Canada traffic, and a hostile renegotiation could structurally impair that stream. The Jasper corridor remains a catastrophic single point of failure with no bypass; the July 2024 wildfire cut Vancouver and Prince Rupert traffic by 42–46%, and climate models suggest rising annual risk. Canadian Pacific Kansas City is becoming a formidable competitor: their single-line Canada-US-Mexico network captures nearshoring directly, their Q4 operating ratio of 57.1% is best-in-class, and they are tracking toward C$1.2 billion in annual merger synergies. CN's failed bid for Kansas City Southern means this competitive gap is permanent.
+          </p>
+          <p style={{ margin: "0 0 0" }}>
+            The valuation discount more than compensates for these risks on a probability-weighted basis, but the correlation among them matters — a bad CUSMA outcome combined with another Jasper disruption in the same year would hit the stock hard. This is a position where sizing matters as much as direction. We initiate with a buy recommendation, with a five-year target price of approximately C$235 (based on 20x exit P/E on consensus FY 2030 earnings per share of C$11.74), implying a total return of roughly 67% including accumulated dividends — or approximately 11% annualised.
+          </p>
+        </div>
+
+        {/* Key metrics strip */}
+        <div style={{
+          display: "grid", gridTemplateColumns: mob ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
+          gap: 12, marginTop: 24, paddingTop: 20, borderTop: "1px solid " + T.border,
+        }}>
+          {[
+            { l: "5Y Target Price", v: "C$235", color: T.deepBlue },
+            { l: "Expected Total Return", v: "~67%", color: T.green },
+            { l: "Annualised Return", v: "~11%", color: T.green },
+            { l: "Key Risk", v: "CUSMA / Jasper", color: T.capRed },
+          ].map((m, i) => (
+            <div key={i} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 20, fontWeight: 300, color: m.color, fontFamily: Fn, lineHeight: 1.2 }}>{m.v}</div>
+              <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", marginTop: 4 }}>{m.l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Thesis overview grid */}
       <Label T={T}>Seven secular forces converging on freight rail</Label>
       <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(3, 1fr)", gap: 12, marginBottom: 48 }}>
