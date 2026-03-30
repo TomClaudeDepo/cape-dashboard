@@ -89,15 +89,9 @@ function Section({ id, children }) {
 
 /* ─── Stage nav config ─── */
 const stageNav = [
-  { id: "stage-1", label: "Thesis", shortLabel: "Thesis", color: "deepBlue",
+  { id: "stage-1", label: "Investment Thesis", shortLabel: "Thesis", color: "deepBlue",
     subs: [
       { id: "thesis-top", label: "Overview" },
-      { id: "competitors", label: "Competitors" },
-      { id: "commodity", label: "Commodity Mix" },
-      { id: "rail-vs-truck", label: "Rail vs Truck" },
-      { id: "risks", label: "Risks" },
-      { id: "monitor", label: "Monitoring" },
-      { id: "conclusion", label: "Conclusion" },
     ]},
   { id: "stage-2", label: "Business Primer", shortLabel: "Primer", color: "deepBlue",
     subs: [
@@ -107,33 +101,44 @@ const stageNav = [
       { id: "primer-operations", label: "Operations" },
       { id: "primer-capital", label: "Capital" },
       { id: "primer-management", label: "Management" },
-      { id: "primer-competitive", label: "Competition" },
-      { id: "primer-risks", label: "Risks" },
     ]},
-  { id: "stage-3", label: "Equity Analysis", shortLabel: "Analysis", color: "orange",
+  { id: "stage-3", label: "Structural Forces", shortLabel: "Forces", color: "orange",
     subs: [
-      { id: "s3-moat", label: "Moat" },
-      { id: "s3-quality", label: "Quality" },
-      { id: "s3-kpi", label: "KPIs" },
+      { id: "structural-top", label: "Overview" },
+      { id: "competitors", label: "Competitors" },
+      { id: "commodity", label: "Commodity Mix" },
+      { id: "rail-vs-truck", label: "Rail vs Truck" },
       { id: "s3-variants", label: "Variants" },
-      { id: "s3-channels", label: "Channels" },
-      { id: "s3-valuation", label: "Valuation" },
-      { id: "s3-risks", label: "Risks" },
-      { id: "s3-catalysts", label: "Catalysts" },
     ]},
-  { id: "stage-4", label: "Valuation", shortLabel: "Valuation", color: "purple",
-    subs: [
-      { id: "s4-valuation", label: "DCF Model" },
-      { id: "s4-exit-valuation", label: "Exit Valuation" },
-    ]},
-  { id: "stage-5", label: "Financials & RelVal", shortLabel: "Financials", color: "deepBlue",
+  { id: "stage-4", label: "Financials & RelVal", shortLabel: "Financials", color: "deepBlue",
     subs: [
       { id: "s5-peers", label: "Peer Comparison" },
       { id: "s5-consensus", label: "Consensus" },
       { id: "s5-valcomp", label: "Val Comparison" },
       { id: "s5-performance", label: "Performance" },
     ]},
+  { id: "stage-5", label: "Equity Analysis", shortLabel: "Analysis", color: "orange",
+    subs: [
+      { id: "s3-moat", label: "Moat" },
+      { id: "s3-quality", label: "Quality" },
+      { id: "s3-kpi", label: "KPIs" },
+      { id: "s3-valuation", label: "Valuation" },
+    ]},
+  { id: "stage-6", label: "Valuation Models", shortLabel: "Valuation", color: "purple",
+    subs: [
+      { id: "s4-valuation", label: "DCF Model" },
+      { id: "s4-exit-valuation", label: "Exit Valuation" },
+    ]},
+  { id: "stage-7", label: "Risks & Catalysts", shortLabel: "Risks", color: "capRed",
+    subs: [
+      { id: "s7-competitive", label: "Competition" },
+      { id: "s7-risks", label: "Risk Matrix" },
+      { id: "s3-channels", label: "Channels" },
+      { id: "s3-catalysts", label: "Catalysts" },
+      { id: "monitor", label: "Monitoring" },
+    ]},
 ];
+
 
 export default function ResearchCNI({ T }) {
   const mob = useMobile();
@@ -236,8 +241,10 @@ export default function ResearchCNI({ T }) {
         )}
       </div>
 
+
       {/* ─── STAGE 1: INVESTMENT THESIS ─── */}
       <div id="cni-stage-1" style={{ scrollMarginTop: 120 }} />
+      <div id="cni-thesis-top" style={{ scrollMarginTop: 120 }} />
       <div id="cni-thesis-top" style={{ scrollMarginTop: 120 }} />
 
       {/* Snapshot */}
@@ -339,257 +346,16 @@ export default function ResearchCNI({ T }) {
         </div>
       </div>
 
-      {/* Thesis overview grid */}
-      <Label T={T}>Seven secular forces converging on freight rail</Label>
-      <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(3, 1fr)", gap: 12, marginBottom: 48 }}>
-        {thesisCards.map((card, i) => (
-          <div key={i} onClick={() => scrollTo(card.id)} style={{
-            background: T.card, border: "1px solid " + T.border, borderRadius: T.radius,
-            padding: "22px 20px", cursor: "pointer", boxShadow: T.shadow, transition: "all 0.2s",
-            borderTop: `3px solid ${colorMap[card.color] || T.deepBlue}`,
-          }}
-            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = T.shadowLg }}
-            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = T.shadow }}>
-            <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginBottom: 8 }}>{card.num}</div>
-            <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{card.title}</div>
-            <Pill T={T} color={colorMap[card.color]} bg={bgMap[card.color]}>{card.tag}</Pill>
-            <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.65, marginTop: 10, margin: "10px 0 0" }}>{card.desc}</p>
-            <div style={{ fontSize: 11, fontWeight: 500, color: colorMap[card.color], marginTop: 12, fontFamily: Fn }}>Deep dive →</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Deep-dive sections */}
-      {thesisSections.map((sec, si) => (
-        <Section key={si} id={sec.id}>
-          <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>{sec.num} / STRUCTURAL FORCE</div>
-              <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>{sec.title}</h2>
-              <p style={{ fontSize: 14, color: T.textSec, fontFamily: Fn, marginTop: 8, lineHeight: 1.7, maxWidth: 700 }}>{sec.lead}</p>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: mob ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 10, marginBottom: 24 }}>
-              {sec.metrics.map((m, i) => (
-                <div key={i} style={{ background: T.bg, borderRadius: T.radiusSm, padding: "14px 16px", border: "1px solid " + T.border }}>
-                  <div style={{ fontSize: 20, fontWeight: 300, color: colorMap[thesisCards[si]?.color] || T.text, fontFamily: Fn }}>{m.value}</div>
-                  <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 4, lineHeight: 1.3 }}>{m.label}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Charts per section */}
-            {sec.id === "potash-boom" && (
-              <Card T={T} style={{ padding: "18px 20px", marginBottom: 24 }}>
-                <BarChart T={T} title="CN revenue by commodity segment (C$M)" subtitle="Diversified mix — no single segment exceeds 22%"
-                  data={chartData.revenueBySegment.values} labels={chartData.revenueBySegment.labels}
-                  colors={[T.deepBlue, T.green, T.orange, T.purple, T.textTer, T.capRed, T.textTer]} />
-              </Card>
-            )}
-            {sec.id === "competitive-dynamics" && (
-              <Card T={T} style={{ padding: "18px 20px", marginBottom: 24 }}>
-                <BarChart T={T} title="Class I railroad revenue ($B USD)" subtitle="FY2025 — CN is #3 by revenue"
-                  data={chartData.classIRevenue.values} labels={chartData.classIRevenue.labels}
-                  colors={chartData.classIRevenue.labels.map(l => l === "CN" ? T.capRed : T.deepBlue)} />
-              </Card>
-            )}
-
-            <div style={{ maxWidth: 720, marginBottom: 24 }}>
-              {sec.paragraphs.map((p, i) => (
-                <p key={i} style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 14 }}>{p}</p>
-              ))}
-            </div>
-
-            {sec.pullQuote && (
-              <div style={{ fontFamily: Fn, fontSize: 16, fontWeight: 300, color: T.text, lineHeight: 1.6, margin: "24px 0", paddingLeft: 20, borderLeft: `3px solid ${colorMap[thesisCards[si]?.color] || T.deepBlue}`, maxWidth: 720, fontStyle: "italic" }}>
-                {sec.pullQuote}
-              </div>
-            )}
-
-            {sec.expandables?.map((ex, i) => (
-              <Expandable key={i} T={T} title={ex.title} tag={ex.tag} content={ex.content} color={thesisCards[si]?.color} />
-            ))}
-
-            <Card T={T} style={{ marginTop: 20, padding: "20px 24px", borderLeft: `4px solid ${colorMap[thesisCards[si]?.color] || T.deepBlue}` }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 12 }}>{sec.capture.title}</div>
-              {sec.capture.points.map((p, i) => (
-                <p key={i} style={{ fontSize: 13, color: T.textSec, lineHeight: 1.75, fontFamily: Fn, marginBottom: 8, paddingLeft: 12, borderLeft: "2px solid " + T.border }}>{p}</p>
-              ))}
-            </Card>
-          </div>
-        </Section>
-      ))}
-
-      {/* Class I Competitor Table */}
-      <Section id="competitors">
-        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>07 / COMPETITIVE LANDSCAPE</div>
-          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>The Class I oligopoly</h2>
-          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 20 }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
-              <thead>
-                <tr style={{ borderBottom: "2px solid " + T.border }}>
-                  {["Railroad", "Revenue", "Op. Ratio", "Route Miles", "Key Differentiator"].map(h => (
-                    <th key={h} style={{ textAlign: "left", padding: "10px 12px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {competitorTable.map((r, i) => (
-                  <tr key={i} style={{ borderBottom: "1px solid " + T.border, background: r.name === "CN" ? (T.bg) : "transparent" }}>
-                    <td style={{ padding: "10px 12px", fontWeight: r.name === "CN" ? 700 : 500, color: r.name === "CN" ? T.deepBlue : T.text }}>{r.name}</td>
-                    <td style={{ padding: "10px 12px", color: T.textSec }}>{r.revenue}</td>
-                    <td style={{ padding: "10px 12px" }}><Pill T={T} color={parseFloat(r.or) < 62 ? T.green : T.textSec} bg={parseFloat(r.or) < 62 ? T.greenBg : T.pillBg}>{r.or}</Pill></td>
-                    <td style={{ padding: "10px 12px", color: T.textSec }}>{r.miles}</td>
-                    <td style={{ padding: "10px 12px", color: T.textTer, fontSize: 11 }}>{r.diff}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Card>
-        </div>
-      </Section>
-
-      {/* Commodity Mix */}
-      <Section id="commodity">
-        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>08 / COMMODITY MIX</div>
-          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Diversified with visible growth catalysts</h2>
-          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
-              <thead>
-                <tr style={{ borderBottom: "2px solid " + T.border }}>
-                  {["Segment", "Revenue", "% Total", "YoY", "Outlook"].map(h => (
-                    <th key={h} style={{ textAlign: "left", padding: "10px 12px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {commodityMix.map((r, i) => (
-                  <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
-                    <td style={{ padding: "10px 12px", fontWeight: 500, color: T.text }}>{r.segment}</td>
-                    <td style={{ padding: "10px 12px", color: T.textSec }}>{r.revenue}</td>
-                    <td style={{ padding: "10px 12px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <div style={{ width: 60, height: 5, background: T.pillBg, borderRadius: 3, overflow: "hidden" }}>
-                          <div style={{ height: "100%", width: `${(r.pct / 22) * 100}%`, background: T.deepBlue, borderRadius: 3 }} />
-                        </div>
-                        <span style={{ color: T.textSec, fontSize: 11 }}>{r.pct}%</span>
-                      </div>
-                    </td>
-                    <td style={{ padding: "10px 12px" }}><Pill T={T} color={r.yoy.startsWith("+") ? T.green : r.yoy.startsWith("-") ? T.capRed : T.textSec} bg={r.yoy.startsWith("+") ? T.greenBg : r.yoy.startsWith("-") ? T.redBg : T.pillBg}>{r.yoy}</Pill></td>
-                    <td style={{ padding: "10px 12px", color: T.textTer, fontSize: 11 }}>{r.outlook}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Card>
-        </div>
-      </Section>
-
-      {/* Rail vs Trucking */}
-      <Section id="rail-vs-truck">
-        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>09 / STRUCTURAL ADVANTAGE</div>
-          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Rail vs trucking — physics-based moat</h2>
-          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
-              <thead>
-                <tr style={{ borderBottom: "2px solid " + T.border }}>
-                  {["Metric", "Rail", "Trucking", "Rail Advantage"].map(h => (
-                    <th key={h} style={{ textAlign: "left", padding: "10px 12px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {railVsTrucking.map((r, i) => (
-                  <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
-                    <td style={{ padding: "10px 12px", fontWeight: 500, color: T.text }}>{r.metric}</td>
-                    <td style={{ padding: "10px 12px", color: T.green, fontWeight: 600 }}>{r.rail}</td>
-                    <td style={{ padding: "10px 12px", color: T.capRed }}>{r.truck}</td>
-                    <td style={{ padding: "10px 12px" }}><Pill T={T} color={T.green} bg={T.greenBg}>{r.advantage}</Pill></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Card>
-        </div>
-      </Section>
-
-      {/* Risk Register */}
-      <Section id="risks">
-        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>10 / RISK REGISTER</div>
-          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Risks that keep the thesis honest</h2>
-          {riskTiers.map((tier, ti) => (
-            <div key={ti} style={{ marginBottom: 20 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, color: ti === 0 ? T.capRed : ti === 1 ? T.orange : T.textTer, fontFamily: Fn, marginBottom: 10, letterSpacing: "0.1em" }}>
-                TIER {tier.tier}: {tier.label.toUpperCase()}
-              </div>
-              {tier.items.map((r, i) => (
-                <Expandable key={i} T={T} title={r.title} tag={`${r.severity} · P: ${r.prob}`} content={r.detail} color={ti === 0 ? "capRed" : ti === 1 ? "orange" : "purple"} />
-              ))}
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      {/* Key Monitoring Points */}
-      <Section id="monitor">
-        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>11 / MONITORING</div>
-          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>3 key datapoints to watch</h2>
-          <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
-            {monitoringPoints.map((mp, i) => (
-              <Card key={i} T={T} style={{ padding: "20px", borderTop: `3px solid ${T.deepBlue}` }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{mp.label}</div>
-                <Pill T={T} color={T.deepBlue} bg="rgba(29,78,216,0.08)">{mp.timeframe}</Pill>
-                <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.65, marginTop: 10, margin: "10px 0 0" }}>{mp.why}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      {/* Conclusion */}
-      <Section id="conclusion">
-        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 32 }}>
-          <Card T={T} style={{ padding: "24px", borderLeft: `4px solid ${T.deepBlue}` }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 12 }}>Investment conclusion</div>
-            <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 10 }}>
-              CN's irreplaceable tri-coastal network, potash franchise, and Pacific gateway access are genuine, durable moats. C$3.34B in free cash flow, a sub-62% operating ratio, and position as the primary carrier for Saskatchewan's generational potash expansion provide a compelling base case.
-            </p>
-            <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 10 }}>
-              However, CPKC's tri-national network captures the nearshoring megatrend CN cannot access directly, tariff escalation has exposed cross-border concentration, and the proposed UP-NS merger signals potential industry restructuring.
-            </p>
-            <div style={{
-              fontFamily: Fn, fontSize: 14, fontWeight: 500, color: T.text, lineHeight: 1.7,
-              margin: "16px 0 0", padding: "16px 20px", background: T.bg, borderRadius: T.radiusSm,
-              borderLeft: `3px solid ${T.deepBlue}`,
-            }}>
-              The next 12-18 months — spanning the USMCA review, UP-NS merger proceedings, and US-Canada trade trajectory — will determine whether CN's moat is deepening or eroding. The risk register demands a wider-than-usual range of scenario outcomes.
-            </div>
-          </Card>
-        </div>
-      </Section>
 
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* STAGE 2: BUSINESS PRIMER                              */}
+      {/* STAGE 2: BUSINESS PRIMER                            */}
       {/* ═══════════════════════════════════════════════════════ */}
-
       <div id="cni-stage-2" style={{ scrollMarginTop: 120, borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 48 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-          <Pill T={T} color={T.deepBlue} bg="rgba(29,78,216,0.08)">STAGE 2</Pill>
-          <Pill T={T}>Business Primer</Pill>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+          <Pill T={T} color={T.deepBlue} bg={"rgba(0,102,204,0.08)"}>STAGE 2</Pill>
+          <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0 }}>Business Primer</h2>
         </div>
-        <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
-          How does the only tri-coastal railroad actually work?
-        </h2>
-        <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
-          A business-model deep dive for institutional investors. Company snapshot, network geography, revenue mix, operations, capital allocation, management, competition, and key risks.
-        </p>
       </div>
-
       {/* S2-01: Company Snapshot */}
       <Section id="primer-snapshot">
         <div style={{ marginBottom: 48 }}>
@@ -809,81 +575,303 @@ export default function ResearchCNI({ T }) {
         </div>
       </Section>
 
-      {/* S2-07: Competitive Landscape */}
-      <Section id="primer-competitive">
+
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/* STAGE 3: STRUCTURAL FORCES & VARIANT PERCEPTION     */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <div id="cni-stage-3" style={{ scrollMarginTop: 120, borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+          <Pill T={T} color={T.orange} bg={"rgba(234,88,12,0.08)"}>STAGE 3</Pill>
+          <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0 }}>Structural Forces & Variant Perception</h2>
+        </div>
+      </div>
+      <div id="cni-structural-top" style={{ scrollMarginTop: 120 }} />
+      {/* Thesis overview grid */}
+      <Label T={T}>Seven secular forces converging on freight rail</Label>
+      <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(3, 1fr)", gap: 12, marginBottom: 48 }}>
+        {thesisCards.map((card, i) => (
+          <div key={i} onClick={() => scrollTo(card.id)} style={{
+            background: T.card, border: "1px solid " + T.border, borderRadius: T.radius,
+            padding: "22px 20px", cursor: "pointer", boxShadow: T.shadow, transition: "all 0.2s",
+            borderTop: `3px solid ${colorMap[card.color] || T.deepBlue}`,
+          }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = T.shadowLg }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = T.shadow }}>
+            <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginBottom: 8 }}>{card.num}</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{card.title}</div>
+            <Pill T={T} color={colorMap[card.color]} bg={bgMap[card.color]}>{card.tag}</Pill>
+            <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.65, marginTop: 10, margin: "10px 0 0" }}>{card.desc}</p>
+            <div style={{ fontSize: 11, fontWeight: 500, color: colorMap[card.color], marginTop: 12, fontFamily: Fn }}>Deep dive →</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Deep-dive sections */}
+      {thesisSections.map((sec, si) => (
+        <Section key={si} id={sec.id}>
+          <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>{sec.num} / STRUCTURAL FORCE</div>
+              <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>{sec.title}</h2>
+              <p style={{ fontSize: 14, color: T.textSec, fontFamily: Fn, marginTop: 8, lineHeight: 1.7, maxWidth: 700 }}>{sec.lead}</p>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: mob ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 10, marginBottom: 24 }}>
+              {sec.metrics.map((m, i) => (
+                <div key={i} style={{ background: T.bg, borderRadius: T.radiusSm, padding: "14px 16px", border: "1px solid " + T.border }}>
+                  <div style={{ fontSize: 20, fontWeight: 300, color: colorMap[thesisCards[si]?.color] || T.text, fontFamily: Fn }}>{m.value}</div>
+                  <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 4, lineHeight: 1.3 }}>{m.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Charts per section */}
+            {sec.id === "potash-boom" && (
+              <Card T={T} style={{ padding: "18px 20px", marginBottom: 24 }}>
+                <BarChart T={T} title="CN revenue by commodity segment (C$M)" subtitle="Diversified mix — no single segment exceeds 22%"
+                  data={chartData.revenueBySegment.values} labels={chartData.revenueBySegment.labels}
+                  colors={[T.deepBlue, T.green, T.orange, T.purple, T.textTer, T.capRed, T.textTer]} />
+              </Card>
+            )}
+            {sec.id === "competitive-dynamics" && (
+              <Card T={T} style={{ padding: "18px 20px", marginBottom: 24 }}>
+                <BarChart T={T} title="Class I railroad revenue ($B USD)" subtitle="FY2025 — CN is #3 by revenue"
+                  data={chartData.classIRevenue.values} labels={chartData.classIRevenue.labels}
+                  colors={chartData.classIRevenue.labels.map(l => l === "CN" ? T.capRed : T.deepBlue)} />
+              </Card>
+            )}
+
+            <div style={{ maxWidth: 720, marginBottom: 24 }}>
+              {sec.paragraphs.map((p, i) => (
+                <p key={i} style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 14 }}>{p}</p>
+              ))}
+            </div>
+
+            {sec.pullQuote && (
+              <div style={{ fontFamily: Fn, fontSize: 16, fontWeight: 300, color: T.text, lineHeight: 1.6, margin: "24px 0", paddingLeft: 20, borderLeft: `3px solid ${colorMap[thesisCards[si]?.color] || T.deepBlue}`, maxWidth: 720, fontStyle: "italic" }}>
+                {sec.pullQuote}
+              </div>
+            )}
+
+            {sec.expandables?.map((ex, i) => (
+              <Expandable key={i} T={T} title={ex.title} tag={ex.tag} content={ex.content} color={thesisCards[si]?.color} />
+            ))}
+
+            <Card T={T} style={{ marginTop: 20, padding: "20px 24px", borderLeft: `4px solid ${colorMap[thesisCards[si]?.color] || T.deepBlue}` }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 12 }}>{sec.capture.title}</div>
+              {sec.capture.points.map((p, i) => (
+                <p key={i} style={{ fontSize: 13, color: T.textSec, lineHeight: 1.75, fontFamily: Fn, marginBottom: 8, paddingLeft: 12, borderLeft: "2px solid " + T.border }}>{p}</p>
+              ))}
+            </Card>
+          </div>
+        </Section>
+      ))}
+
+      {/* Class I Competitor Table */}
+      <Section id="competitors">
         <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S2-07 / COMPETITIVE LANDSCAPE</div>
-          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 16 }}>Competitive Landscape</h2>
-          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 20, maxWidth: 720 }}>
-            CN operates in a regulated duopoly in Canada alongside CPKC. Many shipper locations are captive — served by only one railroad — which confers significant pricing power.
-          </p>
-          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 16 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>07 / COMPETITIVE LANDSCAPE</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>The Class I oligopoly</h2>
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 20 }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
               <thead>
                 <tr style={{ borderBottom: "2px solid " + T.border }}>
-                  {["Peer", "Route Miles", "Geography", "Tri-Coast", "Revenue", "Adj. OR", "Yield", "Leverage"].map(h => (
-                    <th key={h} style={{ textAlign: "left", padding: "10px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                  {["Railroad", "Revenue", "Op. Ratio", "Route Miles", "Key Differentiator"].map(h => (
+                    <th key={h} style={{ textAlign: "left", padding: "10px 12px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {peerComparison.map((r, i) => (
-                  <tr key={i} style={{ borderBottom: "1px solid " + T.border, background: r.peer === "CN" ? T.bg : "transparent" }}>
-                    <td style={{ padding: "10px 10px", fontWeight: r.peer === "CN" ? 700 : 500, color: r.peer === "CN" ? T.deepBlue : T.text }}>{r.peer}</td>
-                    <td style={{ padding: "10px 10px", color: T.textSec }}>{r.miles}</td>
-                    <td style={{ padding: "10px 10px", color: T.textSec, fontSize: 11 }}>{r.geo}</td>
-                    <td style={{ padding: "10px 10px" }}>{r.triCoast === "Unique" ? <Pill T={T} color={T.green} bg={T.greenBg}>Unique</Pill> : <span style={{ color: T.textTer }}>—</span>}</td>
-                    <td style={{ padding: "10px 10px", color: T.textSec }}>{r.rev}</td>
-                    <td style={{ padding: "10px 10px", color: T.textSec }}>{r.or}</td>
-                    <td style={{ padding: "10px 10px", color: T.textSec }}>{r.yield}</td>
-                    <td style={{ padding: "10px 10px", color: T.textSec }}>{r.leverage}</td>
+                {competitorTable.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border, background: r.name === "CN" ? (T.bg) : "transparent" }}>
+                    <td style={{ padding: "10px 12px", fontWeight: r.name === "CN" ? 700 : 500, color: r.name === "CN" ? T.deepBlue : T.text }}>{r.name}</td>
+                    <td style={{ padding: "10px 12px", color: T.textSec }}>{r.revenue}</td>
+                    <td style={{ padding: "10px 12px" }}><Pill T={T} color={parseFloat(r.or) < 62 ? T.green : T.textSec} bg={parseFloat(r.or) < 62 ? T.greenBg : T.pillBg}>{r.or}</Pill></td>
+                    <td style={{ padding: "10px 12px", color: T.textSec }}>{r.miles}</td>
+                    <td style={{ padding: "10px 12px", color: T.textTer, fontSize: 11 }}>{r.diff}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </Card>
-          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 14, maxWidth: 720 }}>
-            CPKC's 2023 acquisition of Kansas City Southern created the only single-line railroad spanning Canada, the U.S., and Mexico. CN formed an interline alliance with Union Pacific and Ferromex to compete on the Chicago-Mexico corridor. CPKC is guiding to faster EPS growth (10-14% vs CN's mid-to-high single digit), but CN maintains the stronger balance sheet and higher dividend.
-          </p>
-          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, maxWidth: 720 }}>
-            Trucking competes on shorter hauls (&lt;800km), but rail's 4x fuel efficiency advantage and capacity to move 300+ truck-equivalent loads per train makes it structurally advantaged on long-haul corridors. This advantage is growing as carbon pricing and ESG mandates favour modal shift to rail.
-          </p>
         </div>
       </Section>
 
-      {/* S2-08: Key Business Risks */}
-      <Section id="primer-risks">
+      {/* Commodity Mix */}
+      <Section id="commodity">
         <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S2-08 / KEY BUSINESS RISKS</div>
-          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Key Business Risks</h2>
-          <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12 }}>
-            {businessRisks.map((r, i) => (
-              <Card key={i} T={T} style={{ padding: "20px" }}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: T.capRed, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>{r.title}</div>
-                <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>{r.text}</p>
-              </Card>
-            ))}
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>08 / COMMODITY MIX</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Diversified with visible growth catalysts</h2>
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["Segment", "Revenue", "% Total", "YoY", "Outlook"].map(h => (
+                    <th key={h} style={{ textAlign: "left", padding: "10px 12px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {commodityMix.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                    <td style={{ padding: "10px 12px", fontWeight: 500, color: T.text }}>{r.segment}</td>
+                    <td style={{ padding: "10px 12px", color: T.textSec }}>{r.revenue}</td>
+                    <td style={{ padding: "10px 12px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <div style={{ width: 60, height: 5, background: T.pillBg, borderRadius: 3, overflow: "hidden" }}>
+                          <div style={{ height: "100%", width: `${(r.pct / 22) * 100}%`, background: T.deepBlue, borderRadius: 3 }} />
+                        </div>
+                        <span style={{ color: T.textSec, fontSize: 11 }}>{r.pct}%</span>
+                      </div>
+                    </td>
+                    <td style={{ padding: "10px 12px" }}><Pill T={T} color={r.yoy.startsWith("+") ? T.green : r.yoy.startsWith("-") ? T.capRed : T.textSec} bg={r.yoy.startsWith("+") ? T.greenBg : r.yoy.startsWith("-") ? T.redBg : T.pillBg}>{r.yoy}</Pill></td>
+                    <td style={{ padding: "10px 12px", color: T.textTer, fontSize: 11 }}>{r.outlook}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+        </div>
+      </Section>
+
+      {/* Rail vs Trucking */}
+      <Section id="rail-vs-truck">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>09 / STRUCTURAL ADVANTAGE</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Rail vs trucking — physics-based moat</h2>
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["Metric", "Rail", "Trucking", "Rail Advantage"].map(h => (
+                    <th key={h} style={{ textAlign: "left", padding: "10px 12px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {railVsTrucking.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                    <td style={{ padding: "10px 12px", fontWeight: 500, color: T.text }}>{r.metric}</td>
+                    <td style={{ padding: "10px 12px", color: T.green, fontWeight: 600 }}>{r.rail}</td>
+                    <td style={{ padding: "10px 12px", color: T.capRed }}>{r.truck}</td>
+                    <td style={{ padding: "10px 12px" }}><Pill T={T} color={T.green} bg={T.greenBg}>{r.advantage}</Pill></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+        </div>
+      </Section>
+
+      {/* Risk Register */}
+      {/* S3-04: Variant Perception */}
+      <Section id="s3-variants">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-04 / VARIANT PERCEPTION</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>What the market is pricing vs reality</h2>
+
+          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 20, maxWidth: 720 }}>
+            The street models ~8% EPS growth in 2026 (C$8.17 consensus). Average PT of ~US$115 implies ~14% upside. CN is viewed as "steady but unexciting" — 16 buy, 13 hold, 1 sell across 30 analysts.
+          </p>
+
+          <div style={{ fontSize: 12, fontWeight: 600, color: T.green, fontFamily: Fn, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.08em" }}>Bull case variants</div>
+          {variantBull.map((v, i) => (
+            <Expandable key={i} T={T} title={v.title} tag="Underpriced" content={v.detail} color="green" />
+          ))}
+
+          <div style={{ fontSize: 12, fontWeight: 600, color: T.capRed, fontFamily: Fn, marginBottom: 12, marginTop: 24, textTransform: "uppercase", letterSpacing: "0.08em" }}>Bear case variants</div>
+          {variantBear.map((v, i) => (
+            <Expandable key={i} T={T} title={v.title} tag="Risk" content={v.detail} color="capRed" />
+          ))}
+
+          <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.orange}`, marginTop: 20 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8 }}>What is genuinely mispriced?</div>
+            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>
+              The market likely underprices Prince Rupert's long-term optionality and the near-term FCF inflection from capex reduction. It likely overprices the sustainability of record grain volumes. It appropriately prices tariff risk at current levels — though a CUSMA resolution could trigger rapid re-rating.
+            </p>
+          </Card>
+        </div>
+      </Section>
+
+
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/* STAGE 4: FINANCIALS & RELATIVE VALUATION            */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <div id="cni-stage-4" style={{ scrollMarginTop: 120, borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+          <Pill T={T} color={T.deepBlue} bg={"rgba(0,102,204,0.08)"}>STAGE 4</Pill>
+          <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0 }}>Financials & Relative Valuation</h2>
+        </div>
+      </div>
+      <Section id="s5-peers">
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+            <Pill T={T}>Financials & Relative Valuation</Pill>
+            <Pill T={T} color={T.green} bg={T.greenBg}>INTERACTIVE</Pill>
+          </div>
+          <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
+            Financials, consensus estimates & peer valuation
+          </h2>
+          <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
+            Bloomberg-sourced peer comparison across profitability, leverage, and valuation metrics for the five publicly traded North American Class I railroads. Consensus growth estimates and forward multiples from Bloomberg BEst. Interactive cross-peer valuation chart with selectable metrics and peers.
+          </p>
+        </div>
+        <FinancialsRelVal T={T} />
+      </Section>
+
+      {/* S5-04: Interactive Performance & Valuation Charts */}
+      <Section id="s5-performance">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 36, marginBottom: 32 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+            <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", fontWeight: 600 }}>S5-04 / PERFORMANCE & VALUATION HISTORY</div>
+            <Pill T={T} color={T.green} bg={T.greenBg}>INTERACTIVE</Pill>
+          </div>
+          <h3 style={{ fontFamily: Fn, fontSize: mob ? 18 : 22, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>
+            Price performance & valuation time-series
+          </h3>
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720, marginBottom: 20 }}>
+            Ten years of daily price history for the five North American Class I railroads, sourced from Bloomberg. Switch between share price (indexed to 100 at period start or in absolute terms), forward price-to-earnings, and trailing price-to-earnings multiples. Select any combination of companies and time ranges using the controls above the chart. Hover or tap to inspect values at any date. The stats strip below the price chart shows total return, period high, and drawdown from high for each selected company.
+          </p>
+        </div>
+        <PerformanceCharts T={T} />
+
+        {/* ── Performance commentary ── */}
+        <div style={{ marginTop: 36, borderTop: "1px solid " + T.border, paddingTop: 28 }}>
+          <h4 style={{ fontFamily: Fn, fontSize: mob ? 16 : 18, fontWeight: 400, color: T.text, margin: 0, marginBottom: 14 }}>
+            Why CN has been the weakest performer — and why CSX led the pack
+          </h4>
+          <div style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, maxWidth: 740 }}>
+            <p style={{ margin: "0 0 14px" }}>
+              Over the full ten-year period, CSX roughly quintupled in share price terms while CN barely doubled, making it the weakest of the five publicly traded North American Class I railroads. The divergence reflects a combination of structural, operational, and currency-related factors.
+            </p>
+
+            <p style={{ margin: "0 0 6px", fontWeight: 600, color: T.text, fontSize: 13.5 }}>CN's underperformance</p>
+            <p style={{ margin: "0 0 14px" }}>
+              CN's share price stagnation reflects several compounding headwinds. First, CN is priced in Canadian dollars, and the CAD weakened meaningfully against the USD over this period — so part of the gap versus the four US-listed peers is simply currency drag. But the fundamental picture matters more. CN's volume growth has been structurally slower, partly because Canada's economy is smaller and more resource-dependent. The company's heavy exposure to forest products (in secular decline as housing starts slowed and paper demand fell) and grain (where pricing is capped by the Maximum Revenue Entitlement) limited revenue upside. CN also faced a string of operational disruptions that weighed on sentiment and earnings — the 2023 wildfire season, the August 2024 simultaneous lockout with CPKC, recurring Jasper corridor closures, and most recently the US-Canada tariff overhang which management estimated cost over C$350 million in FY 2025 revenue. CN's operating ratio improvement stalled around 61–63% while peers pushed theirs meaningfully lower. The failed Kansas City Southern acquisition attempt in 2021 — which CPKC ultimately won — was also a sentiment inflection, as investors saw CN miss out on the transformative single-line Mexico access that would have structurally repositioned the network.
+            </p>
+
+            <p style={{ margin: "0 0 6px", fontWeight: 600, color: T.text, fontSize: 13.5 }}>CSX's outperformance</p>
+            <p style={{ margin: "0 0 14px" }}>
+              CSX's extraordinary run was largely a Hunter Harrison story and its aftermath. Harrison took over as chief executive in March 2017 and aggressively implemented Precision Scheduled Railroading (PSR), slashing CSX's operating ratio from the high-60s to the low-60s in under two years — a margin transformation unmatched by any peer in such a compressed timeframe. The stock re-rated massively: the price-to-earnings multiple expanded from roughly 13x at the start of the period to approximately 25x today, because the market recognised that CSX's earnings power had permanently stepped up. Even after Harrison's death in late 2017, the PSR playbook was entrenched and successors continued executing. CSX also benefited from its eastern US network positioning — less exposed to Canadian trade policy risk, closer to population centres, and a beneficiary of intermodal growth along the I-95 corridor. The stock carried a "proven turnaround" premium for years. It is worth noting that CSX's recent fundamentals have weakened (EPS declined 12% year on year, revenue fell 3%), which explains the pullback from its highs — the market is starting to question whether the elevated multiple is justified now that the easy efficiency gains are behind it.
+            </p>
+
+            <p style={{ margin: "0 0 0" }}>
+              In short, CN's underperformance is a product of currency drag, weaker volume growth, regulatory headwinds on its commodity mix, and repeated operational disruptions. CSX's outperformance was driven by the most dramatic operating efficiency transformation in recent railroad history, which caused a sustained P/E re-rating from the low-teens to the mid-20s.
+            </p>
           </div>
         </div>
       </Section>
 
-      {/* ═══════════════════════════════════════════════════════ */}
-      {/* STAGE 3: INSTITUTIONAL EQUITY ANALYSIS                */}
-      {/* ═══════════════════════════════════════════════════════ */}
 
-      <div id="cni-stage-3" style={{ scrollMarginTop: 120, borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 48 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-          <Pill T={T} color={T.orange} bg="rgba(234,88,12,0.08)">STAGE 3</Pill>
-          <Pill T={T}>Institutional Equity Analysis</Pill>
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/* STAGE 5: EQUITY ANALYSIS                            */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <div id="cni-stage-5" style={{ scrollMarginTop: 120, borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+          <Pill T={T} color={T.orange} bg={"rgba(234,88,12,0.08)"}>STAGE 5</Pill>
+          <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0 }}>Equity Analysis</h2>
         </div>
-        <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
-          Moat, quality, variants & valuation
-        </h2>
-        <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
-          A wide-moat, high-quality compounder trading at a meaningful discount to its own history. At ~17x forward earnings versus a five-year average of ~21x, the stock prices in tariff headwinds and competitive encroachment — but underweights the FCF inflection and Prince Rupert optionality.
-        </p>
       </div>
-
       {/* S3-01: Moat Assessment */}
       <Section id="s3-moat">
         <div style={{ marginBottom: 48 }}>
@@ -1054,101 +1042,6 @@ export default function ResearchCNI({ T }) {
         </div>
       </Section>
 
-      {/* S3-04: Variant Perception */}
-      <Section id="s3-variants">
-        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-04 / VARIANT PERCEPTION</div>
-          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>What the market is pricing vs reality</h2>
-
-          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 20, maxWidth: 720 }}>
-            The street models ~8% EPS growth in 2026 (C$8.17 consensus). Average PT of ~US$115 implies ~14% upside. CN is viewed as "steady but unexciting" — 16 buy, 13 hold, 1 sell across 30 analysts.
-          </p>
-
-          <div style={{ fontSize: 12, fontWeight: 600, color: T.green, fontFamily: Fn, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.08em" }}>Bull case variants</div>
-          {variantBull.map((v, i) => (
-            <Expandable key={i} T={T} title={v.title} tag="Underpriced" content={v.detail} color="green" />
-          ))}
-
-          <div style={{ fontSize: 12, fontWeight: 600, color: T.capRed, fontFamily: Fn, marginBottom: 12, marginTop: 24, textTransform: "uppercase", letterSpacing: "0.08em" }}>Bear case variants</div>
-          {variantBear.map((v, i) => (
-            <Expandable key={i} T={T} title={v.title} tag="Risk" content={v.detail} color="capRed" />
-          ))}
-
-          <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.orange}`, marginTop: 20 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8 }}>What is genuinely mispriced?</div>
-            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>
-              The market likely underprices Prince Rupert's long-term optionality and the near-term FCF inflection from capex reduction. It likely overprices the sustainability of record grain volumes. It appropriately prices tariff risk at current levels — though a CUSMA resolution could trigger rapid re-rating.
-            </p>
-          </Card>
-        </div>
-      </Section>
-
-      {/* S3-04b: Channel Checks */}
-      <Section id="s3-channels">
-        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-04b / CHANNEL CHECKS</div>
-          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Primary-source intelligence</h2>
-          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 24, maxWidth: 720 }}>
-            Shipper sentiment, competitor earnings call references, supplier/partner commentary, and independent operational data — the kind of channel checks that separate desk analysis from actionable buy-side work.
-          </p>
-
-          {channelChecks.map((cat, ci) => (
-            <div key={ci} style={{ marginBottom: 24 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, color: T.deepBlue, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 12 }}>
-                {cat.category}
-              </div>
-              {cat.items.map((item, ii) => (
-                <Expandable key={ii} T={T}
-                  title={item.title}
-                  tag={item.signal === "positive" ? "Positive" : item.signal === "negative" ? "Negative" : "Mixed"}
-                  content={item.detail + "\n\nImplication: " + item.implication}
-                  color={item.signal === "positive" ? "green" : item.signal === "negative" ? "capRed" : "orange"}
-                />
-              ))}
-            </div>
-          ))}
-
-          {/* Summary table */}
-          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 16 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 12 }}>Channel check summary</div>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
-              <thead>
-                <tr style={{ borderBottom: "2px solid " + T.border }}>
-                  {["Source", "Signal", "Implication for CN"].map(h => (
-                    <th key={h} style={{ textAlign: "left", padding: "8px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {channelSummary.map((r, i) => (
-                  <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
-                    <td style={{ padding: "8px 10px", fontWeight: 500, color: T.text }}>{r.source}</td>
-                    <td style={{ padding: "8px 10px" }}>
-                      <Pill T={T}
-                        color={r.signal.includes("Strongly positive") ? T.green : r.signal.includes("Positive") ? T.green : r.signal.includes("Negative") ? T.capRed : T.orange}
-                        bg={r.signal.includes("positive") ? T.greenBg : r.signal.includes("Negative") ? T.redBg : "rgba(234,88,12,0.08)"}>
-                        {r.signal}
-                      </Pill>
-                    </td>
-                    <td style={{ padding: "8px 10px", color: T.textSec, fontSize: 11 }}>{r.implication}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Card>
-
-          <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.orange}` }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8 }}>Key takeaway for position sizing</div>
-            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, marginBottom: 10 }}>
-              Channel checks reveal a bifurcated service story: CN is genuinely struggling on grain car supply (reputational and regulatory risk), but excelling on intermodal execution — the higher-growth, higher-margin segment. The Prince Rupert growth thesis is corroborated by port data, customer capital commitments, and independent metrics.
-            </p>
-            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>
-              The grain car supply data is the most concerning — it creates headline risk and potential for regulatory tightening. Want to see Ag Transport data normalize above 85% for several consecutive weeks before giving full confidence to the operational improvement narrative.
-            </p>
-          </Card>
-        </div>
-      </Section>
-
       {/* S3-05: Valuation Framework */}
       <Section id="s3-valuation">
         <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
@@ -1224,8 +1117,135 @@ export default function ResearchCNI({ T }) {
         </div>
       </Section>
 
+
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/* STAGE 6: VALUATION MODELS                           */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <div id="cni-stage-6" style={{ scrollMarginTop: 120, borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+          <Pill T={T} color={T.purple} bg={"rgba(67,56,202,0.08)"}>STAGE 6</Pill>
+          <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0 }}>Valuation Models</h2>
+        </div>
+      </div>
+      <Section id="s4-valuation">
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+            <Pill T={T}>Valuation & Financials</Pill>
+            <Pill T={T} color={T.green} bg={T.greenBg}>INTERACTIVE</Pill>
+          </div>
+          <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
+            Interactive DCF model
+          </h2>
+          <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
+            10-year unlevered free cash flow model with adjustable assumptions. Change WACC inputs, revenue growth, operating ratio, and terminal growth — the model recalculates in real time. Based on the Excel DCF model from the CN Rail research workbook.
+          </p>
+        </div>
+        <InteractiveDCF T={T} />
+      </Section>
+
+      {/* S4-02: Exit Valuation / Expected Total Return */}
+      <Section id="s4-exit-valuation">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+            <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", fontWeight: 600 }}>S4-02 / EXIT VALUATION</div>
+            <Pill T={T} color={T.green} bg={T.greenBg}>INTERACTIVE</Pill>
+          </div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Exit valuation & expected total return</h2>
+          <p style={{ fontSize: 14, color: T.textSec, marginTop: 4, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720, marginBottom: 24 }}>
+            Adjust EPS growth, exit multiple, dividend assumptions, and time horizon — the model recalculates in real time. Default assumptions: 9% EPS CAGR, 20x exit P/E, 5% dividend growth.
+          </p>
+        </div>
+        <InteractiveExitValuation T={T} />
+      </Section>
+
+
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/* STAGE 7: RISKS, CATALYSTS & MONITORING              */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <div id="cni-stage-7" style={{ scrollMarginTop: 120, borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+          <Pill T={T} color={T.capRed} bg={"rgba(185,28,28,0.08)"}>STAGE 7</Pill>
+          <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0 }}>Risks, Catalysts & Monitoring</h2>
+        </div>
+      </div>
+      {/* S2-07: Competitive Landscape */}
+      <Section id="s7-competitive">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S2-07 / COMPETITIVE LANDSCAPE</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 16 }}>Competitive Landscape</h2>
+          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 20, maxWidth: 720 }}>
+            CN operates in a regulated duopoly in Canada alongside CPKC. Many shipper locations are captive — served by only one railroad — which confers significant pricing power.
+          </p>
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 16 }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["Peer", "Route Miles", "Geography", "Tri-Coast", "Revenue", "Adj. OR", "Yield", "Leverage"].map(h => (
+                    <th key={h} style={{ textAlign: "left", padding: "10px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {peerComparison.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border, background: r.peer === "CN" ? T.bg : "transparent" }}>
+                    <td style={{ padding: "10px 10px", fontWeight: r.peer === "CN" ? 700 : 500, color: r.peer === "CN" ? T.deepBlue : T.text }}>{r.peer}</td>
+                    <td style={{ padding: "10px 10px", color: T.textSec }}>{r.miles}</td>
+                    <td style={{ padding: "10px 10px", color: T.textSec, fontSize: 11 }}>{r.geo}</td>
+                    <td style={{ padding: "10px 10px" }}>{r.triCoast === "Unique" ? <Pill T={T} color={T.green} bg={T.greenBg}>Unique</Pill> : <span style={{ color: T.textTer }}>—</span>}</td>
+                    <td style={{ padding: "10px 10px", color: T.textSec }}>{r.rev}</td>
+                    <td style={{ padding: "10px 10px", color: T.textSec }}>{r.or}</td>
+                    <td style={{ padding: "10px 10px", color: T.textSec }}>{r.yield}</td>
+                    <td style={{ padding: "10px 10px", color: T.textSec }}>{r.leverage}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 14, maxWidth: 720 }}>
+            CPKC's 2023 acquisition of Kansas City Southern created the only single-line railroad spanning Canada, the U.S., and Mexico. CN formed an interline alliance with Union Pacific and Ferromex to compete on the Chicago-Mexico corridor. CPKC is guiding to faster EPS growth (10-14% vs CN's mid-to-high single digit), but CN maintains the stronger balance sheet and higher dividend.
+          </p>
+          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, maxWidth: 720 }}>
+            Trucking competes on shorter hauls (&lt;800km), but rail's 4x fuel efficiency advantage and capacity to move 300+ truck-equivalent loads per train makes it structurally advantaged on long-haul corridors. This advantage is growing as carbon pricing and ESG mandates favour modal shift to rail.
+          </p>
+        </div>
+      </Section>
+
+      {/* S2-08: Key Business Risks */}
+      <Section id="s7-business-risks">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S2-08 / KEY BUSINESS RISKS</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Key Business Risks</h2>
+          <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12 }}>
+            {businessRisks.map((r, i) => (
+              <Card key={i} T={T} style={{ padding: "20px" }}>
+                <div style={{ fontSize: 11, fontWeight: 600, color: T.capRed, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>{r.title}</div>
+                <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>{r.text}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      <Section id="risks">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>10 / RISK REGISTER</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Risks that keep the thesis honest</h2>
+          {riskTiers.map((tier, ti) => (
+            <div key={ti} style={{ marginBottom: 20 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: ti === 0 ? T.capRed : ti === 1 ? T.orange : T.textTer, fontFamily: Fn, marginBottom: 10, letterSpacing: "0.1em" }}>
+                TIER {tier.tier}: {tier.label.toUpperCase()}
+              </div>
+              {tier.items.map((r, i) => (
+                <Expandable key={i} T={T} title={r.title} tag={`${r.severity} · P: ${r.prob}`} content={r.detail} color={ti === 0 ? "capRed" : ti === 1 ? "orange" : "purple"} />
+              ))}
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Key Monitoring Points */}
       {/* S3-06: Risk Matrix */}
-      <Section id="s3-risks">
+      <Section id="s7-risks">
         <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
           <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-06 / RISK MATRIX</div>
           <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>Probability-adjusted risk ranking</h2>
@@ -1255,6 +1275,72 @@ export default function ResearchCNI({ T }) {
                 ))}
               </tbody>
             </table>
+          </Card>
+        </div>
+      </Section>
+
+      {/* S3-04b: Channel Checks */}
+      <Section id="s3-channels">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>S3-04b / CHANNEL CHECKS</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Primary-source intelligence</h2>
+          <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 24, maxWidth: 720 }}>
+            Shipper sentiment, competitor earnings call references, supplier/partner commentary, and independent operational data — the kind of channel checks that separate desk analysis from actionable buy-side work.
+          </p>
+
+          {channelChecks.map((cat, ci) => (
+            <div key={ci} style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: T.deepBlue, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 12 }}>
+                {cat.category}
+              </div>
+              {cat.items.map((item, ii) => (
+                <Expandable key={ii} T={T}
+                  title={item.title}
+                  tag={item.signal === "positive" ? "Positive" : item.signal === "negative" ? "Negative" : "Mixed"}
+                  content={item.detail + "\n\nImplication: " + item.implication}
+                  color={item.signal === "positive" ? "green" : item.signal === "negative" ? "capRed" : "orange"}
+                />
+              ))}
+            </div>
+          ))}
+
+          {/* Summary table */}
+          <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 12 }}>Channel check summary</div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["Source", "Signal", "Implication for CN"].map(h => (
+                    <th key={h} style={{ textAlign: "left", padding: "8px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {channelSummary.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                    <td style={{ padding: "8px 10px", fontWeight: 500, color: T.text }}>{r.source}</td>
+                    <td style={{ padding: "8px 10px" }}>
+                      <Pill T={T}
+                        color={r.signal.includes("Strongly positive") ? T.green : r.signal.includes("Positive") ? T.green : r.signal.includes("Negative") ? T.capRed : T.orange}
+                        bg={r.signal.includes("positive") ? T.greenBg : r.signal.includes("Negative") ? T.redBg : "rgba(234,88,12,0.08)"}>
+                        {r.signal}
+                      </Pill>
+                    </td>
+                    <td style={{ padding: "8px 10px", color: T.textSec, fontSize: 11 }}>{r.implication}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+
+          <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.orange}` }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8 }}>Key takeaway for position sizing</div>
+            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, marginBottom: 10 }}>
+              Channel checks reveal a bifurcated service story: CN is genuinely struggling on grain car supply (reputational and regulatory risk), but excelling on intermodal execution — the higher-growth, higher-margin segment. The Prince Rupert growth thesis is corroborated by port data, customer capital commitments, and independent metrics.
+            </p>
+            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>
+              The grain car supply data is the most concerning — it creates headline risk and potential for regulatory tightening. Want to see Ag Transport data normalize above 85% for several consecutive weeks before giving full confidence to the operational improvement narrative.
+            </p>
           </Card>
         </div>
       </Section>
@@ -1299,104 +1385,41 @@ export default function ResearchCNI({ T }) {
         </div>
       </Card>
 
-      {/* ═══════════════════════════════════════════════════════ */}
-      {/* STAGE 4: VALUATION & FINANCIALS (Coming Soon)         */}
-      {/* ═══════════════════════════════════════════════════════ */}
-
-      <div id="cni-stage-4" style={{ scrollMarginTop: 120 }} />
-      <Section id="s4-valuation">
-        <div style={{ borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 32 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-            <Pill T={T} color={T.purple} bg="rgba(67,56,202,0.08)">STAGE 4</Pill>
-            <Pill T={T}>Valuation & Financials</Pill>
-            <Pill T={T} color={T.green} bg={T.greenBg}>INTERACTIVE</Pill>
-          </div>
-          <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
-            Interactive DCF model
-          </h2>
-          <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
-            10-year unlevered free cash flow model with adjustable assumptions. Change WACC inputs, revenue growth, operating ratio, and terminal growth — the model recalculates in real time. Based on the Excel DCF model from the CN Rail research workbook.
-          </p>
-        </div>
-        <InteractiveDCF T={T} />
-      </Section>
-
-      {/* S4-02: Exit Valuation / Expected Total Return */}
-      <Section id="s4-exit-valuation">
+      <Section id="monitor">
         <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-            <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", fontWeight: 600 }}>S4-02 / EXIT VALUATION</div>
-            <Pill T={T} color={T.green} bg={T.greenBg}>INTERACTIVE</Pill>
+          <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>11 / MONITORING</div>
+          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 20 }}>3 key datapoints to watch</h2>
+          <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
+            {monitoringPoints.map((mp, i) => (
+              <Card key={i} T={T} style={{ padding: "20px", borderTop: `3px solid ${T.deepBlue}` }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{mp.label}</div>
+                <Pill T={T} color={T.deepBlue} bg="rgba(29,78,216,0.08)">{mp.timeframe}</Pill>
+                <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.65, marginTop: 10, margin: "10px 0 0" }}>{mp.why}</p>
+              </Card>
+            ))}
           </div>
-          <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Exit valuation & expected total return</h2>
-          <p style={{ fontSize: 14, color: T.textSec, marginTop: 4, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720, marginBottom: 24 }}>
-            Adjust EPS growth, exit multiple, dividend assumptions, and time horizon — the model recalculates in real time. Default assumptions: 9% EPS CAGR, 20x exit P/E, 5% dividend growth.
-          </p>
         </div>
-        <InteractiveExitValuation T={T} />
       </Section>
 
-      {/* ═══════════════════════════════════════════════ */}
-      {/* STAGE 5 — FINANCIALS & RELATIVE VALUATION       */}
-      {/* ═══════════════════════════════════════════════ */}
-      <div id="cni-stage-5" style={{ scrollMarginTop: 120 }} />
-      <Section id="s5-peers">
-        <div style={{ borderTop: `3px solid ${T.text}`, marginTop: 48, paddingTop: 40, marginBottom: 32 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-            <Pill T={T} color={T.deepBlue} bg="rgba(0,102,204,0.08)">STAGE 5</Pill>
-            <Pill T={T}>Financials & Relative Valuation</Pill>
-            <Pill T={T} color={T.green} bg={T.greenBg}>INTERACTIVE</Pill>
-          </div>
-          <h2 style={{ fontFamily: Fn, fontSize: mob ? 22 : 28, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>
-            Financials, consensus estimates & peer valuation
-          </h2>
-          <p style={{ fontSize: 14, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720 }}>
-            Bloomberg-sourced peer comparison across profitability, leverage, and valuation metrics for the five publicly traded North American Class I railroads. Consensus growth estimates and forward multiples from Bloomberg BEst. Interactive cross-peer valuation chart with selectable metrics and peers.
-          </p>
-        </div>
-        <FinancialsRelVal T={T} />
-      </Section>
-
-      {/* S5-04: Interactive Performance & Valuation Charts */}
-      <Section id="s5-performance">
-        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 36, marginBottom: 32 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-            <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", fontWeight: 600 }}>S5-04 / PERFORMANCE & VALUATION HISTORY</div>
-            <Pill T={T} color={T.green} bg={T.greenBg}>INTERACTIVE</Pill>
-          </div>
-          <h3 style={{ fontFamily: Fn, fontSize: mob ? 18 : 22, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>
-            Price performance & valuation time-series
-          </h3>
-          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, maxWidth: 720, marginBottom: 20 }}>
-            Ten years of daily price history for the five North American Class I railroads, sourced from Bloomberg. Switch between share price (indexed to 100 at period start or in absolute terms), forward price-to-earnings, and trailing price-to-earnings multiples. Select any combination of companies and time ranges using the controls above the chart. Hover or tap to inspect values at any date. The stats strip below the price chart shows total return, period high, and drawdown from high for each selected company.
-          </p>
-        </div>
-        <PerformanceCharts T={T} />
-
-        {/* ── Performance commentary ── */}
-        <div style={{ marginTop: 36, borderTop: "1px solid " + T.border, paddingTop: 28 }}>
-          <h4 style={{ fontFamily: Fn, fontSize: mob ? 16 : 18, fontWeight: 400, color: T.text, margin: 0, marginBottom: 14 }}>
-            Why CN has been the weakest performer — and why CSX led the pack
-          </h4>
-          <div style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, maxWidth: 740 }}>
-            <p style={{ margin: "0 0 14px" }}>
-              Over the full ten-year period, CSX roughly quintupled in share price terms while CN barely doubled, making it the weakest of the five publicly traded North American Class I railroads. The divergence reflects a combination of structural, operational, and currency-related factors.
+      {/* Conclusion */}
+      <Section id="s7-conclusion">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 32 }}>
+          <Card T={T} style={{ padding: "24px", borderLeft: `4px solid ${T.deepBlue}` }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 12 }}>Investment conclusion</div>
+            <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 10 }}>
+              CN's irreplaceable tri-coastal network, potash franchise, and Pacific gateway access are genuine, durable moats. C$3.34B in free cash flow, a sub-62% operating ratio, and position as the primary carrier for Saskatchewan's generational potash expansion provide a compelling base case.
             </p>
-
-            <p style={{ margin: "0 0 6px", fontWeight: 600, color: T.text, fontSize: 13.5 }}>CN's underperformance</p>
-            <p style={{ margin: "0 0 14px" }}>
-              CN's share price stagnation reflects several compounding headwinds. First, CN is priced in Canadian dollars, and the CAD weakened meaningfully against the USD over this period — so part of the gap versus the four US-listed peers is simply currency drag. But the fundamental picture matters more. CN's volume growth has been structurally slower, partly because Canada's economy is smaller and more resource-dependent. The company's heavy exposure to forest products (in secular decline as housing starts slowed and paper demand fell) and grain (where pricing is capped by the Maximum Revenue Entitlement) limited revenue upside. CN also faced a string of operational disruptions that weighed on sentiment and earnings — the 2023 wildfire season, the August 2024 simultaneous lockout with CPKC, recurring Jasper corridor closures, and most recently the US-Canada tariff overhang which management estimated cost over C$350 million in FY 2025 revenue. CN's operating ratio improvement stalled around 61–63% while peers pushed theirs meaningfully lower. The failed Kansas City Southern acquisition attempt in 2021 — which CPKC ultimately won — was also a sentiment inflection, as investors saw CN miss out on the transformative single-line Mexico access that would have structurally repositioned the network.
+            <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 10 }}>
+              However, CPKC's tri-national network captures the nearshoring megatrend CN cannot access directly, tariff escalation has exposed cross-border concentration, and the proposed UP-NS merger signals potential industry restructuring.
             </p>
-
-            <p style={{ margin: "0 0 6px", fontWeight: 600, color: T.text, fontSize: 13.5 }}>CSX's outperformance</p>
-            <p style={{ margin: "0 0 14px" }}>
-              CSX's extraordinary run was largely a Hunter Harrison story and its aftermath. Harrison took over as chief executive in March 2017 and aggressively implemented Precision Scheduled Railroading (PSR), slashing CSX's operating ratio from the high-60s to the low-60s in under two years — a margin transformation unmatched by any peer in such a compressed timeframe. The stock re-rated massively: the price-to-earnings multiple expanded from roughly 13x at the start of the period to approximately 25x today, because the market recognised that CSX's earnings power had permanently stepped up. Even after Harrison's death in late 2017, the PSR playbook was entrenched and successors continued executing. CSX also benefited from its eastern US network positioning — less exposed to Canadian trade policy risk, closer to population centres, and a beneficiary of intermodal growth along the I-95 corridor. The stock carried a "proven turnaround" premium for years. It is worth noting that CSX's recent fundamentals have weakened (EPS declined 12% year on year, revenue fell 3%), which explains the pullback from its highs — the market is starting to question whether the elevated multiple is justified now that the easy efficiency gains are behind it.
-            </p>
-
-            <p style={{ margin: "0 0 0" }}>
-              In short, CN's underperformance is a product of currency drag, weaker volume growth, regulatory headwinds on its commodity mix, and repeated operational disruptions. CSX's outperformance was driven by the most dramatic operating efficiency transformation in recent railroad history, which caused a sustained P/E re-rating from the low-teens to the mid-20s.
-            </p>
-          </div>
+            <div style={{
+              fontFamily: Fn, fontSize: 14, fontWeight: 500, color: T.text, lineHeight: 1.7,
+              margin: "16px 0 0", padding: "16px 20px", background: T.bg, borderRadius: T.radiusSm,
+              borderLeft: `3px solid ${T.deepBlue}`,
+            }}>
+              The next 12-18 months — spanning the USMCA review, UP-NS merger proceedings, and US-Canada trade trajectory — will determine whether CN's moat is deepening or eroding. The risk register demands a wider-than-usual range of scenario outcomes.
+            </div>
+          </Card>
         </div>
       </Section>
 
