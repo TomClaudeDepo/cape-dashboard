@@ -556,6 +556,14 @@ export default function ResearchCNI({ T }) {
           <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 20, maxWidth: 720 }}>
             CN's competitive identity is defined by its network geography. Unlike any other Class I railroad, CN connects three coastlines, giving it unmatched optionality for international trade routing.
           </p>
+          {/* Network map */}
+          <div style={{ marginBottom: 24, borderRadius: 12, overflow: "hidden", border: "1px solid " + T.border }}>
+            <img src="/research/cn-network-map.png" alt="CN Rail network map — tri-coastal coverage across North America"
+              style={{ width: "100%", display: "block", background: "#000" }} />
+            <div style={{ padding: "10px 16px", background: T.card, fontSize: 11, color: T.textTer, fontFamily: Fn, lineHeight: 1.5 }}>
+              CN's ~20,000 route-mile network connecting Prince George / Prince Rupert (Pacific) to Moncton / Halifax (Atlantic) and south through Memphis to Jackson / New Orleans (Gulf of Mexico). Key hubs at Winnipeg, Toronto, Chicago (Joliet), and Detroit. Source: CN investor relations.
+            </div>
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12, marginBottom: 20 }}>
             {networkCards.map((c, i) => (
               <Card key={i} T={T} style={{ padding: "20px" }}>
@@ -581,6 +589,14 @@ export default function ResearchCNI({ T }) {
           <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 20, maxWidth: 720 }}>
             CN's diversification is a core feature — no single commodity exceeds 23% of revenue, reducing cyclical exposure relative to more concentrated peers.
           </p>
+          {/* Commodity network map */}
+          <div style={{ marginBottom: 20, borderRadius: 12, overflow: "hidden", border: "1px solid " + T.border }}>
+            <img src="/research/cn-commodity-network.png" alt="CN network aligned to commodity growth corridors"
+              style={{ width: "100%", display: "block" }} />
+            <div style={{ padding: "10px 16px", background: T.card, fontSize: 11, color: T.textTer, fontFamily: Fn, lineHeight: 1.5 }}>
+              CN's network aligned to tangible growth: industrial development concentrated in the resource-rich north. Commodities include grain and fertilisers, coal, petroleum and chemicals, metals and minerals, automotive, forest products, and intermodal. Source: CN investor presentation.
+            </div>
+          </div>
           <Card T={T} style={{ padding: "16px 20px", overflowX: "auto", marginBottom: 16 }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
               <thead>
