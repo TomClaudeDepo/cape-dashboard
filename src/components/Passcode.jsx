@@ -25,12 +25,11 @@ const pillars = [
 ];
 
 const stats = [
-  { label: "NAV", value: "EUR 396M" },
-  { label: "Holdings", value: "26" },
-  { label: "Active Share", value: "78%" },
+  { label: "AUM", value: "EUR 396M" },
+  { label: "Holdings", value: "20\u201330" },
   { label: "Since Inception", value: "+137%" },
   { label: "Avg Holding Period", value: "3\u20134 yrs" },
-  { label: "Exposure", value: ">97%" },
+  { label: "Track Record", value: "13 yrs" },
 ];
 
 
