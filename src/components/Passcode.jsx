@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Fn } from "../theme";
-import { PASSCODE } from "../data/constants";
+import { PASSCODE, NAV } from "../data/constants";
+import { navData } from "../data/portfolio";
 
 const Serif = "'Playfair Display', Georgia, 'Times New Roman', serif";
 
@@ -24,14 +25,24 @@ const pillars = [
   },
 ];
 
-const stats = [
-  { label: "AUM", value: "EUR 396M" },
-  { label: "Holdings", value: "20\u201330" },
-  { label: "Since Inception", value: "+137%" },
-  { label: "Avg Holding Period", value: "3\u20134 yrs" },
-  { label: "Track Record", value: "11 yrs" },
-  { label: "Exposure", value: "Global" },
-];
+function getStats() {
+  const aumM = Math.round(NAV / 1e6);
+  const last = navData[navData.length - 1];
+  const first = navData[0];
+  const retPct = ((last.nav / first.nav - 1) * 100).toFixed(1);
+  const inception = first.date;
+  const now = last.date;
+  const yrs = ((now - inception) / (365.25 * 24 * 60 * 60 * 1000)).toFixed(0);
+  return [
+    { label: "AUM", value: `EUR ${aumM}M` },
+    { label: "Holdings", value: "20\u201330" },
+    { label: "Since Inception", value: `+${retPct}%` },
+    { label: "Avg Holding Period", value: "3\u20134 yrs" },
+    { label: "Track Record", value: `${yrs} yrs` },
+    { label: "Exposure", value: "Global" },
+  ];
+}
+const stats = getStats();
 
 
 /* ── component ────────────────────────────────────────────── */
