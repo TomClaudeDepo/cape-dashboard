@@ -8,9 +8,8 @@ import HoldingDrawer from "./components/HoldingDrawer";
 import OverviewPg from "./pages/Overview";
 import HoldingsPg from "./pages/Holdings";
 import AllocPg from "./pages/Allocation";
-import AttributionPg from "./pages/Attribution";
-import MarketsPg from "./pages/Markets";
 import ResearchPg from "./pages/Research";
+import ThematicMapPg from "./pages/ResearchThematicMap";
 import MacroPg from "./pages/Macro";
 import RiskPg from "./pages/Risk";
 import ScenariosPg from "./pages/ResearchScenarios";
@@ -56,9 +55,8 @@ function Dashboard({ dark, setDark }) {
     () => <OverviewPg T={T} onHoldingClick={setDrawerHolding} />,
     () => <HoldingsPg T={T} onHoldingClick={setDrawerHolding} />,
     () => <AllocPg T={T} />,
-    () => <AttributionPg T={T} onHoldingClick={setDrawerHolding} />,
-    () => <MarketsPg T={T} />,
     () => <ResearchPg T={T} />,
+    () => <ThematicMapPg T={T} />,
     () => <MacroPg T={T} />,
     () => <RiskPg T={T} />,
     () => <ScenariosPg T={T} />,
