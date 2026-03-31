@@ -29,7 +29,8 @@ const stats = [
   { label: "Holdings", value: "20\u201330" },
   { label: "Since Inception", value: "+137%" },
   { label: "Avg Holding Period", value: "3\u20134 yrs" },
-  { label: "Track Record", value: "13 yrs" },
+  { label: "Track Record", value: "11 yrs" },
+  { label: "Exposure", value: "Global" },
 ];
 
 
