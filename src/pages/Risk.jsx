@@ -2,114 +2,116 @@ import { useState } from "react";
 import { Fn } from "../theme";
 import { Card, Pill, TabBar } from "../components/shared";
 
-const NAV_DATE = "25 Mar 2026";
-const FUND_NAV = 396214471.12;
+const NAV_DATE = "30 Mar 2026";
+const FUND_NAV = 380047339.04;
 
 const positions = [
-  { name: "NOVARTIS", pct: 4.25 },
-  { name: "SIEMENS", pct: 2.29 },
-  { name: "AIR LIQUIDE", pct: 3.56 },
+  { name: "NOVARTIS", pct: 4.32 },
+  { name: "SIEMENS", pct: 2.16 },
+  { name: "AIR LIQUIDE", pct: 4.02 },
   { name: "VEOLIA", pct: 2.30 },
-  { name: "HITACHI", pct: 5.02 },
-  { name: "ALIBABA", pct: 4.02 },
+  { name: "HITACHI", pct: 4.90 },
+  { name: "ALIBABA", pct: 3.95 },
   { name: "TENCENT", pct: 4.00 },
-  { name: "AKZO NOBEL", pct: 1.53 },
-  { name: "VOLVO", pct: 3.20 },
-  { name: "EPIROC", pct: 4.10 },
-  { name: "ALPHABET", pct: 3.88 },
-  { name: "AMAZON", pct: 4.03 },
-  { name: "BROADCOM", pct: 1.98 },
-  { name: "CORNING", pct: 2.99 },
-  { name: "ICE", pct: 4.68 },
-  { name: "JP MORGAN", pct: 4.47 },
-  { name: "MSCI", pct: 4.66 },
-  { name: "MICROSOFT", pct: 4.46 },
-  { name: "NETFLIX", pct: 4.79 },
-  { name: "NVIDIA", pct: 4.76 },
-  { name: "PFIZER", pct: 4.91 },
-  { name: "ROCKWELL", pct: 3.30 },
-  { name: "SAMSUNG", pct: 4.29 },
-  { name: "SERVICENOW", pct: 1.85 },
-  { name: "TAIWAN SEMI", pct: 4.92 },
-  { name: "THERMO FISHER", pct: 4.51 },
-  { type: "Cash & Liquidity", pct: 2.02 }, { type: "Current Assets", pct: 0.04 },,
-  { type: "Forwards", pct: -0.74 }, { type: "Current Liabilities", pct: -0.07 },
+  { name: "AKZO NOBEL", pct: 1.55 },
+  { name: "VOLVO", pct: 3.17 },
+  { name: "EPIROC", pct: 3.96 },
+  { name: "ALPHABET", pct: 3.85 },
+  { name: "AMAZON", pct: 3.99 },
+  { name: "BROADCOM", pct: 1.92 },
+  { name: "CORNING", pct: 2.76 },
+  { name: "ICE", pct: 4.84 },
+  { name: "JP MORGAN", pct: 4.38 },
+  { name: "MSCI", pct: 4.80 },
+  { name: "MICROSOFT", pct: 4.54 },
+  { name: "NETFLIX", pct: 4.94 },
+  { name: "NVIDIA", pct: 4.63 },
+  { name: "PFIZER", pct: 5.07 },
+  { name: "ROCKWELL", pct: 3.36 },
+  { name: "SAMSUNG", pct: 4.01 },
+  { name: "SERVICENOW", pct: 1.98 },
+  { name: "TAIWAN SEMI", pct: 4.71 },
+  { name: "THERMO FISHER", pct: 4.65 },
+  { type: "Cash & Liquidity", pct: 2.08 }, { type: "Current Assets", pct: 0.06 },
+  { type: "Forwards", pct: -0.79 }, { type: "Current Liabilities", pct: -0.08 },
 ];
 
 const currencyExposure = [
-  { ccy: "USD", pct: 71.12 }, { ccy: "SEK", pct: 9.44 }, { ccy: "HKD", pct: 9.75 },
-  { ccy: "CHF", pct: 6.12 }, { ccy: "JPY", pct: 5.54 }, { ccy: "EUR", pct: -1.97 },
+  { ccy: "USD", pct: 65.31 }, { ccy: "CHF", pct: 9.73 }, { ccy: "HKD", pct: 7.95 },
+  { ccy: "SEK", pct: 7.38 }, { ccy: "JPY", pct: 5.48 }, { ccy: "EUR", pct: 4.14 },
 ];
 
 const assetAllocation = [
-  { type: "Equities", pct: 98.77 }, { type: "FX Forwards", pct: -0.77 },
-  { type: "Cash & Liquidity", pct: 2.03 }, { type: "Current Assets", pct: 0.04 },
-  { type: "Current Liabilities", pct: -0.07 },
+  { type: "Equities", pct: 98.73 }, { type: "FX Forwards", pct: -0.79 },
+  { type: "Cash & Liquidity", pct: 2.08 }, { type: "Current Assets", pct: 0.06 },
+  { type: "Current Liabilities", pct: -0.08 },
 ];
 
 const countryAllocation = [
-  { country: "USA", pct: 55.38 }, { country: "Sweden", pct: 7.23 },
-  { country: "China (Cayman Is.)", pct: 7.97 }, { country: "France", pct: 5.83 },
-  { country: "Japan", pct: 5.00 }, { country: "Taiwan", pct: 4.90 },
-  { country: "South Korea", pct: 4.46 }, { country: "Switzerland", pct: 4.21 },
-  { country: "Germany", pct: 2.28 }, { country: "Netherlands", pct: 1.50 },
+  { country: "USA", pct: 55.69 }, { country: "China (Cayman Is.)", pct: 7.95 },
+  { country: "Sweden", pct: 7.12 }, { country: "France", pct: 6.33 },
+  { country: "Japan", pct: 4.90 }, { country: "Taiwan", pct: 4.71 },
+  { country: "Switzerland", pct: 4.32 }, { country: "South Korea", pct: 4.01 },
+  { country: "Germany", pct: 2.16 }, { country: "Netherlands", pct: 1.55 },
 ];
 
-// Cash breakdown from NAV report (Liquidity_at_sight sheet)
+// Cash breakdown from NAV report (Liquidity_at_sight sheet) — 30 Mar 2026
 const cashBreakdown = [
-  { ccy: "CHF", type: "Cash Account", mvLocal: 3583113.93, fx: 1.091703, mvEur: 3911696.43, pctNav: 0.99 },
-  { ccy: "DKK", type: "Cash Account", mvLocal: 21494.75, fx: 0.133820, mvEur: 2876.42, pctNav: 0.00 },
-  { ccy: "EUR", type: "Cash Account", mvLocal: -11977248.22, fx: 1.000000, mvEur: -11977248.22, pctNav: -3.02 },
-  { ccy: "GBP", type: "Cash Account", mvLocal: 32433.58, fx: 1.155735, mvEur: 37484.63, pctNav: 0.01 },
-  { ccy: "HKD", type: "Cash Account", mvLocal: 63144406.92, fx: 0.110542, mvEur: 6980097.71, pctNav: 1.76 },
-  { ccy: "JPY", type: "Cash Account", mvLocal: 390749410.00, fx: 0.005428, mvEur: 2121130.21, pctNav: 0.54 },
-  { ccy: "KRW", type: "Cash Account", mvLocal: -209.00, fx: 0.000576, mvEur: -0.12, pctNav: 0.00 },
-  { ccy: "NOK", type: "Cash Account", mvLocal: 731.68, fx: 0.089158, mvEur: 65.24, pctNav: 0.00 },
-  { ccy: "SEK", type: "Cash Account", mvLocal: 28282830.46, fx: 0.092490, mvEur: 2615874.07, pctNav: 0.66 },
-  { ccy: "USD", type: "Cash Account", mvLocal: 24367893.76, fx: 0.864304, mvEur: 21061273.78, pctNav: 5.32 },
+  { ccy: "CHF", type: "Cash Account", mvLocal: 18348449.12, fx: 1.090275, mvEur: 20004850.76, pctNav: 5.26 },
+  { ccy: "DKK", type: "Cash Account", mvLocal: 21494.75, fx: 0.133831, mvEur: 2876.67, pctNav: 0.00 },
+  { ccy: "EUR", type: "Cash Account", mvLocal: -18022644.98, fx: 1.000000, mvEur: -18022644.98, pctNav: -4.74 },
+  { ccy: "GBP", type: "Cash Account", mvLocal: 32433.58, fx: 1.151145, mvEur: 37335.77, pctNav: 0.01 },
+  { ccy: "HKD", type: "Cash Account", mvLocal: 144406.92, fx: 0.111302, mvEur: 16072.72, pctNav: 0.00 },
+  { ccy: "JPY", type: "Cash Account", mvLocal: 390749410.00, fx: 0.005467, mvEur: 2136236.67, pctNav: 0.56 },
+  { ccy: "KRW", type: "Cash Account", mvLocal: -209.00, fx: 0.000575, mvEur: -0.12, pctNav: 0.00 },
+  { ccy: "NOK", type: "Cash Account", mvLocal: 731.68, fx: 0.089239, mvEur: 65.29, pctNav: 0.00 },
+  { ccy: "SEK", type: "Cash Account", mvLocal: 1395972.14, fx: 0.091366, mvEur: 127544.28, pctNav: 0.03 },
+  { ccy: "USD", type: "Cash Account", mvLocal: 169064.46, fx: 0.872182, mvEur: 147454.94, pctNav: 0.04 },
 ];
-const cashCollateral = { desc: "UBS AG London Branch", ccy: "EUR", mvEur: 2020000.00, pctNav: 0.51 };
+const cashCollateral = { desc: "UBS AG London Branch", ccy: "EUR", mvEur: 3260000.00, pctNav: 0.86 };
 const cashReceivables = [
-  { desc: "Rec. Sales of Invest.", ccy: "CHF", mvEur: 3555305.76, pctNav: 0.90 },
-  { desc: "Rec. Sales of Invest.", ccy: "EUR", mvEur: 6546237.20, pctNav: 1.65 },
-  { desc: "Rec. Sales of Invest.", ccy: "SEK", mvEur: 6022303.15, pctNav: 1.52 },
-  { desc: "Rec. Sales of Invest.", ccy: "USD", mvEur: 3844034.57, pctNav: 0.97 },
+  { desc: "Rec. Sales of Invest.", ccy: "CHF", mvEur: 441423.31, pctNav: 0.12 },
+  { desc: "Rec. Sales of Invest.", ccy: "EUR", mvEur: 1328023.65, pctNav: 0.35 },
+  { desc: "Rec. Sales of Invest.", ccy: "SEK", mvEur: 852931.93, pctNav: 0.22 },
+  { desc: "Rec. Sales of Invest.", ccy: "USD", mvEur: 3126671.03, pctNav: 0.82 },
 ];
-const cashSpotRec = { desc: "Cash Rec. from Spot 'Ach'", ccy: "CHF", mvEur: 18303093.87, pctNav: 4.62 };
+const cashSpotRec = [
+  { desc: "Cash Rec. from Spot 'Ach'", ccy: "CHF", mvEur: 5669531.25, pctNav: 1.49 },
+  { desc: "Cash Rec. from Spot 'Ach'", ccy: "EUR", mvEur: 1563.08, pctNav: 0.00 },
+];
 const cashPayables = [
-  { desc: "PAY. FOR REDEMPTIONS", ccy: "EUR", mvEur: -21243516.39, pctNav: -5.36 },
-  { desc: "PAY. FOR REDEMPTIONS 'Ach'", ccy: "CHF", mvEur: -17400654.93, pctNav: -4.39 },
-  { desc: "CASH PAYABLES SPOT", ccy: "USD", mvEur: -16995693.43, pctNav: -4.29 },
-  { desc: "CASH PAYABLES SPOT 'Ach'", ccy: "CHF", mvEur: -899563.23, pctNav: -0.23 },
-  { desc: "CASH PAYABLES SPOT 'Ach'", ccy: "EUR", mvEur: -17502452.57, pctNav: -4.42 },
+  { desc: "PAY. FOR REDEMPTIONS 'Ach'", ccy: "CHF", mvEur: -5554594.46, pctNav: -1.46 },
+  { desc: "PAY. FOR REDEMPTIONS 'Bch'", ccy: "CHF", mvEur: -2401.49, pctNav: -0.00 },
+  { desc: "CASH PAYABLES SPOT 'Ach'", ccy: "CHF", mvEur: -1564.41, pctNav: -0.00 },
+  { desc: "CASH PAYABLES SPOT 'Ach'", ccy: "EUR", mvEur: -5665403.58, pctNav: -1.49 },
 ];
-const totalLiquidity = { mvEur: 7973824.71, pctNav: 2.03 };
+const totalLiquidity = { mvEur: 7905972.31, pctNav: 2.08 };
 
 const fwdSummary = {
-  totalMvEur: -3039390.50,
-  pctNav: -0.77,
-  chfHedgeRatio: 99.44,
-  usdHedgeRatio: 99.41,
-  contracts: 18,
+  totalMvEur: -2991272.12,
+  pctNav: -0.79,
+  chfHedgeRatio: 99.81,
+  usdHedgeRatio: 99.81,
+  contracts: 19,
   counterparties: ["UBS AG London", "BNP-Paribas"],
-  maturities: ["30 Mar 2026", "15 Apr 2026"],
+  maturities: ["15 Apr 2026", "29 Apr 2026"],
 };
 
 const shareClasses = [
-  { name: "A EUR", isin: "LU1200255203", ccy: "EUR", nav: 234.587, chgPct: 0.157, ytdPct: -3.04, weightPct: 12.81, tna: 50284094.68 },
-  { name: "Instit. B EUR", isin: "LU1200254495", ccy: "EUR", nav: 156.459, chgPct: 0.156, ytdPct: -3.14, weightPct: 0.21, tna: 837183.79 },
-  { name: "Internal A CHF", isin: "LU1200255385", ccy: "CHF", nav: 118.35, chgPct: 0.161, ytdPct: -3.52, weightPct: 79.91, tna: 287391920.82 },
-  { name: "Internal A USD", isin: "LU1200255625", ccy: "USD", nav: 111.87, chgPct: 0.152, ytdPct: -2.59, weightPct: 6.65, tna: 30196684.00 },
-  { name: "Internal B CHF", isin: "LU3152991280", ccy: "CHF", nav: 93.65, chgPct: 0.150, ytdPct: -3.41, weightPct: 0.42, tna: 1520405.56 },
+  { name: "A EUR", isin: "LU1200255203", ccy: "EUR", nav: 230.085, chgPct: 0.169, ytdPct: -4.91, weightPct: 12.98, tna: 49318970.47 },
+  { name: "Instit. B EUR", isin: "LU1200254495", ccy: "EUR", nav: 153.444, chgPct: 0.165, ytdPct: -5.01, weightPct: 0.22, tna: 821052.19 },
+  { name: "Internal A CHF", isin: "LU1200255385", ccy: "CHF", nav: 116.000, chgPct: 0.155, ytdPct: -5.44, weightPct: 79.58, tna: 277400255.22 },
+  { name: "Internal A USD", isin: "LU1200255625", ccy: "USD", nav: 109.770, chgPct: 0.192, ytdPct: -4.42, weightPct: 6.80, tna: 29629272.42 },
+  { name: "Internal B CHF", isin: "LU3152991280", ccy: "CHF", nav: 91.800, chgPct: 0.153, ytdPct: -5.32, weightPct: 0.43, tna: 1488280.50 },
 ];
 
 const riskChecks = [
-  { id: "mkt_exposure", label: "Equity Market Exposure", description: "90-100% under ordinary conditions", current: 98.77, min: 90, max: 100, unit: "%" },
+  { id: "mkt_exposure", label: "Equity Market Exposure", description: "90-100% under ordinary conditions", current: 98.73, min: 90, max: 100, unit: "%" },
   { id: "china_a", label: "China A-Shares (Stock Connect)", description: "Max 20% via Stock Connect Scheme", current: 0, min: 0, max: 20, unit: "%" },
-  { id: "liquidity", label: "Ancillary Liquid Assets", description: "Max 10% of NAV on a temporary basis", current: 2.02, min: 0, max: 10, unit: "%" },
+  { id: "liquidity", label: "Ancillary Liquid Assets", description: "Max 10% of NAV on a temporary basis", current: 2.08, min: 0, max: 10, unit: "%" },
   { id: "single_issuer", label: "Single Issuer Concentration", description: "UCITS: max 10% in any single issuer", current: Math.max(...positions.map(p => p.pct)), min: 0, max: 10, unit: "%" },
   { id: "ucits_5_40", label: "UCITS 5/10/40 Rule (>5% bucket)", description: "Sum of positions >5% must not exceed 40%", current: positions.filter(p => p.pct > 5).reduce((s, p) => s + p.pct, 0), min: 0, max: 40, unit: "%" },
-  { id: "global_exposure", label: "Global Exposure (Commitment)", description: "Must not exceed 100% of NAV", current: 98.77 + 0.77, min: 0, max: 100, unit: "%" },
+  { id: "global_exposure", label: "Global Exposure (Commitment)", description: "Must not exceed 100% of NAV", current: 98.73 + 0.79, min: 0, max: 100, unit: "%" },
 ];
 
 const emCountries = ["China (Cayman Is.)", "South Korea", "Taiwan"];

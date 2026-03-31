@@ -19,7 +19,7 @@ export default function OverviewPg({ T, onHoldingClick }) {
     <div>
       <div style={{ marginBottom: 24 }}>
         <h1 style={{ fontFamily: Fs, fontSize: 28, fontWeight: 300, letterSpacing: "-0.03em", color: T.text, margin: 0 }}>Portfolio summary</h1>
-        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Cape Equity Fund &middot; LU1200255203 &middot; 26 positions &middot; 19 Mar 2026 &middot; EUR</p>
+        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Cape Equity Fund &middot; LU1200255203 &middot; 26 positions &middot; 30 Mar 2026 &middot; EUR</p>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 24 }}>
