@@ -57,7 +57,7 @@ export default function Passcode({ onUnlock, T }) {
   };
 
   return (
-    <div style={{ minHeight: "100vh", fontFamily: Fn, background: "#FAFAF8", display: "flex", flexDirection: "column" }}>
+    <div onClick={() => inputRef.current?.focus()} style={{ minHeight: "100vh", fontFamily: Fn, background: "#FAFAF8", display: "flex", flexDirection: "column" }}>
 
       {/* ── Hero section ─────────────────────────────────── */}
       <div style={{
@@ -214,7 +214,6 @@ export default function Passcode({ onUnlock, T }) {
           }}
         />
 
-        <span style={{ fontSize: 9, color: "rgba(255,255,255,0.12)", fontFamily: Fn }}>1234</span>
       </div>
 
       {/* ── Animations ───────────────────────────────────── */}
