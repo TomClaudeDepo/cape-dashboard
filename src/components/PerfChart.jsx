@@ -23,19 +23,19 @@ function resample(src, intervalDays) {
 }
 
 function getIntervalDays(range) {
-  if (range === "ytd") return 7;
-  if (range === 12) return 14;
-  if (range === 36) return 30;
-  if (range === 60) return 30;
-  return 91;
+  if (range === "ytd") return 3;
+  if (range === 12) return 7;
+  if (range === 36) return 14;
+  if (range === 60) return 14;
+  return 30;
 }
 function granLabel(range) {
-  if (range === "ytd") return "Weekly";
-  if (range === 12) return "Bi-weekly";
-  return range === "all" ? "Quarterly" : "Monthly";
+  if (range === "ytd") return "Daily";
+  if (range === 12) return "Weekly";
+  return range === "all" ? "Monthly" : "Bi-weekly";
 }
 
-export default function PerfChart({ data, T }) {
+export default function PerfChart({ data, T, green = false }) {
   const mob = useMobile();
   const ref = useRef(null);
   const pathRef = useRef(null);
@@ -73,7 +73,7 @@ export default function PerfChart({ data, T }) {
     const ps = rb.map((p, i) => [xP(i), yP(p[key])]);
     if (ps.length < 2) return "";
     if (ps.length === 2) return "M" + ps[0].join(",") + "L" + ps[1].join(",");
-    const a = 0.35;
+    const a = 0.42;
     let d = "M" + ps[0][0] + "," + ps[0][1];
     for (let i = 0; i < ps.length - 1; i++) {
       const p0 = ps[Math.max(0, i - 1)], p1 = ps[i], p2 = ps[i + 1], p3 = ps[Math.min(ps.length - 1, i + 2)];
@@ -132,10 +132,10 @@ export default function PerfChart({ data, T }) {
   const onTouch = e => { if (e.touches.length > 0) findNearest(e.touches[0].clientX); };
   const tipData = tip && tip.idx >= 0 && tip.idx < rb.length ? rb[tip.idx] : null;
 
-  const fc = T.capRed;
+  const fc = green ? T.green : T.capRed;
 
   return (
-    <Card T={T} style={{ marginBottom: 20, padding: mob ? "16px 12px 14px" : "24px 24px 20px" }}>
+    <Card T={T} style={{ marginBottom: 0, padding: mob ? "16px 12px 14px" : "24px 24px 20px" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: mob ? 12 : 20, flexWrap: "wrap", gap: 12 }}>
         <div>
