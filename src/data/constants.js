@@ -20,7 +20,7 @@ export const navItems = [
   { l: "Holdings", i: "holdings", hash: "#holdings" },
   { l: "Allocation", i: "allocation", hash: "#allocation" },
   { l: "Research", i: "research", hash: "#research" },
-  { l: "Thematic Map", i: "thematic", hash: "#thematic" },
+  { l: "Thematic Universe", i: "thematic", hash: "#thematic" },
   { l: "Macro", i: "macro", hash: "#macro" },
   { l: "Risk", i: "risk", hash: "#risk" },
   { l: "Scenarios", i: "scenarios", hash: "#scenarios" },
