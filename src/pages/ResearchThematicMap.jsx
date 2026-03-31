@@ -29,10 +29,13 @@ const isHeld = (ticker) => {
 };
 
 /* ─── Donut Chart Component ─── */
-function Donut({ items, onSliceClick, activeIdx, T, size, centerLabel, centerCount, centerSub }) {
+function Donut({ items, onSliceClick, activeIdx, T, compact }) {
   const isDark = T.bg !== "#F8F9FC";
-  const cx = size / 2, cy = size / 2;
-  const rO = size / 2 - 10, rI = rO * 0.56;
+  const W = compact ? 380 : 520;
+  const H = compact ? 380 : 520;
+  const cx = W / 2, cy = H / 2;
+  const rO = compact ? 130 : 185;
+  const rI = rO * 0.52;
   const total = items.reduce((s, i) => s + i.value, 0);
   const [hov, setHov] = useState(-1);
 
@@ -47,46 +50,117 @@ function Donut({ items, onSliceClick, activeIdx, T, size, centerLabel, centerCou
     });
   }, [items, total]);
 
+  // External label positions with collision avoidance
+  const labels = useMemo(() => {
+    const labelR = rO + (compact ? 22 : 32);
+    const anchorR = rO + 6;
+    return slices.map(s => {
+      const ax = cx + anchorR * Math.cos(s.mid);
+      const ay = cy + anchorR * Math.sin(s.mid);
+      const lx = cx + labelR * Math.cos(s.mid);
+      const ly = cy + labelR * Math.sin(s.mid);
+      const isRight = Math.cos(s.mid) >= 0;
+      const endX = isRight ? lx + (compact ? 18 : 28) : lx - (compact ? 18 : 28);
+      return { ax, ay, lx, ly, endX, endY: ly, isRight, slice: s };
+    });
+  }, [slices, cx, cy, rO, compact]);
+
+  const hovSlice = hov >= 0 ? slices[hov] : null;
+
   return (
-    <svg viewBox={`0 0 ${size} ${size}`} style={{ width: "100%", maxWidth: size, height: "auto", display: "block", margin: "0 auto" }}>
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block", margin: "0 auto" }}>
+      {/* Slices */}
       {slices.map(s => {
         const isAct = activeIdx === s.i;
         const isHov = hov === s.i;
-        const off = isAct ? 6 : isHov ? 3 : 0;
+        const off = isAct ? 8 : isHov ? 4 : 0;
         const dx = off * Math.cos(s.mid), dy = off * Math.sin(s.mid);
-        const labR = (rO + rI) / 2;
         return (
           <g key={s.i}
             onClick={() => onSliceClick(s.i)}
             onMouseEnter={() => setHov(s.i)}
             onMouseLeave={() => setHov(-1)}
             style={{ cursor: "pointer" }}
-            transform={`translate(${dx},${dy})`}
           >
             <path
-              d={arcPath(cx, cy, rO, rI, s.start, s.end)}
+              d={arcPath(cx + dx, cy + dy, rO, rI, s.start, s.end)}
               fill={s.color}
-              opacity={activeIdx >= 0 && !isAct ? 0.2 : isHov ? 1 : 0.82}
-              style={{ transition: "opacity 0.25s, transform 0.25s" }}
+              opacity={activeIdx >= 0 && !isAct ? 0.15 : isHov ? 1 : 0.8}
+              style={{ transition: "opacity 0.3s" }}
             />
-            {s.sweep > 0.35 && (
-              <text
-                x={cx + labR * Math.cos(s.mid)} y={cy + labR * Math.sin(s.mid)}
-                textAnchor="middle" dominantBaseline="central"
-                fontSize={s.sweep > 0.6 ? 11 : 9} fontWeight="700" fontFamily={Fn}
-                fill="#fff" style={{ pointerEvents: "none", textShadow: "0 1px 4px rgba(0,0,0,0.6)" }}
-              >
-                {s.short || s.label}
-              </text>
-            )}
           </g>
         );
       })}
-      {/* Center */}
-      <circle cx={cx} cy={cy} r={rI - 2} fill={T.card} />
-      {centerLabel && <text x={cx} y={cy - 10} textAnchor="middle" fontSize="10" fontWeight="400" fontFamily={Fn} fill={T.textTer}>{centerLabel}</text>}
-      <text x={cx} y={cy + 8} textAnchor="middle" fontSize="22" fontWeight="800" fontFamily={Fn} fill={T.text}>{centerCount}</text>
-      {centerSub && <text x={cx} y={cy + 24} textAnchor="middle" fontSize="9" fontFamily={Fn} fill={T.textTer}>{centerSub}</text>}
+
+      {/* External labels + leader lines */}
+      {labels.map(({ ax, ay, lx, ly, endX, endY, isRight, slice: s }) => {
+        const isAct = activeIdx === s.i;
+        const isHov = hov === s.i;
+        const op = activeIdx >= 0 && !isAct ? 0.2 : isHov || isAct ? 1 : 0.7;
+        const fontSize = compact ? 8 : 10;
+        const pctSize = compact ? 7 : 8;
+        return (
+          <g key={`l${s.i}`} style={{ transition: "opacity 0.3s", opacity: op, pointerEvents: "none" }}>
+            {/* Leader line */}
+            <line x1={ax} y1={ay} x2={lx} y2={ly} stroke={s.color} strokeWidth={1} opacity={0.5} />
+            <line x1={lx} y1={ly} x2={endX} y2={endY} stroke={s.color} strokeWidth={1} opacity={0.5} />
+            <circle cx={ax} cy={ay} r={2} fill={s.color} />
+            {/* Label */}
+            <text
+              x={isRight ? endX + 4 : endX - 4} y={endY - 2}
+              textAnchor={isRight ? "start" : "end"} dominantBaseline="auto"
+              fontSize={fontSize} fontWeight={isAct ? "800" : "600"} fontFamily={Fn}
+              fill={isAct ? s.color : T.text}
+            >
+              {s.short}
+            </text>
+            <text
+              x={isRight ? endX + 4 : endX - 4} y={endY + (compact ? 9 : 11)}
+              textAnchor={isRight ? "start" : "end"} dominantBaseline="auto"
+              fontSize={pctSize} fontWeight="500" fontFamily={Fn}
+              fill={T.textTer}
+            >
+              {s.weight}% · {Math.round((s.value / total) * items.reduce((sum, it) => sum + it.value, 0))} themes
+            </text>
+          </g>
+        );
+      })}
+
+      {/* Center circle */}
+      <circle cx={cx} cy={cy} r={rI - 3} fill={T.card} />
+      <circle cx={cx} cy={cy} r={rI - 3} fill="none" stroke={T.border} strokeWidth="1" />
+
+      {/* Center text */}
+      {!compact && (
+        <>
+          <text x={cx} y={cy - 14} textAnchor="middle" fontSize="11" fontWeight="400" fontFamily={Fn} fill={T.textTer}>GICS</text>
+          <text x={cx} y={cy + 12} textAnchor="middle" fontSize="36" fontWeight="200" fontFamily={Fn} fill={T.text} letterSpacing="-0.03em">10</text>
+          <text x={cx} y={cy + 28} textAnchor="middle" fontSize="10" fontFamily={Fn} fill={T.textTer}>sectors</text>
+        </>
+      )}
+      {compact && (
+        <>
+          <text x={cx} y={cy - 6} textAnchor="middle" fontSize="9" fontWeight="400" fontFamily={Fn} fill={T.textTer}>GICS</text>
+          <text x={cx} y={cy + 14} textAnchor="middle" fontSize="26" fontWeight="200" fontFamily={Fn} fill={T.text}>10</text>
+        </>
+      )}
+
+      {/* Hover tooltip */}
+      {hovSlice && (
+        <g>
+          <rect
+            x={cx - 70} y={cy + rI + 12} width={140} height={32} rx={8}
+            fill={isDark ? "rgba(17,17,19,0.92)" : "rgba(255,255,255,0.95)"}
+            stroke={hovSlice.color} strokeWidth="1.5"
+          />
+          <text x={cx} y={cy + rI + 26} textAnchor="middle" fontSize="10" fontWeight="700" fontFamily={Fn} fill={hovSlice.color}>
+            {hovSlice.short}
+          </text>
+          <text x={cx} y={cy + rI + 38} textAnchor="middle" fontSize="8" fontFamily={Fn} fill={T.textTer}>
+            {hovSlice.weight}% weight · {Math.round((hovSlice.value / total) * total)} themes
+          </text>
+        </g>
+      )}
     </svg>
   );
 }
@@ -255,22 +329,19 @@ export default function ResearchThematicMap({ T }) {
         )}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : (cur ? "260px 1fr" : "1fr"), gap: 16, alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : (cur ? "360px 1fr" : "1fr"), gap: 20, alignItems: "start" }}>
         {/* Left: Donut + legend */}
-        <Card T={T} style={{ padding: cur ? 12 : 16 }}>
+        <Card T={T} style={{ padding: cur ? 14 : 20 }}>
           <Donut
             items={donutItems}
             onSliceClick={handleSectorClick}
             activeIdx={activeSector}
             T={T}
-            size={cur ? 220 : 320}
-            centerLabel={cur ? cur.short : "GICS"}
-            centerCount={cur ? cur.themes.length : 10}
-            centerSub={cur ? "themes" : "sectors"}
+            compact={!!cur}
           />
 
           {/* Legend */}
-          <div style={{ display: "grid", gap: 2, marginTop: 10 }}>
+          <div style={{ display: "grid", gap: 3, marginTop: 14 }}>
             {sectors.map((s, i) => {
               const isAct = activeSector === i;
               return (
@@ -278,16 +349,16 @@ export default function ResearchThematicMap({ T }) {
                   key={s.id}
                   onClick={() => handleSectorClick(i)}
                   style={{
-                    display: "flex", alignItems: "center", gap: 6, padding: "4px 6px", borderRadius: 5,
+                    display: "flex", alignItems: "center", gap: 8, padding: "5px 8px", borderRadius: 6,
                     cursor: "pointer", transition: "all 0.15s",
                     background: isAct ? (s.color + (isDark ? "22" : "0E")) : "transparent",
                     opacity: activeSector >= 0 && !isAct ? 0.35 : 1,
                   }}
                 >
-                  <div style={{ width: 8, height: 8, borderRadius: 2, background: s.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: 10, fontFamily: Fn, fontWeight: isAct ? 700 : 500, color: isAct ? s.color : T.text, flex: 1 }}>{s.short}</span>
-                  <span style={{ fontSize: 8, fontFamily: Fn, color: T.textTer }}>{s.themes.length}t</span>
-                  <span style={{ fontSize: 8, fontFamily: Fn, color: T.textTer }}>{s.weight}%</span>
+                  <div style={{ width: 10, height: 10, borderRadius: 3, background: s.color, flexShrink: 0 }} />
+                  <span style={{ fontSize: 11, fontFamily: Fn, fontWeight: isAct ? 700 : 500, color: isAct ? s.color : T.text, flex: 1 }}>{s.short}</span>
+                  <span style={{ fontSize: 9, fontFamily: Fn, color: T.textTer, fontFeatureSettings: '"tnum"' }}>{s.themes.length} themes</span>
+                  <span style={{ fontSize: 9, fontFamily: Fn, color: T.textTer, fontFeatureSettings: '"tnum"', minWidth: 28, textAlign: "right" }}>{s.weight}%</span>
                 </div>
               );
             })}
