@@ -455,51 +455,56 @@ function HeadlineStats({ T, mobile }) {
 /* ═══════════════════════ CAGR SCATTER ═══════════════════════ */
 function CagrScatter({ T, mobile, onThemeClick }) {
   const maxTam = Math.max(...themes.map(t => t.marketSize2032));
-  const maxCagr = Math.max(...themes.map(t => t.cagr));
-  const chartH = mobile ? 200 : 260;
-  const chartW = "100%";
-  const pad = { l: 44, r: 16, t: 16, b: 32 };
+  const maxCagr = Math.max(...themes.map(t => t.cagr)) * 1.15;
+  const chartH = mobile ? 220 : 280;
 
   return (
     <div style={{ background: T.card, borderRadius: T.radius, boxShadow: T.shadow, padding: mobile ? "20px 16px" : "28px 32px", marginBottom: 24 }}>
       <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 4 }}>Growth × Opportunity Matrix</div>
-      <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 16 }}>CAGR vs. projected market size — bubble size reflects 2025 TAM</div>
-      <div style={{ position: "relative", height: chartH, width: chartW }}>
+      <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 16 }}>CAGR vs. projected market size — bubble size reflects current TAM</div>
+      <div style={{ position: "relative", height: chartH, marginLeft: 36, marginBottom: 24 }}>
         {/* Y-axis label */}
-        <div style={{ position: "absolute", left: 0, top: "50%", transform: "rotate(-90deg) translateX(-50%)", transformOrigin: "0 0", fontSize: 9, color: T.textTer, fontFamily: Fn }}>CAGR %</div>
+        <div style={{ position: "absolute", left: -34, top: "50%", transform: "rotate(-90deg) translateX(-50%)", transformOrigin: "0 0", fontSize: 9, color: T.textTer, fontFamily: Fn, whiteSpace: "nowrap" }}>CAGR %</div>
+        {/* Y-axis ticks */}
+        {[0, 5, 10, 15, 20, 25, 30].filter(v => v <= maxCagr).map(v => {
+          const pct = (v / maxCagr) * 100;
+          return (
+            <div key={v} style={{ position: "absolute", left: -4, right: 0, bottom: `${pct}%` }}>
+              <div style={{ position: "absolute", left: -28, top: -6, fontSize: 9, color: T.textTer, fontFamily: Fn, fontVariantNumeric: "tabular-nums" }}>{v}%</div>
+              <div style={{ height: 1, background: T.border, opacity: 0.5 }} />
+            </div>
+          );
+        })}
         {/* X-axis label */}
-        <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", fontSize: 9, color: T.textTer, fontFamily: Fn }}>Projected TAM →</div>
-        {/* Grid lines */}
-        {[0, 0.25, 0.5, 0.75, 1].map(p => (
-          <div key={p} style={{ position: "absolute", left: pad.l, right: pad.r, bottom: pad.b + p * (chartH - pad.t - pad.b), height: 1, background: T.border }} />
-        ))}
+        <div style={{ position: "absolute", bottom: -20, left: "50%", transform: "translateX(-50%)", fontSize: 9, color: T.textTer, fontFamily: Fn }}>Projected TAM →</div>
         {/* Bubbles */}
         {themes.map(t => {
-          const x = pad.l + ((t.marketSize2032 / maxTam) * 0.85) * (100 - ((pad.l + pad.r) / 3));
-          const y = chartH - pad.b - ((t.cagr / (maxCagr * 1.15)) * (chartH - pad.t - pad.b));
-          const r = Math.max(10, Math.sqrt(t.marketSize2025) * (mobile ? 6 : 8));
+          const xPct = 6 + (t.marketSize2032 / maxTam) * 84;
+          const yPct = (t.cagr / maxCagr) * 100;
+          const r = Math.max(12, Math.sqrt(t.marketSize2025) * (mobile ? 5.5 : 7));
           return (
             <div key={t.id}
               onClick={() => onThemeClick(t.id)}
               style={{
-                position: "absolute", left: `${(t.marketSize2032 / maxTam * 82) + 8}%`,
-                top: y, width: r * 2, height: r * 2, borderRadius: "50%",
-                background: `${t.color}33`, border: `2px solid ${t.color}`,
-                transform: "translate(-50%, -50%)", cursor: "pointer",
+                position: "absolute",
+                left: `${xPct}%`, bottom: `${yPct}%`,
+                width: r * 2, height: r * 2, borderRadius: "50%",
+                background: `${t.color}30`, border: `2px solid ${t.color}`,
+                transform: "translate(-50%, 50%)", cursor: "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 transition: "all 0.2s", zIndex: 1,
               }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translate(-50%, -50%) scale(1.15)"; e.currentTarget.style.zIndex = 10; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "translate(-50%, -50%) scale(1)"; e.currentTarget.style.zIndex = 1; }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translate(-50%, 50%) scale(1.2)"; e.currentTarget.style.zIndex = 10; e.currentTarget.style.boxShadow = `0 0 12px ${t.color}44`; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "translate(-50%, 50%) scale(1)"; e.currentTarget.style.zIndex = 1; e.currentTarget.style.boxShadow = "none"; }}
               title={`${t.title}\nCAGR: ${t.cagr}%\nTAM: ${fmt(t.marketSize2032)}`}
             >
-              <span style={{ fontSize: mobile ? 10 : 12 }}>{t.icon}</span>
+              <span style={{ fontSize: mobile ? 11 : 13, pointerEvents: "none" }}>{t.icon}</span>
             </div>
           );
         })}
       </div>
       {/* Legend */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12, justifyContent: "center" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
         {themes.map(t => (
           <span key={t.id} onClick={() => onThemeClick(t.id)} style={{
             fontSize: 9, color: T.textSec, fontFamily: Fn, cursor: "pointer",
@@ -517,14 +522,26 @@ function CagrScatter({ T, mobile, onThemeClick }) {
 /* ═══════════════════════ MAIN PAGE ═══════════════════════ */
 export default function ResearchThemes({ T }) {
   const mobile = useMobile();
-  const [expandedId, setExpandedId] = useState(null);
+  const [expandedIds, setExpandedIds] = useState(new Set());
   const [driverFilter, setDriverFilter] = useState("All");
   const cardRefs = useRef({});
 
   const filteredThemes = driverFilter === "All" ? themes : themes.filter(t => t.driver === driverFilter);
 
+  const toggleTheme = (id) => {
+    setExpandedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const expandAll = () => setExpandedIds(new Set(filteredThemes.map(t => t.id)));
+  const collapseAll = () => setExpandedIds(new Set());
+  const allExpanded = filteredThemes.every(t => expandedIds.has(t.id));
+
   const scrollToTheme = (id) => {
-    setExpandedId(prev => prev === id ? null : id);
+    setExpandedIds(prev => { const next = new Set(prev); next.add(id); return next; });
     // If filtering hides the theme, reset filter
     const theme = themes.find(t => t.id === id);
     if (theme && driverFilter !== "All" && theme.driver !== driverFilter) setDriverFilter("All");
@@ -576,7 +593,14 @@ export default function ResearchThemes({ T }) {
 
       {/* Theme cards */}
       <div style={{ marginTop: 8, marginBottom: 8 }}>
-        <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 4 }}>Theme Deep Dives</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4, flexWrap: "wrap", gap: 8 }}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: Fn }}>Theme Deep Dives</div>
+          <button onClick={allExpanded ? collapseAll : expandAll} style={{
+            padding: "5px 14px", borderRadius: 20, border: `1px solid ${T.border}`,
+            background: "transparent", fontSize: 10, fontFamily: Fn, color: T.textSec,
+            cursor: "pointer", transition: "all 0.2s",
+          }}>{allExpanded ? "Collapse All" : "Expand All"}</button>
+        </div>
         <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 16 }}>Click any theme to expand the full analysis, companies, catalysts, and bear case</div>
         <DriverFilter active={driverFilter} onChange={setDriverFilter} T={T} mobile={mobile} />
       </div>
@@ -586,8 +610,8 @@ export default function ResearchThemes({ T }) {
           <div key={t.id} ref={el => { cardRefs.current[t.id] = el; }}>
             <ThemeCard
               theme={t} T={T} mobile={mobile}
-              expanded={expandedId === t.id}
-              onToggle={() => setExpandedId(prev => prev === t.id ? null : t.id)}
+              expanded={expandedIds.has(t.id)}
+              onToggle={() => toggleTheme(t.id)}
             />
           </div>
         ))}
