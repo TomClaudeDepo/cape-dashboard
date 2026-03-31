@@ -3,7 +3,6 @@ import { useTheme, Fn } from "./theme";
 import { navItems } from "./data/constants";
 import { iconMap } from "./components/Icons";
 import Passcode from "./components/Passcode";
-import Landing from "./pages/Landing";
 import CommandPalette from "./components/CommandPalette";
 import HoldingDrawer from "./components/HoldingDrawer";
 import OverviewPg from "./pages/Overview";
@@ -203,7 +202,9 @@ export default function App() {
   const T = useTheme(dark);
 
   if (!unlocked) return (
-    <Landing onUnlock={() => setUnlocked(true)} />
+    <div style={{ opacity: fade ? 0 : 1, transition: "opacity 0.3s, transform 0.3s", transform: fade ? "scale(0.98)" : "scale(1)" }}>
+      <Passcode onUnlock={() => { setFade(true); setTimeout(() => setUnlocked(true), 300) }} T={T} />
+    </div>
   );
 
   return <Dashboard dark={dark} setDark={setDark} />;
