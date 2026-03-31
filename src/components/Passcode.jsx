@@ -127,10 +127,10 @@ export default function Passcode({ onUnlock, T }) {
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "56px 40px 0", width: "100%", boxSizing: "border-box" }}>
         <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#9B1B1B", textTransform: "uppercase", fontWeight: 600, marginBottom: 8 }}>Investment Approach</div>
         <h2 style={{ fontFamily: Serif, fontSize: "clamp(24px, 3vw, 36px)", fontWeight: 400, color: "#1A1214", margin: "0 0 40px", lineHeight: 1.2 }}>
-          Three pillars of a concentrated portfolio
+          The four fundamental pillars
         </h2>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 24 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24 }}>
           {pillars.map((p, i) => (
             <div key={i} style={{
               background: "#FFFFFF",
