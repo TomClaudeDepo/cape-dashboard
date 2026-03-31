@@ -3,6 +3,7 @@ import { Fn } from "../theme";
 import { Card, Label } from "../components/shared";
 import { sectors, logoUrl } from "../data/research-thematic-map";
 import { holdings } from "../data/portfolio";
+import ThematicSunburst from "../components/ThematicSunburst";
 
 /* ─── Portfolio matching ─── */
 const heldMap = {
@@ -319,67 +320,103 @@ export default function ResearchThematicMap({ T }) {
     return items;
   }, [activeSector, activeSectorData, insertAfterRow, cols]);
 
+  const [view, setView] = useState("sunburst"); // "list" | "sunburst"
+
   return (
     <div>
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
-        <h2 style={{ fontFamily: Fn, fontSize: 22, fontWeight: 300, letterSpacing: "-0.03em", color: T.text, margin: 0 }}>
-          Thematic Universe
-        </h2>
-        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, lineHeight: 1.6, marginTop: 6, maxWidth: 680 }}>
-          {totalThemes} structural investment themes across 10 GICS sectors, mapped to ~{totalCos} best-in-class companies globally. Click any sector to explore its themes and the companies within each.
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
+          <div>
+            <h2 style={{ fontFamily: Fn, fontSize: 22, fontWeight: 300, letterSpacing: "-0.03em", color: T.text, margin: 0 }}>
+              Thematic Universe
+            </h2>
+            <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, lineHeight: 1.6, marginTop: 6, maxWidth: 680 }}>
+              {totalThemes} structural investment themes across 10 GICS sectors, mapped to ~{totalCos} best-in-class companies globally.
+            </div>
+          </div>
+          {/* View toggle */}
+          <div style={{
+            display: "flex", gap: 0, borderRadius: 8, overflow: "hidden",
+            border: `1px solid ${T.border}`, flexShrink: 0,
+          }}>
+            {[
+              { id: "sunburst", label: "◉ Radial" },
+              { id: "list", label: "☰ List" },
+            ].map((v) => (
+              <button
+                key={v.id}
+                onClick={() => setView(v.id)}
+                style={{
+                  background: view === v.id ? (T.deepBlue || T.text) : "transparent",
+                  color: view === v.id ? "#fff" : T.textSec,
+                  border: "none", padding: "6px 14px", fontSize: 11, fontFamily: Fn,
+                  fontWeight: view === v.id ? 700 : 500,
+                  cursor: "pointer", transition: "all 0.15s",
+                }}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Summary stats */}
-      <div style={{ display: "flex", gap: 16, marginBottom: 20, flexWrap: "wrap" }}>
-        {[
-          { v: "10", l: "Sectors" }, { v: String(totalThemes), l: "Themes" },
-          { v: `~${totalCos}`, l: "Companies" }, { v: "26", l: "Held" },
-        ].map((s, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
-            <span style={{ fontSize: 18, fontWeight: 800, fontFamily: Fn, color: T.text }}>{s.v}</span>
-            <span style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>{s.l}</span>
+      {view === "sunburst" ? (
+        <ThematicSunburst T={T} />
+      ) : (
+        <>
+          {/* Summary stats */}
+          <div style={{ display: "flex", gap: 16, marginBottom: 20, flexWrap: "wrap" }}>
+            {[
+              { v: "10", l: "Sectors" }, { v: String(totalThemes), l: "Themes" },
+              { v: `~${totalCos}`, l: "Companies" }, { v: "26", l: "Held" },
+            ].map((s, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
+                <span style={{ fontSize: 18, fontWeight: 800, fontFamily: Fn, color: T.text }}>{s.v}</span>
+                <span style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>{s.l}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      {/* Sector grid */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: mobile ? "1fr" : "1fr 1fr",
-        gap: 12,
-      }}>
-        {gridItems.map((item, i) => {
-          if (item.type === "tile") {
-            return (
-              <SectorTile
-                key={item.sector.id}
-                sector={item.sector}
-                isActive={activeSector === item.sector.id}
-                onClick={() => handleTileClick(item.sector.id)}
-                T={T}
-              />
-            );
-          }
-          if (item.type === "expanded") {
-            return (
-              <SectorExpanded
-                key={`exp-${item.sector.id}`}
-                sector={item.sector}
-                onClose={() => setActiveSector(null)}
-                T={T}
-              />
-            );
-          }
-          return null;
-        })}
-      </div>
+          {/* Sector grid */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: mobile ? "1fr" : "1fr 1fr",
+            gap: 12,
+          }}>
+            {gridItems.map((item, i) => {
+              if (item.type === "tile") {
+                return (
+                  <SectorTile
+                    key={item.sector.id}
+                    sector={item.sector}
+                    isActive={activeSector === item.sector.id}
+                    onClick={() => handleTileClick(item.sector.id)}
+                    T={T}
+                  />
+                );
+              }
+              if (item.type === "expanded") {
+                return (
+                  <SectorExpanded
+                    key={`exp-${item.sector.id}`}
+                    sector={item.sector}
+                    onClose={() => setActiveSector(null)}
+                    T={T}
+                  />
+                );
+              }
+              return null;
+            })}
+          </div>
 
-      {/* Footer */}
-      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, textAlign: "center", marginTop: 24, padding: "12px 0", borderTop: "1px solid " + T.border }}>
-        Cape Capital AG · Thematic Universe · {totalThemes} themes · ~{totalCos} companies · March 2026
-      </div>
+          {/* Footer */}
+          <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, textAlign: "center", marginTop: 24, padding: "12px 0", borderTop: "1px solid " + T.border }}>
+            Cape Capital AG · Thematic Universe · {totalThemes} themes · ~{totalCos} companies · March 2026
+          </div>
+        </>
+      )}
     </div>
   );
 }
