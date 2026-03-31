@@ -3,7 +3,6 @@ import { Fn } from "../theme";
 import { Card } from "../components/shared";
 import { sectors, logoUrl, macrodynamics } from "../data/research-thematic-map";
 import { holdings } from "../data/portfolio";
-import ThematicSunburst from "../components/ThematicSunburst";
 
 /* ─── Portfolio matching ─── */
 const heldMap = {
@@ -352,7 +351,6 @@ export default function ResearchThematicMap({ T }) {
     return () => window.removeEventListener("resize", c);
   }, []);
 
-  const [view, setView] = useState("list");
   const [activeSector, setActiveSector] = useState(null);
   const [search, setSearch] = useState("");
   const [filterHeld, setFilterHeld] = useState(false);
@@ -418,33 +416,9 @@ export default function ResearchThematicMap({ T }) {
             ))}
           </div>
         </div>
-        {/* View toggle */}
-        <div style={{
-          display: "flex", borderRadius: T.radiusSm, overflow: "hidden",
-          border: `1px solid ${T.border}`, flexShrink: 0,
-        }}>
-          {[
-            { id: "list", label: "☰ List" },
-            { id: "radial", label: "◉ Radial" },
-          ].map((v) => (
-            <button key={v.id} onClick={() => setView(v.id)} style={{
-              background: view === v.id ? (T.deepBlue || T.text) : "transparent",
-              color: view === v.id ? "#fff" : T.textSec,
-              border: "none", padding: "6px 16px", fontSize: 11, fontFamily: Fn,
-              fontWeight: view === v.id ? 700 : 500,
-              cursor: "pointer", transition: "all 0.15s",
-            }}>
-              {v.label}
-            </button>
-          ))}
-        </div>
       </div>
 
-      {view === "radial" ? (
-        <ThematicSunburst T={T} />
-      ) : (
-        <>
-          {/* ── Macro Forces strip ── */}
+      {/* ── Macro Forces strip ── */}
           <div style={{
             display: "grid",
             gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)",
@@ -574,9 +548,7 @@ export default function ResearchThematicMap({ T }) {
             marginTop: 24, padding: "12px 0", borderTop: `1px solid ${T.border}`,
           }}>
             Cape Capital AG · Thematic Universe · {totalThemes} themes · ~{allCos} companies · March 2026
-          </div>
-        </>
-      )}
+      </div>
     </div>
   );
 }
