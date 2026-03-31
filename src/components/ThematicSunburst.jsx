@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { Fn } from "../theme";
 
 /* ─── DATA ─── */
 const macrodynamics = [
@@ -7,7 +8,7 @@ const macrodynamics = [
   { id: "demography", title: "Demography & Health", short: "Demography", icon: "🌍", color: "#34D399", sectorIds: ["health","consstap","financials","consdisc","commsvc","utilities"] },
 ];
 
-const heldSet = new Set(["NVDA","AVGO","TSM","MSFT","GOOGL","NOW","SIE","ROK","JPM","ICE","AMZN","BKNG","NFLX","0700","TMO","AI","CEG","LLY","RHM","MELI","SAF","LIN","BKR","BKNG","SU","ETN"]);
+const heldSet = new Set(["NVDA","AVGO","TSM","MSFT","GOOGL","NOW","SIE","ROK","JPM","ICE","AMZN","BKNG","NFLX","0700","TMO","AI","CEG","LLY","RHM","MELI","SAF","LIN","BKR","SU","ETN"]);
 
 const sectors = [
   { id:"it", name:"Information Technology", short:"IT", weight:25, color:"#818CF8",
@@ -120,12 +121,18 @@ const midAngle = (a1, a2) => (a1 + a2) / 2;
 
 /* ─── COMPONENT ─── */
 export default function ThematicSunburst({ T }) {
-  const [hover, setHover] = useState(null); // { ring, idx, sectorIdx? }
-  const [selected, setSelected] = useState(null); // sectorIdx
-  const [selectedTheme, setSelectedTheme] = useState(null); // themeIdx within sector
+  const isDark = T.bg !== "#F8F9FC";
+  const [hover, setHover] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [selectedTheme, setSelectedTheme] = useState(null);
   const [animPhase, setAnimPhase] = useState(0);
   const containerRef = useRef(null);
   const [dims, setDims] = useState({ w: 900, h: 900 });
+
+  /* Theme-aware subtle fills for SVG */
+  const guide = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
+  const subtleBg = isDark ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.02)";
+  const arcDimFill = isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.015)";
 
   useEffect(() => {
     const el = containerRef.current;
@@ -148,7 +155,6 @@ export default function ThematicSunburst({ T }) {
   const CY = dims.h / 2;
   const scale = dims.w / 900;
 
-  /* Radii */
   const R_CORE = 62 * scale;
   const R_MACRO_IN = 72 * scale;
   const R_MACRO_OUT = 108 * scale;
@@ -160,7 +166,6 @@ export default function ThematicSunburst({ T }) {
   const R_COMPANY_OUT = 430 * scale;
   const GAP = toRad(0.6);
 
-  /* ── Sector arcs ── */
   const totalWeight = sectors.reduce((s, sec) => s + Math.max(sec.weight, 3), 0);
   const sectorArcs = useMemo(() => {
     let angle = 0;
@@ -174,7 +179,6 @@ export default function ThematicSunburst({ T }) {
     });
   }, [totalWeight, scale]);
 
-  /* ── Theme arcs ── */
   const themeArcs = useMemo(() => {
     const arcs = [];
     sectorArcs.forEach((sec, si) => {
@@ -184,24 +188,18 @@ export default function ThematicSunburst({ T }) {
       const tSpan = (totalSpan - tGap * count) / count;
       let a = sec.a1;
       sec.themes.forEach((theme, ti) => {
-        arcs.push({
-          ...theme, sectorIdx: si, themeIdx: ti,
-          color: sec.color,
-          a1: a + tGap / 2, a2: a + tSpan + tGap / 2,
-        });
+        arcs.push({ ...theme, sectorIdx: si, themeIdx: ti, color: sec.color, a1: a + tGap / 2, a2: a + tSpan + tGap / 2 });
         a += tSpan + tGap;
       });
     });
     return arcs;
   }, [sectorArcs]);
 
-  /* ── Company arcs (only for selected sector+theme) ── */
   const companyArcs = useMemo(() => {
     if (selected === null || selectedTheme === null) return [];
     const sec = sectorArcs[selected];
-    const themes = sec.themes;
-    if (!themes[selectedTheme]) return [];
-    const theme = themes[selectedTheme];
+    const theme = sec.themes[selectedTheme];
+    if (!theme) return [];
     const tArc = themeArcs.find(t => t.sectorIdx === selected && t.themeIdx === selectedTheme);
     if (!tArc) return [];
     const cos = theme.companies;
@@ -209,14 +207,13 @@ export default function ThematicSunburst({ T }) {
     const cGap = toRad(0.3);
     const cSpan = (totalSpan - cGap * cos.length) / cos.length;
     let a = tArc.a1;
-    return cos.map((c, ci) => {
+    return cos.map((c) => {
       const arc = { ...c, a1: a + cGap / 2, a2: a + cSpan + cGap / 2, color: sec.color, held: heldSet.has(c.t) };
       a += cSpan + cGap;
       return arc;
     });
   }, [selected, selectedTheme, sectorArcs, themeArcs]);
 
-  /* ── Macro arcs ── */
   const macroArcs = useMemo(() => {
     const span = TAU / 3;
     return macrodynamics.map((m, i) => ({
@@ -224,7 +221,6 @@ export default function ThematicSunburst({ T }) {
     }));
   }, []);
 
-  /* ── Tooltip content ── */
   const tooltipContent = useMemo(() => {
     if (!hover) return null;
     if (hover.ring === "macro") {
@@ -233,10 +229,9 @@ export default function ThematicSunburst({ T }) {
     }
     if (hover.ring === "sector") {
       const s = sectorArcs[hover.idx];
-      const tCount = s.themes.length;
       const cCount = s.themes.reduce((sum, t) => sum + t.companies.length, 0);
       const hCount = s.themes.reduce((sum, t) => sum + t.companies.filter(c => heldSet.has(c.t)).length, 0);
-      return { title: s.name, sub: `${s.weight}% · ${tCount} themes · ${cCount} cos · ${hCount} held`, color: s.color };
+      return { title: s.name, sub: `${s.weight}% · ${s.themes.length} themes · ${cCount} cos · ${hCount} held`, color: s.color };
     }
     if (hover.ring === "theme") {
       const t = themeArcs[hover.idx];
@@ -250,45 +245,30 @@ export default function ThematicSunburst({ T }) {
     return null;
   }, [hover, macroArcs, sectorArcs, themeArcs, companyArcs]);
 
-  /* ── Connection lines from selected sector to macro ── */
   const connectionLines = useMemo(() => {
     if (selected === null) return [];
     const sec = sectorArcs[selected];
     const secMid = midAngle(sec.a1, sec.a2);
-    const lines = [];
-    macroArcs.forEach((m) => {
-      if (m.sectorIds.includes(sec.id)) {
-        const mMid = midAngle(m.a1, m.a2);
-        const from = polarToCart(CX, CY, R_MACRO_OUT, mMid);
-        const to = polarToCart(CX, CY, R_SECTOR_IN, secMid);
-        lines.push({ from, to, color: m.color });
-      }
-    });
-    return lines;
+    return macroArcs
+      .filter(m => m.sectorIds.includes(sec.id))
+      .map(m => ({
+        from: polarToCart(CX, CY, R_MACRO_OUT, midAngle(m.a1, m.a2)),
+        to: polarToCart(CX, CY, R_SECTOR_IN, secMid),
+        color: m.color,
+      }));
   }, [selected, sectorArcs, macroArcs, CX, CY]);
 
   const handleSectorClick = useCallback((idx) => {
-    if (selected === idx) {
-      setSelected(null);
-      setSelectedTheme(null);
-    } else {
-      setSelected(idx);
-      setSelectedTheme(null);
-    }
+    if (selected === idx) { setSelected(null); setSelectedTheme(null); }
+    else { setSelected(idx); setSelectedTheme(null); }
   }, [selected]);
 
   const handleThemeClick = useCallback((sectorIdx, themeIdx) => {
-    if (selected !== sectorIdx) {
-      setSelected(sectorIdx);
-      setSelectedTheme(themeIdx);
-    } else if (selectedTheme === themeIdx) {
-      setSelectedTheme(null);
-    } else {
-      setSelectedTheme(themeIdx);
-    }
+    if (selected !== sectorIdx) { setSelected(sectorIdx); setSelectedTheme(themeIdx); }
+    else if (selectedTheme === themeIdx) { setSelectedTheme(null); }
+    else { setSelectedTheme(themeIdx); }
   }, [selected, selectedTheme]);
 
-  /* ── Text along arc helper ── */
   const arcLabel = (cx, cy, r, a1, a2, text, fontSize, color, id) => {
     const spanAngle = a2 - a1;
     if (spanAngle < toRad(8)) return null;
@@ -306,14 +286,13 @@ export default function ThematicSunburst({ T }) {
     return (
       <g key={id}>
         <defs><path id={id} d={d} /></defs>
-        <text fill={color} fontSize={fontSize} fontFamily="'DM Sans', system-ui, sans-serif" fontWeight="600" letterSpacing="0.02em">
+        <text fill={color} fontSize={fontSize} fontFamily={Fn} fontWeight="600" letterSpacing="0.02em">
           <textPath href={`#${id}`} startOffset="50%" textAnchor="middle">{displayText}</textPath>
         </text>
       </g>
     );
   };
 
-  /* ── Detail panel ── */
   const detailPanel = useMemo(() => {
     if (selected === null) return null;
     const sec = sectorArcs[selected];
@@ -323,34 +302,12 @@ export default function ThematicSunburst({ T }) {
     return { sec, themes, allCos, heldCos };
   }, [selected, sectorArcs]);
 
-  const themeDetail = useMemo(() => {
-    if (selected === null || selectedTheme === null) return null;
-    const sec = sectorArcs[selected];
-    const theme = sec.themes[selectedTheme];
-    if (!theme) return null;
-    return { theme, sec };
-  }, [selected, selectedTheme, sectorArcs]);
-
   return (
     <div ref={containerRef} style={{
-      minHeight: "100vh", background: "#0B0F1A",
-      fontFamily: "'DM Sans', system-ui, sans-serif", color: "#E2E8F0",
+      fontFamily: Fn, color: T.text,
       display: "flex", flexDirection: "column", alignItems: "center",
-      padding: "24px 16px",
+      padding: "8px 0",
     }}>
-      {/* Title */}
-      <div style={{ textAlign: "center", marginBottom: 20, opacity: animPhase ? 1 : 0, transition: "opacity 0.8s ease" }}>
-        <h1 style={{
-          fontSize: Math.max(18, 26 * scale), fontWeight: 300, letterSpacing: "-0.04em",
-          color: "#F1F5F9", margin: 0, lineHeight: 1.2,
-        }}>
-          Thematic Universe
-        </h1>
-        <p style={{ fontSize: Math.max(10, 12 * scale), color: "#64748B", margin: "6px 0 0", fontWeight: 400 }}>
-          56 themes · 10 sectors · ~160 companies · Click to explore
-        </p>
-      </div>
-
       {/* Sunburst SVG */}
       <div style={{ position: "relative", width: dims.w, height: dims.h }}>
         <svg
@@ -358,10 +315,9 @@ export default function ThematicSunburst({ T }) {
           width={dims.w} height={dims.h}
           style={{ opacity: animPhase ? 1 : 0, transition: "opacity 0.6s ease 0.2s" }}
         >
-          {/* Ambient glow */}
           <defs>
             <radialGradient id="ambientGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#818CF8" stopOpacity="0.04" />
+              <stop offset="0%" stopColor={T.purple || "#818CF8"} stopOpacity={isDark ? 0.04 : 0.02} />
               <stop offset="100%" stopColor="transparent" stopOpacity="0" />
             </radialGradient>
             <filter id="glow">
@@ -373,7 +329,7 @@ export default function ThematicSunburst({ T }) {
 
           {/* Ring guides */}
           {[R_MACRO_IN, R_SECTOR_IN, R_THEME_IN, R_COMPANY_IN].map((r, i) => (
-            <circle key={i} cx={CX} cy={CY} r={r} fill="none" stroke="#1E293B" strokeWidth={0.5} strokeDasharray="2,4" opacity={0.5} />
+            <circle key={i} cx={CX} cy={CY} r={r} fill="none" stroke={guide} strokeWidth={0.5} strokeDasharray="2,4" opacity={0.5} />
           ))}
 
           {/* Connection lines */}
@@ -382,7 +338,7 @@ export default function ThematicSunburst({ T }) {
               stroke={line.color} strokeWidth={1.5 * scale} strokeDasharray="4,4" opacity={0.35} />
           ))}
 
-          {/* ── MACRO RING ── */}
+          {/* MACRO RING */}
           {macroArcs.map((m, i) => {
             const isHovered = hover?.ring === "macro" && hover.idx === i;
             const isLinked = selected !== null && m.sectorIds.includes(sectorArcs[selected].id);
@@ -390,7 +346,7 @@ export default function ThematicSunburst({ T }) {
               <g key={`macro-${i}`}>
                 <path
                   d={arcPath(CX, CY, R_MACRO_IN, R_MACRO_OUT, m.a1, m.a2)}
-                  fill={m.color + (isLinked ? "30" : isHovered ? "25" : "12")}
+                  fill={m.color + (isLinked ? "30" : isHovered ? "25" : isDark ? "12" : "0A")}
                   stroke={m.color + (isLinked ? "80" : "40")}
                   strokeWidth={isLinked ? 1.5 : 0.5}
                   style={{ cursor: "pointer", transition: "all 0.25s" }}
@@ -402,7 +358,7 @@ export default function ThematicSunburst({ T }) {
             );
           })}
 
-          {/* ── SECTOR RING ── */}
+          {/* SECTOR RING */}
           {sectorArcs.map((sec, i) => {
             const isSelected = selected === i;
             const isHovered = hover?.ring === "sector" && hover.idx === i;
@@ -411,7 +367,7 @@ export default function ThematicSunburst({ T }) {
               <g key={`sec-${i}`}>
                 <path
                   d={arcPath(CX, CY, R_SECTOR_IN, R_SECTOR_OUT, sec.a1, sec.a2)}
-                  fill={sec.color + (isSelected ? "35" : isHovered ? "20" : "10")}
+                  fill={sec.color + (isSelected ? "35" : isHovered ? "20" : isDark ? "10" : "08")}
                   stroke={sec.color + (isSelected ? "AA" : "50")}
                   strokeWidth={isSelected ? 2 : 0.5}
                   opacity={dim ? 0.3 : 1}
@@ -420,14 +376,13 @@ export default function ThematicSunburst({ T }) {
                   onMouseEnter={() => setHover({ ring: "sector", idx: i })}
                   onMouseLeave={() => setHover(null)}
                 />
-                {/* Weight indicator */}
                 {sec.weight > 0 && (() => {
                   const ma = midAngle(sec.a1, sec.a2);
                   const p = polarToCart(CX, CY, R_SECTOR_IN + 18 * scale, ma);
                   return (
                     <text x={p.x} y={p.y} textAnchor="middle" dominantBaseline="central"
                       fill={sec.color} fontSize={Math.max(8, 11 * scale)} fontWeight="800"
-                      fontFamily="'DM Sans', system-ui" opacity={dim ? 0.3 : 0.9}
+                      fontFamily={Fn} opacity={dim ? 0.3 : 0.9}
                       style={{ transition: "opacity 0.3s" }}>
                       {sec.weight}%
                     </text>
@@ -438,7 +393,7 @@ export default function ThematicSunburst({ T }) {
             );
           })}
 
-          {/* ── THEME RING ── */}
+          {/* THEME RING */}
           {themeArcs.map((t, i) => {
             const isInSelected = selected === t.sectorIdx;
             const isThemeSelected = isInSelected && selectedTheme === t.themeIdx;
@@ -449,7 +404,7 @@ export default function ThematicSunburst({ T }) {
               <g key={`theme-${i}`}>
                 <path
                   d={arcPath(CX, CY, R_THEME_IN, R_THEME_OUT, t.a1, t.a2)}
-                  fill={t.color + (isThemeSelected ? "30" : isHovered ? "18" : "08")}
+                  fill={t.color + (isThemeSelected ? "30" : isHovered ? "18" : isDark ? "08" : "06")}
                   stroke={t.color + (isThemeSelected ? "90" : isInSelected ? "50" : "20")}
                   strokeWidth={isThemeSelected ? 2 : 0.5}
                   opacity={dim ? 0.15 : 1}
@@ -458,7 +413,6 @@ export default function ThematicSunburst({ T }) {
                   onMouseEnter={() => setHover({ ring: "theme", idx: i })}
                   onMouseLeave={() => setHover(null)}
                 />
-                {/* Held indicator dot */}
                 {hasHeld && !dim && (() => {
                   const ma = midAngle(t.a1, t.a2);
                   const p = polarToCart(CX, CY, R_THEME_IN + 6 * scale, ma);
@@ -469,14 +423,14 @@ export default function ThematicSunburst({ T }) {
             );
           })}
 
-          {/* ── COMPANY RING (only when theme selected) ── */}
+          {/* COMPANY RING */}
           {companyArcs.map((c, i) => {
             const isHovered = hover?.ring === "company" && hover.idx === i;
             return (
               <g key={`co-${i}`}>
                 <path
                   d={arcPath(CX, CY, R_COMPANY_IN, R_COMPANY_OUT, c.a1, c.a2)}
-                  fill={c.held ? c.color + "30" : "#1E293B40"}
+                  fill={c.held ? c.color + "30" : arcDimFill}
                   stroke={c.held ? c.color + "AA" : c.color + "30"}
                   strokeWidth={c.held ? 2 : 0.5}
                   style={{ cursor: "pointer", transition: "all 0.3s" }}
@@ -484,32 +438,32 @@ export default function ThematicSunburst({ T }) {
                   onMouseLeave={() => setHover(null)}
                   filter={isHovered ? "url(#glow)" : undefined}
                 />
-                {arcLabel(CX, CY, (R_COMPANY_IN + R_COMPANY_OUT) / 2, c.a1, c.a2, `${c.t}`, Math.max(6, 8 * scale), c.held ? "#F1F5F9" : "#94A3B8", `co-lbl-${i}`)}
+                {arcLabel(CX, CY, (R_COMPANY_IN + R_COMPANY_OUT) / 2, c.a1, c.a2, c.t, Math.max(6, 8 * scale), c.held ? T.text : T.textTer, `co-lbl-${i}`)}
               </g>
             );
           })}
 
-          {/* ── CENTER ── */}
-          <circle cx={CX} cy={CY} r={R_CORE} fill="#0F172A" stroke="#1E293B" strokeWidth={1} />
+          {/* CENTER */}
+          <circle cx={CX} cy={CY} r={R_CORE} fill={T.card} stroke={guide} strokeWidth={1} />
           {selected === null ? (
             <g>
               <text x={CX} y={CY - 10 * scale} textAnchor="middle" dominantBaseline="central"
-                fill="#F1F5F9" fontSize={Math.max(14, 20 * scale)} fontWeight="700" fontFamily="'DM Sans', system-ui"
+                fill={T.text} fontSize={Math.max(14, 20 * scale)} fontWeight="700" fontFamily={Fn}
                 letterSpacing="-0.03em">CEF</text>
               <text x={CX} y={CY + 10 * scale} textAnchor="middle" dominantBaseline="central"
-                fill="#64748B" fontSize={Math.max(7, 8 * scale)} fontFamily="'DM Sans', system-ui" fontWeight="400">
+                fill={T.textTer} fontSize={Math.max(7, 8 * scale)} fontFamily={Fn} fontWeight="400">
                 26 positions</text>
             </g>
           ) : (
             <g>
               <text x={CX} y={CY - 12 * scale} textAnchor="middle" dominantBaseline="central"
-                fill={sectorArcs[selected].color} fontSize={Math.max(11, 14 * scale)} fontWeight="700" fontFamily="'DM Sans', system-ui"
+                fill={sectorArcs[selected].color} fontSize={Math.max(11, 14 * scale)} fontWeight="700" fontFamily={Fn}
                 letterSpacing="-0.02em">{sectorArcs[selected].short}</text>
               <text x={CX} y={CY + 4 * scale} textAnchor="middle" dominantBaseline="central"
-                fill="#94A3B8" fontSize={Math.max(7, 8 * scale)} fontFamily="'DM Sans', system-ui">
+                fill={T.textSec} fontSize={Math.max(7, 8 * scale)} fontFamily={Fn}>
                 {sectorArcs[selected].weight}% · {sectorArcs[selected].themes.length} themes</text>
               <text x={CX} y={CY + 18 * scale} textAnchor="middle" dominantBaseline="central"
-                fill="#475569" fontSize={Math.max(6, 7 * scale)} fontFamily="'DM Sans', system-ui" style={{ cursor: "pointer" }}
+                fill={T.textTer} fontSize={Math.max(6, 7 * scale)} fontFamily={Fn} style={{ cursor: "pointer" }}
                 onClick={() => { setSelected(null); setSelectedTheme(null); }}>
                 ← back
               </text>
@@ -521,69 +475,71 @@ export default function ThematicSunburst({ T }) {
         {tooltipContent && (
           <div style={{
             position: "absolute", top: 12, left: "50%", transform: "translateX(-50%)",
-            background: "#1E293BEE", border: `1px solid ${tooltipContent.color}40`,
-            borderRadius: 10, padding: "8px 14px", pointerEvents: "none",
-            backdropFilter: "blur(12px)", maxWidth: 280, textAlign: "center",
-            boxShadow: `0 4px 20px ${tooltipContent.color}15`,
+            background: T.card, border: `1px solid ${tooltipContent.color}40`,
+            borderRadius: T.radius, padding: "8px 14px", pointerEvents: "none",
+            maxWidth: 280, textAlign: "center", boxShadow: T.shadowLg,
           }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: tooltipContent.color, marginBottom: 2 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, fontFamily: Fn, color: tooltipContent.color, marginBottom: 2 }}>
               {tooltipContent.title}
             </div>
-            <div style={{ fontSize: 10, color: "#94A3B8" }}>{tooltipContent.sub}</div>
+            <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer }}>{tooltipContent.sub}</div>
           </div>
         )}
       </div>
 
-      {/* Detail Panel below */}
+      {/* Detail Panel */}
       {detailPanel && (
         <div style={{
           width: "100%", maxWidth: 700, marginTop: 16,
-          background: "#111827", borderRadius: 14, padding: "20px 24px",
+          background: T.card, borderRadius: T.radius, padding: "20px 24px",
           border: `1px solid ${detailPanel.sec.color}25`,
+          boxShadow: T.shadow,
           opacity: animPhase ? 1 : 0, transition: "opacity 0.4s",
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
             <div>
-              <span style={{ fontSize: 18, fontWeight: 700, color: detailPanel.sec.color, letterSpacing: "-0.02em" }}>
+              <span style={{ fontSize: 18, fontWeight: 700, fontFamily: Fn, color: detailPanel.sec.color, letterSpacing: "-0.02em" }}>
                 {detailPanel.sec.name}
               </span>
-              <span style={{ fontSize: 12, color: "#64748B", marginLeft: 10 }}>
+              <span style={{ fontSize: 12, fontFamily: Fn, color: T.textTer, marginLeft: 10 }}>
                 {detailPanel.sec.weight}% of NAV
               </span>
             </div>
             <button onClick={() => { setSelected(null); setSelectedTheme(null); }}
-              style={{ background: "#1E293B", border: "1px solid #334155", borderRadius: 8, color: "#94A3B8", padding: "4px 12px", fontSize: 11, cursor: "pointer" }}>
+              style={{
+                background: T.pillBg, border: `1px solid ${T.border}`, borderRadius: T.radiusSm,
+                color: T.textSec, padding: "4px 12px", fontSize: 11, fontFamily: Fn, cursor: "pointer",
+              }}>
               ✕
             </button>
           </div>
 
-          {/* Stats row */}
           <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
             {[
               { v: detailPanel.themes.length, l: "Themes", c: detailPanel.sec.color },
-              { v: detailPanel.allCos.length, l: "Companies", c: "#60A5FA" },
-              { v: detailPanel.heldCos.length, l: "In Portfolio", c: "#34D399" },
+              { v: detailPanel.allCos.length, l: "Companies", c: T.deepBlue },
+              { v: detailPanel.heldCos.length, l: "In Portfolio", c: T.green },
             ].map((s, i) => (
               <div key={i} style={{
-                padding: "5px 12px", borderRadius: 8, background: s.c + "12",
+                padding: "5px 12px", borderRadius: T.radiusSm,
+                background: s.c + (isDark ? "15" : "0A"),
                 display: "flex", alignItems: "baseline", gap: 5,
               }}>
-                <span style={{ fontSize: 16, fontWeight: 800, color: s.c }}>{s.v}</span>
-                <span style={{ fontSize: 9, fontWeight: 600, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.05em" }}>{s.l}</span>
+                <span style={{ fontSize: 16, fontWeight: 800, fontFamily: Fn, color: s.c }}>{s.v}</span>
+                <span style={{ fontSize: 9, fontWeight: 600, fontFamily: Fn, color: T.textTer, textTransform: "uppercase", letterSpacing: "0.05em" }}>{s.l}</span>
               </div>
             ))}
           </div>
 
-          {/* Themes */}
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {detailPanel.themes.map((theme, ti) => {
               const isOpen = selectedTheme === ti;
               const heldCount = theme.companies.filter(c => heldSet.has(c.t)).length;
               return (
                 <div key={ti} style={{
-                  borderRadius: 10, overflow: "hidden",
-                  border: `1px solid ${isOpen ? detailPanel.sec.color + "50" : "#1E293B"}`,
-                  background: isOpen ? detailPanel.sec.color + "08" : "#0F172A",
+                  borderRadius: T.radiusSm + 2, overflow: "hidden",
+                  border: `1px solid ${isOpen ? detailPanel.sec.color + "50" : T.border}`,
+                  background: isOpen ? detailPanel.sec.color + (isDark ? "08" : "04") : T.bg,
                   transition: "all 0.2s",
                 }}>
                   <div onClick={() => setSelectedTheme(isOpen ? null : ti)}
@@ -591,20 +547,20 @@ export default function ThematicSunburst({ T }) {
                     <div style={{ width: 3, height: 22, borderRadius: 2, background: detailPanel.sec.color, opacity: isOpen ? 1 : 0.3 }} />
                     <div style={{ flex: 1 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                        <span style={{ fontSize: 12, fontWeight: 600, color: "#E2E8F0" }}>{theme.name}</span>
+                        <span style={{ fontSize: 12, fontWeight: 600, fontFamily: Fn, color: T.text }}>{theme.name}</span>
                         <span style={{
-                          fontSize: 8, fontWeight: 700, padding: "2px 6px", borderRadius: 4, letterSpacing: "0.03em",
-                          background: theme.type.includes("SECULAR") ? "#34D39918" : "#F59E0B18",
-                          color: theme.type.includes("SECULAR") ? "#34D399" : "#F59E0B",
+                          fontSize: 8, fontWeight: 700, fontFamily: Fn, padding: "2px 6px", borderRadius: 4, letterSpacing: "0.03em",
+                          background: theme.type.includes("SECULAR") ? T.greenBg : (T.orange + "10"),
+                          color: theme.type.includes("SECULAR") ? T.green : T.orange,
                         }}>{theme.type}</span>
                       </div>
                       {!isOpen && (
-                        <div style={{ fontSize: 10, color: "#475569", marginTop: 2 }}>
+                        <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, marginTop: 2 }}>
                           {theme.companies.length} companies{heldCount > 0 && <> · <span style={{ color: detailPanel.sec.color, fontWeight: 600 }}>{heldCount} held</span></>}
                         </div>
                       )}
                     </div>
-                    <span style={{ fontSize: 14, color: "#475569", transition: "transform 0.2s", transform: isOpen ? "rotate(90deg)" : "rotate(0)" }}>›</span>
+                    <span style={{ fontSize: 14, color: T.textTer, transition: "transform 0.2s", transform: isOpen ? "rotate(90deg)" : "rotate(0)" }}>›</span>
                   </div>
                   {isOpen && (
                     <div style={{ padding: "0 14px 14px 27px" }}>
@@ -612,23 +568,24 @@ export default function ThematicSunburst({ T }) {
                         const held = heldSet.has(c.t);
                         return (
                           <div key={ci} style={{
-                            display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 8, marginTop: 6,
-                            background: held ? detailPanel.sec.color + "14" : "#1E293B30",
-                            border: `1px solid ${held ? detailPanel.sec.color + "30" : "#1E293B"}`,
+                            display: "flex", alignItems: "center", gap: 10, padding: "8px 12px",
+                            borderRadius: T.radiusSm, marginTop: 6,
+                            background: held ? detailPanel.sec.color + (isDark ? "14" : "08") : subtleBg,
+                            border: `1px solid ${held ? detailPanel.sec.color + "30" : T.border}`,
                           }}>
                             <div style={{ flex: 1 }}>
                               <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                                <span style={{ fontSize: 12, fontWeight: 700, color: "#F1F5F9" }}>{c.n}</span>
-                                <span style={{ fontSize: 9, color: "#64748B" }}>{c.t}</span>
+                                <span style={{ fontSize: 12, fontWeight: 700, fontFamily: Fn, color: T.text }}>{c.n}</span>
+                                <span style={{ fontSize: 9, fontFamily: Fn, color: T.textTer }}>{c.t}</span>
                                 {held && (
                                   <span style={{
-                                    fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 4,
+                                    fontSize: 7, fontWeight: 800, fontFamily: Fn, padding: "2px 6px", borderRadius: 4,
                                     background: detailPanel.sec.color + "25", color: detailPanel.sec.color,
                                     letterSpacing: "0.05em",
                                   }}>IN PORTFOLIO</span>
                                 )}
                               </div>
-                              <div style={{ fontSize: 10, color: "#64748B", marginTop: 3 }}>{c.w}</div>
+                              <div style={{ fontSize: 10, fontFamily: Fn, color: T.textSec, marginTop: 3 }}>{c.w}</div>
                             </div>
                           </div>
                         );
@@ -654,16 +611,16 @@ export default function ThematicSunburst({ T }) {
               background: ["#818CF820", "#60A5FA20", "#34D39920", "#F59E0B20"][i],
               border: `1px solid ${["#818CF8", "#60A5FA", "#34D399", "#F59E0B"][i]}50`,
             }} />
-            <span style={{ fontSize: 10, color: "#64748B" }}>{label}</span>
+            <span style={{ fontSize: 10, fontFamily: Fn, color: T.textTer }}>{label}</span>
           </div>
         ))}
         <div style={{ display: "flex", alignItems: "center", gap: 5, marginLeft: 8 }}>
-          <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#34D39930", border: "1.5px solid #34D399" }} />
-          <span style={{ fontSize: 10, color: "#64748B" }}>= Held in portfolio</span>
+          <div style={{ width: 10, height: 10, borderRadius: "50%", background: T.green + "30", border: `1.5px solid ${T.green}` }} />
+          <span style={{ fontSize: 10, fontFamily: Fn, color: T.textTer }}>= Held in portfolio</span>
         </div>
       </div>
 
-      <div style={{ fontSize: 9, color: "#334155", textAlign: "center", marginTop: 16 }}>
+      <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, textAlign: "center", marginTop: 16 }}>
         Cape Capital AG · Thematic Universe · March 2026
       </div>
     </div>
