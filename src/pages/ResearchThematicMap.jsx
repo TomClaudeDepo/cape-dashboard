@@ -4,6 +4,7 @@ import { Card, Label } from "../components/shared";
 import { sectors, logoUrl } from "../data/research-thematic-map";
 import { holdings } from "../data/portfolio";
 import ThematicSunburst from "../components/ThematicSunburst";
+import ThematicCards from "../components/ThematicCards";
 
 /* ─── Portfolio matching ─── */
 const heldMap = {
@@ -320,7 +321,7 @@ export default function ResearchThematicMap({ T }) {
     return items;
   }, [activeSector, activeSectorData, insertAfterRow, cols]);
 
-  const [view, setView] = useState("sunburst"); // "list" | "sunburst"
+  const [view, setView] = useState("cards"); // "cards" | "radial" | "list"
 
   return (
     <div>
@@ -341,7 +342,8 @@ export default function ResearchThematicMap({ T }) {
             border: `1px solid ${T.border}`, flexShrink: 0,
           }}>
             {[
-              { id: "sunburst", label: "◉ Radial" },
+              { id: "cards", label: "◫ Cards" },
+              { id: "radial", label: "◉ Radial" },
               { id: "list", label: "☰ List" },
             ].map((v) => (
               <button
@@ -362,7 +364,9 @@ export default function ResearchThematicMap({ T }) {
         </div>
       </div>
 
-      {view === "sunburst" ? (
+      {view === "cards" ? (
+        <ThematicCards T={T} />
+      ) : view === "radial" ? (
         <ThematicSunburst T={T} />
       ) : (
         <>
