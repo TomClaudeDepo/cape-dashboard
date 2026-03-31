@@ -9,6 +9,7 @@ export const macrodynamics = [
     icon: "⚡",
     color: "#F59E0B",
     sectors: 7,
+    sectorIds: ["it","industrials","energy","utilities","materials","consdisc","consstap"],
     desc: "Rising electricity demand, grid investment ($5.8T through 2035), energy transition, AI data centre demand reaching 134 GW by 2030",
   },
   {
@@ -18,6 +19,7 @@ export const macrodynamics = [
     icon: "🧠",
     color: "#818CF8",
     sectors: 8,
+    sectorIds: ["it","health","financials","industrials","commsvc","utilities","consdisc","materials"],
     desc: "AI investment and adoption, semiconductor demand, data centre build-out, cyber risk — touches ~8 of 10 sectors",
   },
   {
@@ -27,6 +29,7 @@ export const macrodynamics = [
     icon: "🌍",
     color: "#34D399",
     sectors: 6,
+    sectorIds: ["health","consstap","financials","consdisc","commsvc","utilities"],
     desc: "Population ageing, obesity/chronic disease burden, emerging-market middle-class expansion",
   },
 ];
