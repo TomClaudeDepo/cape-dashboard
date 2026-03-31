@@ -10,6 +10,7 @@ export const IconAttribution = () => <svg {...s} viewBox="0 0 16 16"><path d="M2
 export const IconResearch = () => <svg {...s} viewBox="0 0 16 16"><path d="M4 2h6l3 3v9a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M10 2v3h3"/><path d="M5 8h6M5 10.5h4"/></svg>;
 export const IconMacro = () => <svg {...s} viewBox="0 0 16 16"><path d="M2 14V8l3-2 3 3 3-5 3 4"/><circle cx="14" cy="8" r="1.5" fill="currentColor" stroke="none"/><path d="M2 3v11h12" strokeWidth="1"/></svg>;
 export const IconRisk = () => <svg {...s} viewBox="0 0 16 16"><path d="M8 1.5L1.5 13h13L8 1.5z"/><line x1="8" y1="6" x2="8" y2="9.5"/><circle cx="8" cy="11.5" r="0.7" fill="currentColor" stroke="none"/></svg>;
+export const IconScenarios = () => <svg {...s} viewBox="0 0 16 16"><path d="M3 8h2l1.5-4 2 8L11 4l1.5 4h1.5"/><circle cx="2" cy="8" r="0.8" fill="currentColor" stroke="none"/><circle cx="14" cy="8" r="0.8" fill="currentColor" stroke="none"/></svg>;
 export const IconSettings = () => <svg {...s} viewBox="0 0 16 16"><circle cx="8" cy="8" r="2"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"/></svg>;
 
-export const iconMap = { overview: IconOverview, holdings: IconHoldings, allocation: IconAllocation, attribution: IconAttribution, markets: IconMarkets, research: IconResearch, macro: IconMacro, risk: IconRisk, watchlist: IconWatchlist, claude: IconClaude, settings: IconSettings };
+export const iconMap = { overview: IconOverview, holdings: IconHoldings, allocation: IconAllocation, attribution: IconAttribution, markets: IconMarkets, research: IconResearch, macro: IconMacro, risk: IconRisk, scenarios: IconScenarios, watchlist: IconWatchlist, claude: IconClaude, settings: IconSettings };

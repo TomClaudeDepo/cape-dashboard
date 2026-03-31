@@ -7,18 +7,8 @@ import ResearchCNI from "./ResearchCNI";
 import ResearchGold from "./ResearchGold";
 import ResearchThematicMap from "./ResearchThematicMap";
 import ResearchThemes from "./ResearchThemes";
-import ResearchScenarios from "./ResearchScenarios";
 
 const reports = [
-  {
-    id: "scenarios", ticker: "CEF", name: "Scenario Analysis", sector: "Portfolio Strategy / Risk",
-    tagline: "Six probability-weighted scenarios: what would make the portfolio change value over 6–12 months",
-    date: "March 2026", type: "Scenario Analysis", color: "orange",
-    stats: [
-      { l: "Scenarios", v: "6" }, { l: "Holdings", v: "26" },
-      { l: "AI Exposure", v: "~42%" }, { l: "Horizon", v: "6–12m" },
-    ],
-  },
   {
     id: "thematic", ticker: "CEF", name: "Global Thematic Portfolio Map", sector: "Cross-Sector / Strategy",
     tagline: "56 structural themes across 10 GICS sectors mapped to ~160 best-in-class global companies",
@@ -86,7 +76,6 @@ const backBtn = (T, setActive) => (
 );
 
 const reportComponents = {
-  scenarios: ResearchScenarios,
   thematic: ResearchThematicMap,
   bkng: ResearchBKNG,
   ceg: ResearchCEG,

@@ -445,6 +445,199 @@ function SensitivityMatrix({ scenarios, activeCluster, T, mobile }) {
   );
 }
 
+/* ─── Section 5: Conclusion & Recommendations ─── */
+const recommendations = [
+  {
+    id: "energy",
+    title: "Add 2–3% Energy Allocation",
+    urgency: "High",
+    urgencyColor: "#DC2626",
+    rationale: "The portfolio has zero energy exposure during the most severe supply disruption since 1973. Brent is at $110–116/bbl with Hormuz partially blocked. The ACWI benchmark carries ~4.5% energy — every further dollar oil rises, the portfolio underperforms by the energy sector's outperformance alone.",
+    implementation: "Consider energy majors with integrated downstream operations (insulated from crude-only volatility) or energy call options / ETF overlay. Even a 2–3% allocation would materially reduce stagflation scenario severity from -700bps to roughly -500bps without meaningfully diluting the growth thesis.",
+    impact: "Reduces Stagflation scenario underperformance by ~200bps",
+  },
+  {
+    id: "taiwan",
+    title: "Hedge Taiwan Concentration Risk",
+    urgency: "High",
+    urgencyColor: "#DC2626",
+    rationale: "TSMC (4.71%) plus TSMC-dependent names (NVIDIA 4.63%, Broadcom 1.92%) equals ~11% of the portfolio with a single geographic point of failure. PLA activity around Taiwan has escalated — Justice Mission 2025 deployed 100+ aircraft crossing the median line. Insurance rates for Taiwan-bound shipping are rising.",
+    implementation: "Either trim TSMC by 100–150bps (reallocating to Samsung or US-fabbed alternatives) or implement tail-risk hedging via put spreads on TSM. Cost of 5% OTM 6-month puts is currently reasonable given depressed implied vol on semis relative to realized.",
+    impact: "Reduces Taiwan Crisis tail risk from -1500bps to roughly -1000bps",
+  },
+  {
+    id: "rebalance",
+    title: "Strengthen Defensive Ballast",
+    urgency: "Medium",
+    urgencyColor: "#EA580C",
+    rationale: "ICE is the portfolio's best all-weather holding — it outperforms in four of six scenarios (volatility drives exchange volumes). Pfizer at 6.2% yield and 9x earnings is deeply defensive. Both are well-sized but could absorb 100–200bps more from the most vulnerable European industrials (Akzo Nobel at 1.55% with -15% unrealised loss is the weakest link).",
+    implementation: "Trim Akzo Nobel (1.55%) and reduce Volvo by 50–100bps. Reallocate to ICE (+100bps) and Pfizer (+50–100bps). This shifts ~200bps from the most scenario-sensitive cyclicals to the most all-weather defensives.",
+    impact: "Improves risk-adjusted return across 4 of 6 scenarios",
+  },
+];
+
+const conclusions = [
+  {
+    label: "The portfolio's dominant bet",
+    text: "AI infrastructure and secular growth in a benign macro environment — a bet now facing its most serious stress test since inception. The Iran war, Hormuz closure, elevated tariff uncertainty, and compressed equity multiples have shifted the risk landscape dramatically.",
+  },
+  {
+    label: "Probability-weighted expected alpha is modestly negative",
+    text: "Roughly -50 to -150bps, driven by the asymmetry between upside scenarios (moderate outperformance) and downside scenarios (severe underperformance in tail events). The portfolio wins in a specific environment and loses disproportionately when that environment breaks.",
+  },
+  {
+    label: "ICE is the portfolio's best all-weather holding",
+    text: "It outperforms in four of six scenarios. By contrast, NVIDIA — despite being the highest-conviction AI bet — is the most scenario-sensitive holding: a massive winner in the AI Boom but a massive loser in three downside scenarios.",
+  },
+  {
+    label: "The portfolio is well-constructed for its intended purpose",
+    text: "Capturing secular AI-driven growth through high-conviction holdings. But it is entering its most challenging risk environment since construction. The three recommendations above would meaningfully improve the risk-adjusted profile without dismantling the core thesis.",
+  },
+];
+
+function ConclusionSection({ T, mobile, probs }) {
+  const isDark = T.bg !== "#F8F9FC";
+
+  return (
+    <div style={{ marginBottom: 24 }}>
+      {/* Conclusion */}
+      <Card T={T} style={{ marginBottom: 16 }}>
+        <Label T={T}>Conclusion</Label>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 16 }}>
+          What the scenario analysis reveals about the portfolio's positioning and implicit bets
+        </div>
+
+        <div style={{ display: "grid", gap: 12 }}>
+          {conclusions.map((c, i) => (
+            <div key={i} style={{
+              padding: 14, borderRadius: T.radiusSm,
+              background: isDark ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.012)",
+              borderLeft: `3px solid ${i === 0 ? T.capRed : i === 1 ? T.orange : i === 2 ? T.green : T.deepBlue}`,
+            }}>
+              <div style={{ fontSize: 12, fontWeight: 700, fontFamily: Fn, color: T.text, marginBottom: 4 }}>{c.label}</div>
+              <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>{c.text}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Summary table */}
+        <div style={{ marginTop: 16, padding: 14, borderRadius: T.radiusSm, background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.018)" }}>
+          <div style={{ fontSize: 11, fontWeight: 700, fontFamily: Fn, color: T.text, marginBottom: 10 }}>Scenario Alpha Summary (current probability weights)</div>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: Fn, fontSize: 11 }}>
+            <thead>
+              <tr>
+                <th style={{ textAlign: "left", padding: "4px 8px", fontSize: 10, fontWeight: 600, color: T.textTer, borderBottom: `1px solid ${T.border}` }}>Scenario</th>
+                <th style={{ textAlign: "center", padding: "4px 8px", fontSize: 10, fontWeight: 600, color: T.textTer, borderBottom: `1px solid ${T.border}` }}>Prob.</th>
+                <th style={{ textAlign: "right", padding: "4px 8px", fontSize: 10, fontWeight: 600, color: T.textTer, borderBottom: `1px solid ${T.border}` }}>Alpha vs ACWI</th>
+                <th style={{ textAlign: "right", padding: "4px 8px", fontSize: 10, fontWeight: 600, color: T.textTer, borderBottom: `1px solid ${T.border}` }}>Contribution</th>
+              </tr>
+            </thead>
+            <tbody>
+              {defaultScenarios.map(s => {
+                const mid = (s.alphaRange[0] + s.alphaRange[1]) / 2;
+                const p = probs[s.id];
+                const contrib = (p / 100) * mid;
+                return (
+                  <tr key={s.id}>
+                    <td style={{ padding: "5px 8px", color: T.text, fontWeight: 500 }}>
+                      <span style={{ fontSize: 12, marginRight: 4 }}>{s.icon}</span>{s.short}
+                    </td>
+                    <td style={{ textAlign: "center", padding: "5px 8px", color: s.color, fontWeight: 700, fontFeatureSettings: '"tnum"' }}>{p}%</td>
+                    <td style={{ textAlign: "right", padding: "5px 8px", color: mid >= 0 ? T.green : T.capRed, fontWeight: 600, fontFeatureSettings: '"tnum"' }}>
+                      {s.alphaRange[0] >= 0 ? "+" : ""}{s.alphaRange[0]} to {s.alphaRange[1] >= 0 ? "+" : ""}{s.alphaRange[1]} bps
+                    </td>
+                    <td style={{ textAlign: "right", padding: "5px 8px", color: contrib >= 0 ? T.green : T.capRed, fontWeight: 600, fontFeatureSettings: '"tnum"' }}>
+                      {contrib >= 0 ? "+" : ""}{Math.round(contrib)} bps
+                    </td>
+                  </tr>
+                );
+              })}
+              <tr style={{ borderTop: `2px solid ${T.border}` }}>
+                <td colSpan={3} style={{ padding: "6px 8px", fontWeight: 700, color: T.text }}>Probability-Weighted Expected Alpha</td>
+                <td style={{ textAlign: "right", padding: "6px 8px", fontWeight: 800, fontSize: 13, fontFeatureSettings: '"tnum"', color: (() => {
+                  const tot = defaultScenarios.reduce((s, sc) => s + (probs[sc.id] / 100) * ((sc.alphaRange[0] + sc.alphaRange[1]) / 2), 0);
+                  return tot >= 0 ? T.green : T.capRed;
+                })() }}>
+                  {(() => {
+                    const tot = Math.round(defaultScenarios.reduce((s, sc) => s + (probs[sc.id] / 100) * ((sc.alphaRange[0] + sc.alphaRange[1]) / 2), 0));
+                    return (tot >= 0 ? "+" : "") + tot + " bps";
+                  })()}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* Recommendations */}
+      <Card T={T}>
+        <Label T={T}>Actionable Recommendations</Label>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 16 }}>
+          Three near-term actions to improve the portfolio's risk-adjusted return profile across scenarios
+        </div>
+
+        <div style={{ display: "grid", gap: 14 }}>
+          {recommendations.map((r, i) => (
+            <div key={r.id} style={{
+              borderRadius: T.radiusSm, overflow: "hidden",
+              border: `1px solid ${r.urgencyColor}30`,
+              background: isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.008)",
+            }}>
+              {/* Header */}
+              <div style={{
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+                padding: "10px 14px",
+                background: r.urgencyColor + (isDark ? "18" : "0A"),
+                borderBottom: `1px solid ${r.urgencyColor}20`,
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{
+                    width: 22, height: 22, borderRadius: 6,
+                    background: r.urgencyColor + "20", color: r.urgencyColor,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 12, fontWeight: 800, fontFamily: Fn,
+                  }}>
+                    {i + 1}
+                  </div>
+                  <span style={{ fontSize: 13, fontWeight: 700, fontFamily: Fn, color: T.text }}>{r.title}</span>
+                </div>
+                <span style={{
+                  fontSize: 9, fontWeight: 700, fontFamily: Fn,
+                  padding: "2px 8px", borderRadius: 4,
+                  background: r.urgencyColor + "20", color: r.urgencyColor,
+                  textTransform: "uppercase", letterSpacing: "0.05em",
+                }}>
+                  {r.urgency} priority
+                </span>
+              </div>
+
+              {/* Body */}
+              <div style={{ padding: 14 }}>
+                <div style={{ marginBottom: 10 }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, fontFamily: Fn, color: T.textTer, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 3 }}>Rationale</div>
+                  <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>{r.rationale}</div>
+                </div>
+                <div style={{ marginBottom: 10 }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, fontFamily: Fn, color: T.textTer, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 3 }}>Implementation</div>
+                  <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>{r.implementation}</div>
+                </div>
+                <div style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  padding: "4px 10px", borderRadius: 4,
+                  background: T.green + "12", border: `1px solid ${T.green}25`,
+                }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, fontFamily: Fn, color: T.green }}>Expected impact:</span>
+                  <span style={{ fontSize: 10, fontFamily: Fn, color: T.textSec }}>{r.impact}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+}
+
 /* ─── Main Page ─── */
 export default function ResearchScenarios({ T }) {
   const [mobile, setMobile] = useState(false);
@@ -488,6 +681,9 @@ export default function ResearchScenarios({ T }) {
 
       {/* Section 4: Sensitivity Matrix */}
       <SensitivityMatrix scenarios={defaultScenarios} activeCluster={activeCluster} T={T} mobile={mobile} />
+
+      {/* Section 5: Conclusion & Recommendations */}
+      <ConclusionSection T={T} mobile={mobile} probs={probs} />
 
       {/* Footer */}
       <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, textAlign: "center", marginTop: 16, lineHeight: 1.5, padding: "12px 0", borderTop: "1px solid " + T.border }}>

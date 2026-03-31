@@ -13,6 +13,7 @@ import MarketsPg from "./pages/Markets";
 import ResearchPg from "./pages/Research";
 import MacroPg from "./pages/Macro";
 import RiskPg from "./pages/Risk";
+import ScenariosPg from "./pages/ResearchScenarios";
 import WatchPg from "./pages/Watchlist";
 import ClaudePg from "./pages/Claude";
 import SettingsPg from "./pages/Settings";
@@ -60,6 +61,7 @@ function Dashboard({ dark, setDark }) {
     () => <ResearchPg T={T} />,
     () => <MacroPg T={T} />,
     () => <RiskPg T={T} />,
+    () => <ScenariosPg T={T} />,
     () => <WatchPg T={T} />,
     () => <ClaudePg T={T} apiKey={apiKey} />,
     () => <SettingsPg T={T} dark={dark} setDark={setDark} apiKey={apiKey} setApiKey={setApiKey} />,
