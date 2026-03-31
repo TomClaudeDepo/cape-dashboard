@@ -33,30 +33,6 @@ const stats = [
   { label: "Exposure", value: ">97%" },
 ];
 
-const geoData = [
-  { region: "North America", pct: 46 },
-  { region: "Europe", pct: 31 },
-  { region: "APAC ex Japan", pct: 18 },
-  { region: "Japan", pct: 5 },
-];
-
-const sectorData = [
-  { sector: "Information Technology", pct: 24.2 },
-  { sector: "Industrials", pct: 21.6 },
-  { sector: "Financials", pct: 12.7 },
-  { sector: "Health Care", pct: 13.4 },
-  { sector: "Communication Services", pct: 11.1 },
-  { sector: "Consumer Discretionary", pct: 7.7 },
-  { sector: "Materials", pct: 6.6 },
-  { sector: "Utilities", pct: 2.7 },
-];
-
-const themes = [
-  { name: "Digitalization", sub: "AI \u00b7 Semis 2.0 \u00b7 Automation", color: "#4338CA" },
-  { name: "Demographics", sub: "Consumerism \u00b7 Healthcare access \u00b7 EM middle class", color: "#1D4ED8" },
-  { name: "Durability", sub: "Waste & water \u00b7 Electrification \u00b7 Carbon neutrality", color: "#047857" },
-  { name: "Diversifiers", sub: "Hidden value \u00b7 Compounding machines \u00b7 Riding the cycle", color: "#EA580C" },
-];
 
 /* ── component ────────────────────────────────────────────── */
 export default function Passcode({ onUnlock, T }) {
@@ -79,8 +55,6 @@ export default function Passcode({ onUnlock, T }) {
       }, 200);
     }
   };
-
-  const maxBar = Math.max(...sectorData.map(s => s.pct));
 
   return (
     <div style={{ minHeight: "100vh", fontFamily: Fn, background: "#FAFAF8", display: "flex", flexDirection: "column" }}>
@@ -172,137 +146,6 @@ export default function Passcode({ onUnlock, T }) {
                   {item}
                 </div>
               ))}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Thematic exposure ────────────────────────────── */}
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "56px 40px 0", width: "100%", boxSizing: "border-box" }}>
-        <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#9B1B1B", textTransform: "uppercase", fontWeight: 600, marginBottom: 8 }}>Themes</div>
-        <h2 style={{ fontFamily: Serif, fontSize: "clamp(24px, 3vw, 36px)", fontWeight: 400, color: "#1A1214", margin: "0 0 32px", lineHeight: 1.2 }}>
-          Structural tailwinds
-        </h2>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 20 }}>
-          {themes.map((t, i) => (
-            <div key={i} style={{
-              background: "#FFFFFF",
-              borderRadius: 12,
-              padding: "24px",
-              border: "1px solid rgba(0,0,0,0.05)",
-              borderLeft: `3px solid ${t.color}`,
-            }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#1A1214", marginBottom: 6 }}>{t.name}</div>
-              <div style={{ fontSize: 11.5, color: "#94918B", fontWeight: 300, lineHeight: 1.5 }}>{t.sub}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Allocation overview ──────────────────────────── */}
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "56px 40px 0", width: "100%", boxSizing: "border-box" }}>
-        <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#9B1B1B", textTransform: "uppercase", fontWeight: 600, marginBottom: 8 }}>Portfolio Exposure</div>
-        <h2 style={{ fontFamily: Serif, fontSize: "clamp(24px, 3vw, 36px)", fontWeight: 400, color: "#1A1214", margin: "0 0 36px", lineHeight: 1.2 }}>
-          Focused, yet balanced
-        </h2>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 32 }}>
-          {/* Geography */}
-          <div style={{ background: "#FFFFFF", borderRadius: 12, padding: "28px 24px", border: "1px solid rgba(0,0,0,0.05)" }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "#64625D", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 20 }}>Geographic</div>
-            {geoData.map((g, i) => (
-              <div key={i} style={{ marginBottom: 16 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                  <span style={{ fontSize: 12.5, color: "#1A1214", fontWeight: 400 }}>{g.region}</span>
-                  <span style={{ fontSize: 12.5, color: "#64625D", fontWeight: 500 }}>{g.pct}%</span>
-                </div>
-                <div style={{ height: 4, borderRadius: 2, background: "rgba(0,0,0,0.04)" }}>
-                  <div style={{ height: "100%", borderRadius: 2, background: i === 0 ? "#9B1B1B" : i === 1 ? "#C4514F" : i === 2 ? "#D4918F" : "#E0B8B7", width: `${(g.pct / 50) * 100}%`, transition: "width 0.8s ease" }} />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Sector */}
-          <div style={{ background: "#FFFFFF", borderRadius: 12, padding: "28px 24px", border: "1px solid rgba(0,0,0,0.05)" }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "#64625D", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 20 }}>Sector</div>
-            {sectorData.map((s, i) => (
-              <div key={i} style={{ marginBottom: 12 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                  <span style={{ fontSize: 12, color: "#1A1214", fontWeight: 400 }}>{s.sector}</span>
-                  <span style={{ fontSize: 12, color: "#64625D", fontWeight: 500 }}>{s.pct}%</span>
-                </div>
-                <div style={{ height: 3, borderRadius: 2, background: "rgba(0,0,0,0.04)" }}>
-                  <div style={{ height: "100%", borderRadius: 2, background: "#9B1B1B", opacity: 0.3 + 0.7 * (s.pct / maxBar), width: `${(s.pct / maxBar) * 100}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Quality focus ────────────────────────────────── */}
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "56px 40px 0", width: "100%", boxSizing: "border-box" }}>
-        <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#9B1B1B", textTransform: "uppercase", fontWeight: 600, marginBottom: 8 }}>Quality Focus</div>
-        <h2 style={{ fontFamily: Serif, fontSize: "clamp(24px, 3vw, 36px)", fontWeight: 400, color: "#1A1214", margin: "0 0 32px", lineHeight: 1.2 }}>
-          Selecting companies with a competitive edge
-        </h2>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 16 }}>
-          {[
-            { label: "P/E (NTM)", value: "22.0x" },
-            { label: "EV/EBITDA (NTM)", value: "15.1x" },
-            { label: "ROE (LTM)", value: "23.3%" },
-            { label: "Net Margin (LTM)", value: "20.5%" },
-            { label: "FCF Margin (LTM)", value: "37.4%" },
-            { label: "ND/EBITDA (LTM)", value: "1.0x" },
-            { label: "Fwd EPS CAGR (2Y)", value: "18.9%" },
-            { label: "Fwd Rev CAGR (2Y)", value: "10.9%" },
-          ].map((m, i) => (
-            <div key={i} style={{
-              background: "#FFFFFF",
-              borderRadius: 10,
-              padding: "20px 18px",
-              border: "1px solid rgba(0,0,0,0.05)",
-              textAlign: "center",
-            }}>
-              <div style={{ fontSize: 22, fontWeight: 500, color: "#1A1214", marginBottom: 4, fontFamily: Fn }}>{m.value}</div>
-              <div style={{ fontSize: 10, color: "#94918B", letterSpacing: "0.05em", fontWeight: 400 }}>{m.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Fund facts ───────────────────────────────────── */}
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "56px 40px", width: "100%", boxSizing: "border-box" }}>
-        <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#9B1B1B", textTransform: "uppercase", fontWeight: 600, marginBottom: 8 }}>Fund Information</div>
-        <h2 style={{ fontFamily: Serif, fontSize: "clamp(24px, 3vw, 36px)", fontWeight: 400, color: "#1A1214", margin: "0 0 28px", lineHeight: 1.2 }}>
-          Facts &amp; terms
-        </h2>
-
-        <div style={{ background: "#FFFFFF", borderRadius: 12, border: "1px solid rgba(0,0,0,0.05)", overflow: "hidden" }}>
-          {[
-            ["Base Currency", "EUR"],
-            ["Fund Launch Date", "1 June 2015"],
-            ["Liquidity", "Daily (by 3pm CET)"],
-            ["Domicile", "Luxembourg"],
-            ["Fund Type", "SICAV-UCITS"],
-            ["ISIN", "LU1200254495"],
-            ["Depository Bank", "UBS Europe SE, Luxembourg Branch"],
-            ["Independent Auditor", "PwC (Luxembourg)"],
-            ["Swiss Representation", "ACOLIN Fund Services AG, Z\u00fcrich"],
-          ].map(([k, v], i, arr) => (
-            <div key={i} style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "14px 24px",
-              borderBottom: i < arr.length - 1 ? "1px solid rgba(0,0,0,0.04)" : "none",
-              background: i % 2 === 0 ? "transparent" : "rgba(0,0,0,0.015)",
-            }}>
-              <span style={{ fontSize: 12.5, color: "#64625D", fontWeight: 400 }}>{k}</span>
-              <span style={{ fontSize: 12.5, color: "#1A1214", fontWeight: 500, textAlign: "right" }}>{v}</span>
             </div>
           ))}
         </div>
