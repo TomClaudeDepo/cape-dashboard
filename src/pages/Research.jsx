@@ -6,6 +6,7 @@ import ResearchCEG from "./ResearchCEG";
 import ResearchCNI from "./ResearchCNI";
 import ResearchGold from "./ResearchGold";
 import ResearchThematicMap from "./ResearchThematicMap";
+import ResearchThemes from "./ResearchThemes";
 
 const reports = [
   {
@@ -53,6 +54,15 @@ const reports = [
       { l: "Rally", v: "+205%" }, { l: "CB Buying", v: "4,088t" },
     ],
   },
+  {
+    id: "themes10", ticker: "MULTI", name: "Ten Obscure Investable Themes", sector: "Cross-Sector / Thematic",
+    tagline: "Structural mispricings at the intersection of forced capex and zero sell-side coverage",
+    date: "March 2026", type: "Thematic Scan", color: "deepBlue",
+    stats: [
+      { l: "Themes", v: "10" }, { l: "Agg. TAM", v: "$52B" },
+      { l: "Avg. CAGR", v: "13%" }, { l: "Companies", v: "38" },
+    ],
+  },
 ];
 
 const backBtn = (T, setActive) => (
@@ -71,6 +81,7 @@ const reportComponents = {
   ceg: ResearchCEG,
   cni: ResearchCNI,
   gold: ResearchGold,
+  themes10: ResearchThemes,
 };
 
 export default function ResearchPg({ T }) {
