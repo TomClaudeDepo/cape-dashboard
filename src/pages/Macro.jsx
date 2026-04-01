@@ -532,7 +532,7 @@ function RegionPage({ regionKey, T, allData }) {
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
         <div style={{ fontSize: 20, fontWeight: 700, color: color, fontFamily: Fn, letterSpacing: "0.03em" }}>{r.flag}</div>
         <div>
-          <h2 style={{ fontFamily: Fh, fontSize: 20, fontWeight: 400, color: T.text, margin: 0 }}>{r.label}</h2>
+          <h2 style={{ fontFamily: Fh, fontSize: 24, fontWeight: 400, color: T.text, margin: 0 }}>{r.label}</h2>
           <div style={{ fontSize: 9.5, color: T.textTer, marginTop: 1 }}>
             {r.inds.length + " indicators \u00b7 " + r.inds.filter(function (i) { return i.fred; }).length + " FRED series"}
           </div>
@@ -596,7 +596,7 @@ function CompareView({ T, allData }) {
 
   return (
     <div>
-      <h2 style={{ fontFamily: Fh, fontSize: 19, fontWeight: 400, color: T.text, margin: "0 0 3px" }}>
+      <h2 style={{ fontFamily: Fh, fontSize: 24, fontWeight: 400, color: T.text, margin: "0 0 3px" }}>
         Cross-Region <em style={{ fontStyle: "italic", color: T.accent }}>Comparison</em>
       </h2>
       <p style={{ fontSize: 9.5, color: T.textTer, margin: "0 0 14px" }}>Latest values with sparklines across all regions</p>
@@ -677,7 +677,7 @@ export default function MacroDashboard({ T: externalT }) {
       {/* Title */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
         <div>
-          <h1 style={{ fontFamily: Fh, fontSize: 26, fontWeight: 400, fontStyle: "italic", color: T.text, margin: 0, letterSpacing: "-0.02em" }}>
+          <h1 style={{ fontFamily: Fh, fontSize: 36, fontWeight: 400, fontStyle: "italic", color: T.text, margin: 0, letterSpacing: "-0.02em" }}>
             {"Macro "}
             <em style={{ fontStyle: "italic", color: T.accent }}>Monitor</em>
           </h1>

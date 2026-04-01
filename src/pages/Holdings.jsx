@@ -31,7 +31,7 @@ export default function HoldingsPg({ T, onHoldingClick }) {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: Fh, fontSize: 28, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Holdings</h1>
+        <h1 style={{ fontFamily: Fh, fontSize: 36, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Holdings</h1>
         <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>26 positions &middot; as of 20 Mar 2026 &middot; EUR</p>
       </div>
 

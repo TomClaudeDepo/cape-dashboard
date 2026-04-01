@@ -77,7 +77,7 @@ export default function OverviewPg({ T, onHoldingClick }) {
     <div>
       {/* ── Header ── */}
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: Fh, fontSize: 28, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Portfolio Summary</h1>
+        <h1 style={{ fontFamily: Fh, fontSize: 36, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Portfolio Summary</h1>
         <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Cape Equity Fund &middot; LU1200255203 &middot; 26 positions &middot; 30 Mar 2026 &middot; EUR</p>
       </div>
 
