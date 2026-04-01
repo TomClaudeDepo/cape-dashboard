@@ -1,695 +1,459 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef } from "react";
 import { Fn } from "../theme";
 import { Card, Label, Pill } from "../components/shared";
-import { scenarios as defaultScenarios, holdingImpacts, clusters, vulnerabilities } from "../data/research-scenarios";
+import { scenarios, holdingImpacts, clusters } from "../data/research-scenarios";
+import { useMobile } from "../hooks/useMobile";
 
 /* ─── Helpers ─── */
-const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const impactLabel = v => v === 2 ? "Strong ↑" : v === 1 ? "Mild ↑" : v === 0 ? "Neutral" : v === -1 ? "Mild ↓" : "Strong ↓";
 const impactColor = (v, T) => v === 2 ? T.green : v === 1 ? (T.green + "99") : v === 0 ? T.textTer : v === -1 ? (T.orange + "99") : T.capRed;
-const impactBg = (v, T) => v === 2 ? T.greenBg : v === 1 ? (T.green + "0D") : v === 0 ? "transparent" : v === -1 ? (T.orange + "0D") : T.redBg;
 
-const cellColor = (v, isDark) => {
-  if (v === 2) return isDark ? "rgba(52,211,153,0.35)" : "rgba(4,120,87,0.18)";
-  if (v === 1) return isDark ? "rgba(52,211,153,0.15)" : "rgba(4,120,87,0.08)";
+const cellBg = (v, isDark) => {
+  if (v === 2) return isDark ? "rgba(52,211,153,0.32)" : "rgba(4,120,87,0.16)";
+  if (v === 1) return isDark ? "rgba(52,211,153,0.14)" : "rgba(4,120,87,0.07)";
   if (v === 0) return "transparent";
-  if (v === -1) return isDark ? "rgba(251,146,60,0.15)" : "rgba(234,88,12,0.08)";
-  return isDark ? "rgba(239,68,68,0.30)" : "rgba(155,27,27,0.15)";
+  if (v === -1) return isDark ? "rgba(251,146,60,0.14)" : "rgba(234,88,12,0.07)";
+  return isDark ? "rgba(239,68,68,0.28)" : "rgba(155,27,27,0.14)";
 };
 
-const driverIcon = d => d === "up" ? "↑" : d === "down" ? "↓" : d === "dovish" ? "🕊" : d === "hawkish" ? "🦅" : d === "weaker" ? "↘" : d === "stronger" ? "↗" : d === "value" ? "🔄" : "→";
+const cellText = (v, isDark) => {
+  if (v === 2) return isDark ? "#34d399" : "#047857";
+  if (v === 1) return isDark ? "#6ee7b7" : "#059669";
+  if (v === 0) return isDark ? "#6b7280" : "#9ca3af";
+  if (v === -1) return isDark ? "#fdba74" : "#ea580c";
+  return isDark ? "#f87171" : "#b91c1c";
+};
 
-/* ─── Section 1: Probability-Weighted Alpha Summary ─── */
-function AlphaSummary({ scenarios, probs, setProbs, T, mobile }) {
-  const isDark = T.bg !== "#F8F9FC";
-  const weightedAlpha = useMemo(() => {
-    let lo = 0, hi = 0, totalP = 0;
-    scenarios.forEach((s, i) => {
-      const p = probs[s.id] / 100;
-      lo += p * s.alphaRange[0];
-      hi += p * s.alphaRange[1];
-      totalP += probs[s.id];
+const cellSymbol = v => v === 2 ? "▲▲" : v === 1 ? "▲" : v === 0 ? "—" : v === -1 ? "▼" : "▼▼";
+
+/* ─── Aggregate portfolio score per scenario ─── */
+function computeAggregateScores() {
+  const totalWt = holdingImpacts.reduce((s, h) => s + h.wt, 0);
+  return scenarios.map(sc => {
+    let weighted = 0;
+    holdingImpacts.forEach(h => {
+      weighted += (h.wt / totalWt) * (h.impacts[sc.id] || 0);
     });
-    return { lo: Math.round(lo), hi: Math.round(hi), totalP };
-  }, [probs, scenarios]);
+    return { id: sc.id, name: sc.short, icon: sc.icon, color: sc.color, score: weighted };
+  });
+}
 
-  const isNeg = weightedAlpha.hi < 0;
-  const isPos = weightedAlpha.lo > 0;
-  const alphaColor = isNeg ? T.capRed : isPos ? T.green : T.orange;
+/* ─── Section 1: Portfolio Sensitivity Overview ─── */
+function SensitivityOverview({ T }) {
+  const isDark = T.bg !== "#F8F9FC";
+  const scores = useMemo(computeAggregateScores, []);
+  const sorted = [...scores].sort((a, b) => a.score - b.score);
+  const maxAbs = Math.max(...sorted.map(s => Math.abs(s.score)), 0.01);
 
   return (
     <Card T={T} style={{ marginBottom: 24 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
+      <Label T={T}>Portfolio Sensitivity by Narrative</Label>
+      <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 20 }}>
+        Weighted average holding impact · scale −2 (strong negative) to +2 (strong positive)
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {sorted.map(s => {
+          const pct = (s.score / maxAbs) * 100;
+          const isNeg = s.score < 0;
+          const barColor = isNeg
+            ? (s.score < -0.5 ? T.capRed : T.orange)
+            : (s.score > 0.5 ? T.green : (isDark ? "#6ee7b7" : "#059669"));
+          return (
+            <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: Fn }}>
+              <div style={{ width: 22, textAlign: "center", fontSize: 14 }}>{s.icon}</div>
+              <div style={{ width: 100, fontSize: 11, color: T.textSec, flexShrink: 0 }}>{s.name}</div>
+              <div style={{ flex: 1, position: "relative", height: 22, display: "flex", alignItems: "center" }}>
+                {/* center line */}
+                <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: T.border }} />
+                {/* bar */}
+                <div style={{
+                  position: "absolute",
+                  ...(isNeg
+                    ? { right: "50%", width: `${Math.abs(pct) * 0.5}%` }
+                    : { left: "50%", width: `${Math.abs(pct) * 0.5}%` }),
+                  height: 16,
+                  background: barColor,
+                  borderRadius: 3,
+                  opacity: 0.85,
+                  transition: "width 0.4s ease",
+                }} />
+              </div>
+              <div style={{
+                width: 48, textAlign: "right", fontSize: 12, fontWeight: 600,
+                color: isNeg ? T.capRed : T.green, fontFamily: Fn,
+              }}>
+                {s.score > 0 ? "+" : ""}{s.score.toFixed(2)}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+}
+
+/* ─── Section 2: Heat Map Matrix ─── */
+function HeatMap({ T, onSelectScenario, mobile }) {
+  const isDark = T.bg !== "#F8F9FC";
+  const [tooltip, setTooltip] = useState(null);
+  const matRef = useRef(null);
+
+  // Sort holdings by weight descending
+  const sorted = useMemo(() => [...holdingImpacts].sort((a, b) => b.wt - a.wt), []);
+
+  const headerH = 72;
+  const rowH = 32;
+  const nameW = mobile ? 80 : 110;
+  const cellW = mobile ? 38 : 52;
+
+  return (
+    <Card T={T} style={{ marginBottom: 24, overflow: "hidden" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
         <div>
-          <Label T={T}>Probability-Weighted Portfolio Alpha vs ACWI</Label>
-          <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4 }}>Adjust scenario probabilities with sliders · 6–12 month horizon</div>
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 28, fontWeight: 700, fontFamily: Fn, color: alphaColor, letterSpacing: "-0.03em" }}>
-            {weightedAlpha.lo > 0 ? "+" : ""}{weightedAlpha.lo} to {weightedAlpha.hi > 0 ? "+" : ""}{weightedAlpha.hi} bps
-          </div>
-          <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>
-            {weightedAlpha.totalP !== 100 && <span style={{ color: T.orange }}>⚠ Probabilities sum to {weightedAlpha.totalP}% </span>}
-            {weightedAlpha.totalP === 100 && "Probabilities sum to 100%"}
+          <Label T={T}>Holding × Narrative Sensitivity Matrix</Label>
+          <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4 }}>
+            Click a column header to expand narrative detail
           </div>
         </div>
-      </div>
-
-      {/* Scenario bars + sliders */}
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 12 }}>
-        {scenarios.map(s => {
-          const midAlpha = (s.alphaRange[0] + s.alphaRange[1]) / 2;
-          const pctContrib = ((probs[s.id] / 100) * midAlpha);
-          return (
-            <div key={s.id} style={{ padding: 12, borderRadius: T.radiusSm, background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.015)", border: "1px solid " + T.border }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ fontSize: 14 }}>{s.icon}</span>
-                  <span style={{ fontSize: 12, fontWeight: 600, fontFamily: Fn, color: T.text }}>{s.short}</span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 11, fontFamily: Fn, color: midAlpha >= 0 ? T.green : T.capRed, fontWeight: 600, fontFeatureSettings: '"tnum"' }}>
-                    {midAlpha >= 0 ? "+" : ""}{Math.round(midAlpha)} bps
-                  </span>
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <input
-                  type="range" min="0" max="50" value={probs[s.id]}
-                  onChange={e => setProbs(p => ({ ...p, [s.id]: parseInt(e.target.value) }))}
-                  style={{ flex: 1, accentColor: s.color, height: 4 }}
-                />
-                <span style={{ fontSize: 12, fontWeight: 700, fontFamily: Fn, color: s.color, minWidth: 32, textAlign: "right", fontFeatureSettings: '"tnum"' }}>
-                  {probs[s.id]}%
-                </span>
-              </div>
-              <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 4 }}>
-                Contribution: <span style={{ color: pctContrib >= 0 ? T.green : T.capRed, fontWeight: 600 }}>{pctContrib >= 0 ? "+" : ""}{Math.round(pctContrib)} bps</span>
-              </div>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {[
+            { v: 2, l: "Strong ↑" }, { v: 1, l: "Mild ↑" }, { v: 0, l: "Neutral" },
+            { v: -1, l: "Mild ↓" }, { v: -2, l: "Strong ↓" },
+          ].map(({ v, l }) => (
+            <div key={v} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, fontFamily: Fn, color: T.textTer }}>
+              <div style={{ width: 12, height: 12, borderRadius: 2, background: cellBg(v, isDark), border: `1px solid ${T.border}` }} />
+              {l}
             </div>
-          );
-        })}
-      </div>
-    </Card>
-  );
-}
-
-/* ─── Section 2: Correlation Clusters ─── */
-function CorrelationClusters({ activeCluster, setActiveCluster, T, mobile }) {
-  const isDark = T.bg !== "#F8F9FC";
-
-  return (
-    <Card T={T} style={{ marginBottom: 24 }}>
-      <Label T={T}>Hidden Correlation Clusters</Label>
-      <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 16 }}>
-        Click a cluster to highlight its holdings across the page · Exposures that look diversified but move together under stress
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(5, 1fr)", gap: 10, marginBottom: 16 }}>
-        {clusters.map(c => {
-          const isActive = activeCluster === c.id;
-          return (
-            <div
-              key={c.id}
-              onClick={() => setActiveCluster(isActive ? null : c.id)}
-              style={{
-                padding: 12, borderRadius: T.radiusSm, cursor: "pointer",
-                border: `2px solid ${isActive ? c.color : T.border}`,
-                background: isActive ? (c.color + (isDark ? "22" : "0A")) : (isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.01)"),
-                transition: "all 0.2s",
-              }}
-            >
-              <div style={{ fontSize: 11, fontWeight: 700, fontFamily: Fn, color: isActive ? c.color : T.text, marginBottom: 4 }}>{c.name}</div>
-              <div style={{ fontSize: 20, fontWeight: 800, fontFamily: Fn, color: c.color, marginBottom: 2 }}>{c.weight}%</div>
-              <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>{c.tickers.length} names</div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Active cluster detail */}
-      {activeCluster && (() => {
-        const c = clusters.find(cl => cl.id === activeCluster);
-        return (
-          <div style={{ padding: 14, borderRadius: T.radiusSm, background: c.color + (isDark ? "15" : "08"), border: `1px solid ${c.color}40`, marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, fontFamily: Fn, color: c.color, marginBottom: 6 }}>{c.name}</div>
-            <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.5, marginBottom: 8 }}>{c.description}</div>
-            <div style={{ fontSize: 11, fontFamily: Fn, color: T.text }}>
-              <span style={{ fontWeight: 600, color: T.capRed }}>Key risk:</span> {c.keyRisk}
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 8 }}>
-              {c.tickers.map(t => {
-                const h = holdingImpacts.find(hi => hi.ticker === t);
-                return (
-                  <span key={t} style={{
-                    fontSize: 10, fontFamily: Fn, fontWeight: 600,
-                    padding: "2px 8px", borderRadius: 4,
-                    background: c.color + "20", color: c.color,
-                  }}>
-                    {h?.name || t}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* Structural vulnerabilities */}
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(5, 1fr)", gap: 8, marginTop: 12 }}>
-        {vulnerabilities.map((v, i) => (
-          <div key={i} style={{
-            padding: 10, borderRadius: T.radiusSm,
-            background: v.severity === "high" ? T.redBg : (T.orange + "0D"),
-            border: `1px solid ${v.severity === "high" ? T.capRed + "30" : T.orange + "30"}`,
-          }}>
-            <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginBottom: 2 }}>{v.label}</div>
-            <div style={{ fontSize: 16, fontWeight: 800, fontFamily: Fn, color: v.severity === "high" ? T.capRed : T.orange }}>{v.value}</div>
-            <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn, marginTop: 2, lineHeight: 1.3 }}>{v.detail}</div>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-}
-
-/* ─── Section 3: Scenario Deep Dive ─── */
-function ScenarioDeepDive({ scenarios, probs, activeCluster, T, mobile }) {
-  const [activeScenario, setActiveScenario] = useState("goldilocks");
-  const isDark = T.bg !== "#F8F9FC";
-  const s = scenarios.find(sc => sc.id === activeScenario);
-
-  // Sort holdings by impact for this scenario (worst to best)
-  const sorted = useMemo(() =>
-    [...holdingImpacts].sort((a, b) => b.impacts[activeScenario] - a.impacts[activeScenario]),
-    [activeScenario]
-  );
-
-  return (
-    <Card T={T} style={{ marginBottom: 24 }}>
-      <Label T={T}>Scenario Deep Dive</Label>
-      <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 14 }}>
-        Select a scenario to see the full narrative, macro drivers, and position-level impact assessment
-      </div>
-
-      {/* Scenario tabs */}
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 }}>
-        {scenarios.map(sc => {
-          const isActive = activeScenario === sc.id;
-          return (
-            <button
-              key={sc.id}
-              onClick={() => setActiveScenario(sc.id)}
-              style={{
-                padding: "6px 14px", borderRadius: T.radiusSm,
-                border: `1.5px solid ${isActive ? sc.color : T.border}`,
-                background: isActive ? (sc.color + (isDark ? "25" : "10")) : "transparent",
-                color: isActive ? sc.color : T.textSec,
-                fontSize: 11, fontWeight: isActive ? 700 : 500, fontFamily: Fn,
-                cursor: "pointer", transition: "all 0.15s",
-                display: "flex", alignItems: "center", gap: 5,
-              }}
-            >
-              <span style={{ fontSize: 12 }}>{sc.icon}</span>
-              {sc.short}
-              <span style={{ fontSize: 9, opacity: 0.7 }}>{probs[sc.id]}%</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {s && (
-        <div>
-          {/* Scenario header */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
-            <div style={{ flex: 1, minWidth: 240 }}>
-              <div style={{ fontSize: 16, fontWeight: 700, fontFamily: Fn, color: s.color, marginBottom: 6 }}>
-                {s.icon} {s.name}
-              </div>
-              <div style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.6, marginBottom: 10 }}>
-                {s.narrative}
-              </div>
-              <div style={{ fontSize: 11, color: T.text, fontFamily: Fn, lineHeight: 1.5, padding: 10, borderRadius: T.radiusSm, background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)", borderLeft: `3px solid ${s.color}` }}>
-                <span style={{ fontWeight: 600 }}>Portfolio thesis test: </span>{s.thesis}
-              </div>
-            </div>
-
-            {/* Macro drivers + alpha */}
-            <div style={{ minWidth: 200 }}>
-              <div style={{ fontSize: 24, fontWeight: 800, fontFamily: Fn, color: s.alphaRange[0] >= 0 ? T.green : T.capRed, letterSpacing: "-0.02em", marginBottom: 8, textAlign: "right" }}>
-                {s.alphaRange[0] >= 0 ? "+" : ""}{s.alphaRange[0]} to {s.alphaRange[1] >= 0 ? "+" : ""}{s.alphaRange[1]} bps
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-                {s.drivers.map((d, i) => (
-                  <div key={i} style={{ padding: 6, borderRadius: 6, background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.015)", textAlign: "center" }}>
-                    <div style={{ fontSize: 14 }}>{driverIcon(d.direction)}</div>
-                    <div style={{ fontSize: 9, fontWeight: 700, fontFamily: Fn, color: T.text }}>{d.label}</div>
-                    <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn }}>{d.detail}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Holdings impact for this scenario */}
-          <div style={{ fontSize: 11, fontWeight: 600, fontFamily: Fn, color: T.text, marginBottom: 8 }}>Position-Level Impact</div>
-          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 6 }}>
-            {sorted.map(h => {
-              const impact = h.impacts[activeScenario];
-              const rationale = h.rationale[activeScenario];
-              const inCluster = activeCluster && clusters.find(c => c.id === activeCluster)?.tickers.includes(h.ticker);
-              const clusterC = activeCluster ? clusters.find(c => c.id === activeCluster) : null;
-              return (
-                <div key={h.ticker} style={{
-                  display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 10px", borderRadius: 6,
-                  background: cellColor(impact, isDark),
-                  border: inCluster ? `1.5px solid ${clusterC.color}` : "1px solid transparent",
-                  transition: "all 0.2s",
-                }}>
-                  <div style={{ minWidth: 90 }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, fontFamily: Fn, color: T.text }}>{h.name}</div>
-                    <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>{h.wt}%</div>
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, lineHeight: 1.4 }}>{rationale}</div>
-                  </div>
-                  <div style={{
-                    fontSize: 10, fontWeight: 700, fontFamily: Fn, minWidth: 52, textAlign: "right",
-                    color: impactColor(impact, T),
-                  }}>
-                    {impactLabel(impact)}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          ))}
         </div>
-      )}
-    </Card>
-  );
-}
-
-/* ─── Section 4: Holdings Sensitivity Matrix ─── */
-function SensitivityMatrix({ scenarios, activeCluster, T, mobile }) {
-  const [hovCell, setHovCell] = useState(null);
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
-  const matrixRef = useRef(null);
-  const isDark = T.bg !== "#F8F9FC";
-
-  // Sort by weighted sensitivity (most volatile first)
-  const sorted = useMemo(() => {
-    return [...holdingImpacts].sort((a, b) => {
-      const volA = Object.values(a.impacts).reduce((s, v) => s + Math.abs(v), 0);
-      const volB = Object.values(b.impacts).reduce((s, v) => s + Math.abs(v), 0);
-      return volB - volA;
-    });
-  }, []);
-
-  const handleMouseMove = (e, ticker, scenarioId) => {
-    if (matrixRef.current) {
-      const rect = matrixRef.current.getBoundingClientRect();
-      setTooltipPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    }
-    setHovCell({ ticker, scenarioId });
-  };
-
-  const hovData = hovCell ? (() => {
-    const h = holdingImpacts.find(hi => hi.ticker === hovCell.ticker);
-    if (!h) return null;
-    return { name: h.name, impact: h.impacts[hovCell.scenarioId], rationale: h.rationale[hovCell.scenarioId] };
-  })() : null;
-
-  if (mobile) {
-    return (
-      <Card T={T}>
-        <Label T={T}>Holdings Sensitivity Matrix</Label>
-        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 12 }}>
-          Rotate device for full matrix view. Showing top 10 most scenario-sensitive holdings.
-        </div>
-        {sorted.slice(0, 10).map(h => {
-          const inCluster = activeCluster && clusters.find(c => c.id === activeCluster)?.tickers.includes(h.ticker);
-          return (
-            <div key={h.ticker} style={{ marginBottom: 10, padding: 8, borderRadius: 6, border: inCluster ? `1.5px solid ${clusters.find(c => c.id === activeCluster)?.color}` : `1px solid ${T.border}` }}>
-              <div style={{ fontSize: 11, fontWeight: 700, fontFamily: Fn, color: T.text, marginBottom: 4 }}>{h.name} ({h.wt}%)</div>
-              <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                {scenarios.map(s => (
-                  <div key={s.id} style={{
-                    padding: "3px 8px", borderRadius: 4, fontSize: 9, fontFamily: Fn,
-                    background: cellColor(h.impacts[s.id], isDark),
-                    color: impactColor(h.impacts[s.id], T), fontWeight: 600,
-                  }}>
-                    {s.icon} {impactLabel(h.impacts[s.id])}
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </Card>
-    );
-  }
-
-  return (
-    <Card T={T}>
-      <Label T={T}>Holdings Sensitivity Matrix</Label>
-      <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 14 }}>
-        Hover any cell for the rationale · Sorted by scenario sensitivity (most volatile first) · Cluster-highlighted holdings have a colored border
       </div>
 
-      <div ref={matrixRef} style={{ position: "relative", overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 2, fontFamily: Fn, fontSize: 10 }}>
+      <div ref={matRef} style={{ overflowX: "auto", position: "relative" }}>
+        <table style={{ borderCollapse: "collapse", fontFamily: Fn, fontSize: mobile ? 10 : 11, minWidth: nameW + scenarios.length * cellW + 10 }}>
           <thead>
             <tr>
-              <th style={{ textAlign: "left", padding: "6px 8px", fontSize: 10, fontWeight: 700, color: T.textTer, position: "sticky", left: 0, background: T.card, zIndex: 2, minWidth: 110 }}>Holding</th>
-              <th style={{ textAlign: "center", padding: "6px 4px", fontSize: 10, fontWeight: 700, color: T.textTer, minWidth: 36 }}>Wt%</th>
-              {scenarios.map(s => (
-                <th key={s.id} style={{ textAlign: "center", padding: "6px 4px", fontSize: 9, fontWeight: 700, color: s.color, minWidth: 70 }}>
-                  <span style={{ fontSize: 12 }}>{s.icon}</span><br />{s.short}
+              <th style={{ width: nameW, textAlign: "left", padding: "4px 6px", color: T.textTer, fontWeight: 500, fontSize: 10, verticalAlign: "bottom", height: headerH, position: "sticky", left: 0, background: T.card, zIndex: 2 }}>
+                Holding
+              </th>
+              {scenarios.map(sc => (
+                <th key={sc.id} style={{
+                  width: cellW, padding: "4px 2px", textAlign: "center", verticalAlign: "bottom", height: headerH, cursor: "pointer",
+                }} onClick={() => onSelectScenario(sc.id)}>
+                  <div style={{ writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 10, color: T.textSec, fontWeight: 500, whiteSpace: "nowrap", lineHeight: 1.2 }}>
+                    {sc.icon} {sc.short}
+                  </div>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {sorted.map(h => {
-              const inCluster = activeCluster && clusters.find(c => c.id === activeCluster)?.tickers.includes(h.ticker);
-              const clusterC = activeCluster ? clusters.find(c => c.id === activeCluster) : null;
-              return (
-                <tr key={h.ticker}>
-                  <td style={{
-                    padding: "5px 8px", fontWeight: 600, color: T.text, position: "sticky", left: 0, background: T.card, zIndex: 1,
-                    borderLeft: inCluster ? `3px solid ${clusterC.color}` : "3px solid transparent",
-                  }}>
-                    {h.name}
-                  </td>
-                  <td style={{ textAlign: "center", padding: "5px 4px", color: T.textTer, fontFeatureSettings: '"tnum"' }}>{h.wt}</td>
-                  {scenarios.map(s => {
-                    const v = h.impacts[s.id];
-                    const isHov = hovCell?.ticker === h.ticker && hovCell?.scenarioId === s.id;
-                    return (
-                      <td
-                        key={s.id}
-                        onMouseMove={e => handleMouseMove(e, h.ticker, s.id)}
-                        onMouseLeave={() => setHovCell(null)}
-                        style={{
-                          textAlign: "center", padding: "5px 4px", cursor: "pointer",
-                          background: cellColor(v, isDark),
-                          borderRadius: 4,
-                          color: impactColor(v, T),
-                          fontWeight: 700,
-                          outline: isHov ? `2px solid ${T.text}` : "none",
-                          transition: "outline 0.1s",
-                        }}
-                      >
-                        {v === 2 ? "▲▲" : v === 1 ? "▲" : v === 0 ? "—" : v === -1 ? "▼" : "▼▼"}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
+            {sorted.map((h, ri) => (
+              <tr key={h.ticker} style={{ borderTop: `1px solid ${T.border}22` }}>
+                <td style={{
+                  padding: "4px 6px", fontWeight: 500, color: T.text, fontSize: mobile ? 9 : 10,
+                  whiteSpace: "nowrap", position: "sticky", left: 0, background: T.card, zIndex: 1,
+                }}>
+                  {h.name}
+                  <span style={{ color: T.textTer, fontWeight: 400, marginLeft: 4 }}>{h.wt.toFixed(1)}%</span>
+                </td>
+                {scenarios.map(sc => {
+                  const v = h.impacts[sc.id] || 0;
+                  const key = `${h.ticker}-${sc.id}`;
+                  return (
+                    <td key={sc.id} style={{
+                      textAlign: "center", padding: 2, height: rowH, position: "relative",
+                    }}
+                      onMouseEnter={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const matRect = matRef.current?.getBoundingClientRect() || { left: 0, top: 0 };
+                        setTooltip({
+                          key, text: h.rationale[sc.id],
+                          label: `${h.name} × ${sc.short}: ${impactLabel(v)}`,
+                          x: rect.left - matRect.left + rect.width / 2,
+                          y: rect.top - matRect.top - 4,
+                        });
+                      }}
+                      onMouseLeave={() => setTooltip(null)}
+                    >
+                      <div style={{
+                        width: "100%", height: rowH - 4, borderRadius: 3,
+                        background: cellBg(v, isDark),
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        color: cellText(v, isDark), fontSize: mobile ? 9 : 10, fontWeight: 600,
+                        transition: "background 0.2s",
+                      }}>
+                        {cellSymbol(v)}
+                      </div>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
           </tbody>
         </table>
 
-        {/* Floating tooltip */}
-        {hovData && hovCell && (
+        {/* Tooltip */}
+        {tooltip && !mobile && (
           <div style={{
-            position: "absolute",
-            left: clamp(tooltipPos.x + 12, 0, (matrixRef.current?.offsetWidth || 600) - 260),
-            top: tooltipPos.y - 70,
-            width: 240, padding: 10, borderRadius: T.radiusSm,
-            background: isDark ? "rgba(17,17,19,0.95)" : "rgba(255,255,255,0.97)",
-            boxShadow: T.shadowLg, border: "1px solid " + T.border,
-            zIndex: 10, pointerEvents: "none",
+            position: "absolute", left: tooltip.x, top: tooltip.y,
+            transform: "translate(-50%, -100%)",
+            background: isDark ? "#1f2937" : "#fff",
+            border: `1px solid ${T.border}`,
+            borderRadius: 6, padding: "8px 12px", maxWidth: 280,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)", zIndex: 10,
+            pointerEvents: "none",
           }}>
-            <div style={{ fontSize: 11, fontWeight: 700, fontFamily: Fn, color: T.text, marginBottom: 4 }}>
-              {hovData.name} · <span style={{ color: impactColor(hovData.impact, T) }}>{impactLabel(hovData.impact)}</span>
-            </div>
-            <div style={{ fontSize: 10, color: T.textSec, fontFamily: Fn, lineHeight: 1.4 }}>{hovData.rationale}</div>
+            <div style={{ fontSize: 10, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 4 }}>{tooltip.label}</div>
+            <div style={{ fontSize: 10, color: T.textSec, fontFamily: Fn, lineHeight: 1.5 }}>{tooltip.text}</div>
           </div>
         )}
-      </div>
-
-      {/* Legend */}
-      <div style={{ display: "flex", gap: 14, marginTop: 12, justifyContent: "center", flexWrap: "wrap" }}>
-        {[
-          { v: 2, label: "Strong Tailwind" }, { v: 1, label: "Mild Tailwind" }, { v: 0, label: "Neutral" },
-          { v: -1, label: "Mild Headwind" }, { v: -2, label: "Strong Headwind" },
-        ].map(({ v, label }) => (
-          <div key={v} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <div style={{ width: 14, height: 14, borderRadius: 3, background: cellColor(v, isDark) }} />
-            <span style={{ fontSize: 9, fontFamily: Fn, color: T.textTer }}>{label}</span>
-          </div>
-        ))}
       </div>
     </Card>
   );
 }
 
-/* ─── Section 5: Conclusion & Recommendations ─── */
-const recommendations = [
-  {
-    id: "energy",
-    title: "Add 2–3% Energy Allocation",
-    urgency: "High",
-    urgencyColor: "#DC2626",
-    rationale: "The portfolio has zero energy exposure during the most severe supply disruption since 1973. Brent is at $110–116/bbl with Hormuz partially blocked. The ACWI benchmark carries ~4.5% energy — every further dollar oil rises, the portfolio underperforms by the energy sector's outperformance alone.",
-    implementation: "Consider energy majors with integrated downstream operations (insulated from crude-only volatility) or energy call options / ETF overlay. Even a 2–3% allocation would materially reduce stagflation scenario severity from -700bps to roughly -500bps without meaningfully diluting the growth thesis.",
-    impact: "Reduces Stagflation scenario underperformance by ~200bps",
-  },
-  {
-    id: "taiwan",
-    title: "Hedge Taiwan Concentration Risk",
-    urgency: "High",
-    urgencyColor: "#DC2626",
-    rationale: "TSMC (4.71%) plus TSMC-dependent names (NVIDIA 4.63%, Broadcom 1.92%) equals ~11% of the portfolio with a single geographic point of failure. PLA activity around Taiwan has escalated — Justice Mission 2025 deployed 100+ aircraft crossing the median line. Insurance rates for Taiwan-bound shipping are rising.",
-    implementation: "Either trim TSMC by 100–150bps (reallocating to Samsung or US-fabbed alternatives) or implement tail-risk hedging via put spreads on TSM. Cost of 5% OTM 6-month puts is currently reasonable given depressed implied vol on semis relative to realized.",
-    impact: "Reduces Taiwan Crisis tail risk from -1500bps to roughly -1000bps",
-  },
-  {
-    id: "rebalance",
-    title: "Strengthen Defensive Ballast",
-    urgency: "Medium",
-    urgencyColor: "#EA580C",
-    rationale: "ICE is the portfolio's best all-weather holding — it outperforms in four of six scenarios (volatility drives exchange volumes). Pfizer at 6.2% yield and 9x earnings is deeply defensive. Both are well-sized but could absorb 100–200bps more from the most vulnerable European industrials (Akzo Nobel at 1.55% with -15% unrealised loss is the weakest link).",
-    implementation: "Trim Akzo Nobel (1.55%) and reduce Volvo by 50–100bps. Reallocate to ICE (+100bps) and Pfizer (+50–100bps). This shifts ~200bps from the most scenario-sensitive cyclicals to the most all-weather defensives.",
-    impact: "Improves risk-adjusted return across 4 of 6 scenarios",
-  },
-];
+/* ─── Section 3: Narrative Detail Cards ─── */
+function NarrativeDetails({ T, activeScenario, setActiveScenario, mobile }) {
+  const isDark = T.bg !== "#F8F9FC";
 
-const conclusions = [
-  {
-    label: "The portfolio's dominant bet",
-    text: "AI infrastructure and secular growth in a benign macro environment — a bet now facing its most serious stress test since inception. The Iran war, Hormuz closure, elevated tariff uncertainty, and compressed equity multiples have shifted the risk landscape dramatically.",
-  },
-  {
-    label: "Probability-weighted expected alpha is modestly negative",
-    text: "Roughly -50 to -150bps, driven by the asymmetry between upside scenarios (moderate outperformance) and downside scenarios (severe underperformance in tail events). The portfolio wins in a specific environment and loses disproportionately when that environment breaks.",
-  },
-  {
-    label: "ICE is the portfolio's best all-weather holding",
-    text: "It outperforms in four of six scenarios. By contrast, NVIDIA — despite being the highest-conviction AI bet — is the most scenario-sensitive holding: a massive winner in the AI Boom but a massive loser in three downside scenarios.",
-  },
-  {
-    label: "The portfolio is well-constructed for its intended purpose",
-    text: "Capturing secular AI-driven growth through high-conviction holdings. But it is entering its most challenging risk environment since construction. The three recommendations above would meaningfully improve the risk-adjusted profile without dismantling the core thesis.",
-  },
-];
+  // Compute per-scenario holding impacts sorted by magnitude
+  const holdingsByScenario = useMemo(() => {
+    const map = {};
+    scenarios.forEach(sc => {
+      map[sc.id] = [...holdingImpacts]
+        .map(h => ({ ...h, impact: h.impacts[sc.id] || 0, rat: h.rationale[sc.id] || "" }))
+        .sort((a, b) => b.impact - a.impact || b.wt - a.wt);
+    });
+    return map;
+  }, []);
 
-function ConclusionSection({ T, mobile, probs }) {
+  return (
+    <Card T={T} style={{ marginBottom: 24 }}>
+      <Label T={T}>Narrative Detail</Label>
+      <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 16 }}>
+        Select a narrative to see triggers, indicators, and per-holding rationale
+      </div>
+
+      {/* Tabs */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
+        {scenarios.map(sc => {
+          const active = activeScenario === sc.id;
+          return (
+            <button key={sc.id} onClick={() => setActiveScenario(sc.id)} style={{
+              padding: "6px 12px", borderRadius: 6, fontSize: 11, fontFamily: Fn, fontWeight: active ? 600 : 400,
+              background: active ? (sc.color + "1A") : "transparent",
+              border: `1px solid ${active ? sc.color : T.border}`,
+              color: active ? sc.color : T.textSec,
+              cursor: "pointer", transition: "all 0.2s",
+              display: "flex", alignItems: "center", gap: 4,
+            }}>
+              <span>{sc.icon}</span> {sc.short}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Active scenario detail */}
+      {(() => {
+        const sc = scenarios.find(s => s.id === activeScenario);
+        if (!sc) return null;
+        const holdings = holdingsByScenario[sc.id] || [];
+        const winners = holdings.filter(h => h.impact > 0);
+        const losers = holdings.filter(h => h.impact < 0);
+        const neutral = holdings.filter(h => h.impact === 0);
+
+        return (
+          <div>
+            {/* Header */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <span style={{ fontSize: 28 }}>{sc.icon}</span>
+              <div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: Fn }}>{sc.name}</div>
+                <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn }}>Horizon: {sc.horizon}</div>
+              </div>
+            </div>
+
+            {/* Summary */}
+            <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 20px 0" }}>
+              {sc.summary}
+            </p>
+
+            {/* Triggers & Indicators side by side */}
+            <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 24 }}>
+              <div style={{ background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)", borderRadius: 8, padding: 14, border: `1px solid ${T.border}44` }}>
+                <div style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
+                  Triggers / Validation
+                </div>
+                {sc.triggers.map((t, i) => (
+                  <div key={i} style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6, marginBottom: 4, paddingLeft: 12, position: "relative" }}>
+                    <span style={{ position: "absolute", left: 0, color: sc.color }}>›</span>
+                    {t}
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)", borderRadius: 8, padding: 14, border: `1px solid ${T.border}44` }}>
+                <div style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
+                  Indicators to Watch
+                </div>
+                {sc.indicators.map((ind, i) => (
+                  <div key={i} style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6, marginBottom: 4, paddingLeft: 12, position: "relative" }}>
+                    <span style={{ position: "absolute", left: 0, color: T.textTer }}>•</span>
+                    {ind}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Winners / Losers / Neutral */}
+            <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr 1fr", gap: 12 }}>
+              {/* Winners */}
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 600, color: T.green, fontFamily: Fn, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
+                  Beneficiaries ({winners.length})
+                </div>
+                {winners.map(h => (
+                  <div key={h.ticker} style={{
+                    display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 8,
+                    padding: "6px 8px", borderRadius: 6, background: cellBg(h.impact, isDark),
+                  }}>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: T.text, fontFamily: Fn }}>
+                        {h.name}
+                        <span style={{ fontWeight: 400, color: cellText(h.impact, isDark), marginLeft: 6 }}>
+                          {impactLabel(h.impact)}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 2, lineHeight: 1.5 }}>
+                        {h.rat}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Losers */}
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 600, color: T.capRed, fontFamily: Fn, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
+                  Headwinds ({losers.length})
+                </div>
+                {losers.map(h => (
+                  <div key={h.ticker} style={{
+                    display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 8,
+                    padding: "6px 8px", borderRadius: 6, background: cellBg(h.impact, isDark),
+                  }}>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: T.text, fontFamily: Fn }}>
+                        {h.name}
+                        <span style={{ fontWeight: 400, color: cellText(h.impact, isDark), marginLeft: 6 }}>
+                          {impactLabel(h.impact)}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 2, lineHeight: 1.5 }}>
+                        {h.rat}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Neutral */}
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
+                  Neutral ({neutral.length})
+                </div>
+                {neutral.map(h => (
+                  <div key={h.ticker} style={{
+                    display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 8,
+                    padding: "6px 8px", borderRadius: 6, background: cellBg(0, isDark),
+                    border: `1px solid ${T.border}33`,
+                  }}>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: T.text, fontFamily: Fn }}>
+                        {h.name}
+                        <span style={{ fontWeight: 400, color: T.textTer, marginLeft: 6 }}>Neutral</span>
+                      </div>
+                      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 2, lineHeight: 1.5 }}>
+                        {h.rat}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+    </Card>
+  );
+}
+
+/* ─── Section 4: Cluster Risk Summary ─── */
+function ClusterSummary({ T }) {
   const isDark = T.bg !== "#F8F9FC";
 
   return (
-    <div style={{ marginBottom: 24 }}>
-      {/* Conclusion */}
-      <Card T={T} style={{ marginBottom: 16 }}>
-        <Label T={T}>Conclusion</Label>
-        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 16 }}>
-          What the scenario analysis reveals about the portfolio's positioning and implicit bets
-        </div>
-
-        <div style={{ display: "grid", gap: 12 }}>
-          {conclusions.map((c, i) => (
-            <div key={i} style={{
-              padding: 14, borderRadius: T.radiusSm,
-              background: isDark ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.012)",
-              borderLeft: `3px solid ${i === 0 ? T.capRed : i === 1 ? T.orange : i === 2 ? T.green : T.deepBlue}`,
+    <Card T={T} style={{ marginBottom: 24 }}>
+      <Label T={T}>Correlation Clusters</Label>
+      <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 16 }}>
+        Holdings that move together under stress — regardless of GICS sector labels
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+        {clusters.map(c => {
+          // compute cluster weight
+          const clusterWt = holdingImpacts.filter(h => c.tickers.includes(h.ticker)).reduce((s, h) => s + h.wt, 0);
+          return (
+            <div key={c.id} style={{
+              padding: 14, borderRadius: 8,
+              border: `1px solid ${c.color}33`,
+              background: c.color + "0A",
             }}>
-              <div style={{ fontSize: 12, fontWeight: 700, fontFamily: Fn, color: T.text, marginBottom: 4 }}>{c.label}</div>
-              <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>{c.text}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Summary table */}
-        <div style={{ marginTop: 16, padding: 14, borderRadius: T.radiusSm, background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.018)" }}>
-          <div style={{ fontSize: 11, fontWeight: 700, fontFamily: Fn, color: T.text, marginBottom: 10 }}>Scenario Alpha Summary (current probability weights)</div>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: Fn, fontSize: 11 }}>
-            <thead>
-              <tr>
-                <th style={{ textAlign: "left", padding: "4px 8px", fontSize: 10, fontWeight: 600, color: T.textTer, borderBottom: `1px solid ${T.border}` }}>Scenario</th>
-                <th style={{ textAlign: "center", padding: "4px 8px", fontSize: 10, fontWeight: 600, color: T.textTer, borderBottom: `1px solid ${T.border}` }}>Prob.</th>
-                <th style={{ textAlign: "right", padding: "4px 8px", fontSize: 10, fontWeight: 600, color: T.textTer, borderBottom: `1px solid ${T.border}` }}>Alpha vs ACWI</th>
-                <th style={{ textAlign: "right", padding: "4px 8px", fontSize: 10, fontWeight: 600, color: T.textTer, borderBottom: `1px solid ${T.border}` }}>Contribution</th>
-              </tr>
-            </thead>
-            <tbody>
-              {defaultScenarios.map(s => {
-                const mid = (s.alphaRange[0] + s.alphaRange[1]) / 2;
-                const p = probs[s.id];
-                const contrib = (p / 100) * mid;
-                return (
-                  <tr key={s.id}>
-                    <td style={{ padding: "5px 8px", color: T.text, fontWeight: 500 }}>
-                      <span style={{ fontSize: 12, marginRight: 4 }}>{s.icon}</span>{s.short}
-                    </td>
-                    <td style={{ textAlign: "center", padding: "5px 8px", color: s.color, fontWeight: 700, fontFeatureSettings: '"tnum"' }}>{p}%</td>
-                    <td style={{ textAlign: "right", padding: "5px 8px", color: mid >= 0 ? T.green : T.capRed, fontWeight: 600, fontFeatureSettings: '"tnum"' }}>
-                      {s.alphaRange[0] >= 0 ? "+" : ""}{s.alphaRange[0]} to {s.alphaRange[1] >= 0 ? "+" : ""}{s.alphaRange[1]} bps
-                    </td>
-                    <td style={{ textAlign: "right", padding: "5px 8px", color: contrib >= 0 ? T.green : T.capRed, fontWeight: 600, fontFeatureSettings: '"tnum"' }}>
-                      {contrib >= 0 ? "+" : ""}{Math.round(contrib)} bps
-                    </td>
-                  </tr>
-                );
-              })}
-              <tr style={{ borderTop: `2px solid ${T.border}` }}>
-                <td colSpan={3} style={{ padding: "6px 8px", fontWeight: 700, color: T.text }}>Probability-Weighted Expected Alpha</td>
-                <td style={{ textAlign: "right", padding: "6px 8px", fontWeight: 800, fontSize: 13, fontFeatureSettings: '"tnum"', color: (() => {
-                  const tot = defaultScenarios.reduce((s, sc) => s + (probs[sc.id] / 100) * ((sc.alphaRange[0] + sc.alphaRange[1]) / 2), 0);
-                  return tot >= 0 ? T.green : T.capRed;
-                })() }}>
-                  {(() => {
-                    const tot = Math.round(defaultScenarios.reduce((s, sc) => s + (probs[sc.id] / 100) * ((sc.alphaRange[0] + sc.alphaRange[1]) / 2), 0));
-                    return (tot >= 0 ? "+" : "") + tot + " bps";
-                  })()}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </Card>
-
-      {/* Recommendations */}
-      <Card T={T}>
-        <Label T={T}>Actionable Recommendations</Label>
-        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 16 }}>
-          Three near-term actions to improve the portfolio's risk-adjusted return profile across scenarios
-        </div>
-
-        <div style={{ display: "grid", gap: 14 }}>
-          {recommendations.map((r, i) => (
-            <div key={r.id} style={{
-              borderRadius: T.radiusSm, overflow: "hidden",
-              border: `1px solid ${r.urgencyColor}30`,
-              background: isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.008)",
-            }}>
-              {/* Header */}
-              <div style={{
-                display: "flex", justifyContent: "space-between", alignItems: "center",
-                padding: "10px 14px",
-                background: r.urgencyColor + (isDark ? "18" : "0A"),
-                borderBottom: `1px solid ${r.urgencyColor}20`,
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <div style={{
-                    width: 22, height: 22, borderRadius: 6,
-                    background: r.urgencyColor + "20", color: r.urgencyColor,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 12, fontWeight: 800, fontFamily: Fn,
-                  }}>
-                    {i + 1}
-                  </div>
-                  <span style={{ fontSize: 13, fontWeight: 700, fontFamily: Fn, color: T.text }}>{r.title}</span>
-                </div>
-                <span style={{
-                  fontSize: 9, fontWeight: 700, fontFamily: Fn,
-                  padding: "2px 8px", borderRadius: 4,
-                  background: r.urgencyColor + "20", color: r.urgencyColor,
-                  textTransform: "uppercase", letterSpacing: "0.05em",
-                }}>
-                  {r.urgency} priority
-                </span>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: c.color, fontFamily: Fn }}>{c.name}</div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec, fontFamily: Fn }}>{clusterWt.toFixed(1)}%</div>
               </div>
-
-              {/* Body */}
-              <div style={{ padding: 14 }}>
-                <div style={{ marginBottom: 10 }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, fontFamily: Fn, color: T.textTer, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 3 }}>Rationale</div>
-                  <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>{r.rationale}</div>
-                </div>
-                <div style={{ marginBottom: 10 }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, fontFamily: Fn, color: T.textTer, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 3 }}>Implementation</div>
-                  <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>{r.implementation}</div>
-                </div>
-                <div style={{
-                  display: "inline-flex", alignItems: "center", gap: 6,
-                  padding: "4px 10px", borderRadius: 4,
-                  background: T.green + "12", border: `1px solid ${T.green}25`,
-                }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, fontFamily: Fn, color: T.green }}>Expected impact:</span>
-                  <span style={{ fontSize: 10, fontFamily: Fn, color: T.textSec }}>{r.impact}</span>
-                </div>
+              <div style={{ fontSize: 10, color: T.textSec, fontFamily: Fn, lineHeight: 1.6, marginBottom: 8 }}>
+                {c.description}
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                {c.tickers.map(t => {
+                  const h = holdingImpacts.find(hi => hi.ticker === t);
+                  return (
+                    <span key={t} style={{
+                      fontSize: 9, fontFamily: Fn, padding: "2px 6px", borderRadius: 4,
+                      background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
+                      color: T.textSec,
+                    }}>
+                      {h ? h.name : t}
+                    </span>
+                  );
+                })}
               </div>
             </div>
-          ))}
-        </div>
-      </Card>
-    </div>
+          );
+        })}
+      </div>
+    </Card>
   );
 }
 
 /* ─── Main Page ─── */
-export default function ResearchScenarios({ T }) {
-  const [mobile, setMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  const [activeCluster, setActiveCluster] = useState(null);
-  const [probs, setProbs] = useState(() => {
-    const p = {};
-    defaultScenarios.forEach(s => { p[s.id] = s.probability; });
-    return p;
-  });
+export default function ScenariosPg({ T }) {
+  const mobile = useMobile();
+  const [activeScenario, setActiveScenario] = useState("soft_landing");
 
   return (
     <div>
-      {/* Page header */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-          <span style={{ fontSize: 18 }}>🎯</span>
-          <h2 style={{ fontFamily: Fn, fontSize: 22, fontWeight: 300, letterSpacing: "-0.03em", color: T.text, margin: 0 }}>
-            Scenario Analysis
-          </h2>
-        </div>
-        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, lineHeight: 1.5, maxWidth: 720 }}>
-          What would make the portfolio change value? Six probability-weighted scenarios covering macro regime shifts, geopolitical shocks, and sector-specific catalysts — assessed against the 26-name concentrated portfolio over a 6–12 month horizon (Q2 2026 – Q1 2027).
-        </div>
+      <div style={{ marginBottom: 28 }}>
+        <h1 style={{ fontFamily: Fn, fontSize: 28, fontWeight: 300, letterSpacing: "-0.03em", color: T.text, margin: 0 }}>
+          Scenario Analysis
+        </h1>
+        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>
+          Portfolio sensitivity to 10 market narratives · 26 holdings · April 2026
+        </p>
       </div>
 
-      {/* Section 1: Alpha Summary with Sliders */}
-      <AlphaSummary scenarios={defaultScenarios} probs={probs} setProbs={setProbs} T={T} mobile={mobile} />
-
-      {/* Section 2: Correlation Clusters */}
-      <CorrelationClusters activeCluster={activeCluster} setActiveCluster={setActiveCluster} T={T} mobile={mobile} />
-
-      {/* Section 3: Scenario Deep Dive */}
-      <ScenarioDeepDive scenarios={defaultScenarios} probs={probs} activeCluster={activeCluster} T={T} mobile={mobile} />
-
-      {/* Section 4: Sensitivity Matrix */}
-      <SensitivityMatrix scenarios={defaultScenarios} activeCluster={activeCluster} T={T} mobile={mobile} />
-
-      {/* Section 5: Conclusion & Recommendations */}
-      <ConclusionSection T={T} mobile={mobile} probs={probs} />
-
-      {/* Footer */}
-      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, textAlign: "center", marginTop: 16, lineHeight: 1.5, padding: "12px 0", borderTop: "1px solid " + T.border }}>
-        Cape Capital AG · Scenario analysis as of March 2026 · For internal use only · Not investment advice
-        <br />Impact assessments are qualitative and directional · Probability weights are subjective and adjustable
-      </div>
+      <SensitivityOverview T={T} />
+      <HeatMap T={T} onSelectScenario={setActiveScenario} mobile={mobile} />
+      <NarrativeDetails T={T} activeScenario={activeScenario} setActiveScenario={setActiveScenario} mobile={mobile} />
+      <ClusterSummary T={T} />
     </div>
   );
 }
