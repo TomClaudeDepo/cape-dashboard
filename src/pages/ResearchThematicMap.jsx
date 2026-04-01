@@ -650,9 +650,6 @@ export default function ResearchThematicMap({ T }) {
       {/* ── Header ── */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 10, marginBottom: 20 }}>
         <div>
-          <h2 style={{ fontFamily: Fh, fontSize: 32, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.03em", color: T.text, margin: 0 }}>
-            Thematic Universe
-          </h2>
           <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, marginTop: 4, fontFeatureSettings: '"tnum"' }}>
             {totalThemes} themes · ~{allCos} companies · 10 sectors · 26 held
           </div>

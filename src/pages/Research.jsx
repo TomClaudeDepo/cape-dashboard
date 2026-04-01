@@ -89,7 +89,6 @@ export default function ResearchPg({ T }) {
   return (
     <div>
       <div style={{ marginBottom: 32 }}>
-        <h1 style={{ fontFamily: Fh, fontSize: 36, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Research</h1>
         <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>
           Cape Capital equity research · {reports.length} reports · March 2026
         </p>

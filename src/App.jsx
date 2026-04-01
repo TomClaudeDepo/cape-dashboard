@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useTheme, Fn } from "./theme";
+import { useTheme, Fn, Fh } from "./theme";
 import { navItems } from "./data/constants";
 import { iconMap } from "./components/Icons";
 import Passcode from "./components/Passcode";
@@ -124,7 +124,7 @@ function Dashboard({ dark, setDark }) {
       {/* Main */}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", transition: "background 0.3s" }}>
         <div style={{
-          height: 52, background: T.topbar, backdropFilter: T.glassBlur, WebkitBackdropFilter: T.glassBlur,
+          height: 60, background: T.topbar, backdropFilter: T.glassBlur, WebkitBackdropFilter: T.glassBlur,
           borderBottom: T.glassBorder, display: "flex", alignItems: "center", justifyContent: "space-between",
           padding: "0 28px", flexShrink: 0, transition: "background 0.3s", position: "sticky", top: 0, zIndex: 5,
         }}>
@@ -132,7 +132,7 @@ function Dashboard({ dark, setDark }) {
             <button className="hamburger" onClick={() => setSidebarOpen(!sidebarOpen)} style={{ display: "none", background: "none", border: "none", color: T.text, fontSize: 20, cursor: "pointer", padding: 0, lineHeight: 1 }}>
               {sidebarOpen ? "\u2715" : "\u2630"}
             </button>
-            <div style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, fontWeight: 500 }}>{navItems[nav].l}</div>
+            <div style={{ fontSize: 28, color: T.text, fontFamily: Fh, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em" }}>{navItems[nav].l}</div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <button onClick={() => setCmdOpen(true)} style={{

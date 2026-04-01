@@ -48,7 +48,6 @@ export default function AllocPg({ T }) {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: Fh, fontSize: 36, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Allocation</h1>
         <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Portfolio structure vs MSCI ACWI (2,263 names) &middot; 31 Mar 2026 &middot; EUR</p>
       </div>
 

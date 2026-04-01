@@ -43,7 +43,6 @@ export default function ResearchScenarios({ T }) {
     <div>
       {/* HEADER */}
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: Fh, fontSize: 36, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Scenario Analysis</h1>
         <p style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, margin: "6px 0 0", lineHeight: 1.5 }}>
           {NARRATIVES.length} narratives, each impacting ≥5 of the 26 holdings. Click any narrative or holding to explore exposure.
         </p>

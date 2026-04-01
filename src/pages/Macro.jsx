@@ -677,10 +677,6 @@ export default function MacroDashboard({ T: externalT }) {
       {/* Title */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
         <div>
-          <h1 style={{ fontFamily: Fh, fontSize: 36, fontWeight: 400, fontStyle: "italic", color: T.text, margin: 0, letterSpacing: "-0.02em" }}>
-            {"Macro "}
-            <em style={{ fontStyle: "italic", color: T.accent }}>Monitor</em>
-          </h1>
           <p style={{ fontSize: 9.5, color: T.textTer, margin: "2px 0 0" }}>
             {(US.length + EU_IND.length + CN_IND.length + JP_IND.length) + " indicators \u00b7 4 regions \u00b7 Individual charts"}
           </p>
