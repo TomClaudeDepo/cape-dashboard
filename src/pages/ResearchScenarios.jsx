@@ -8,7 +8,7 @@ const DIR_LABELS = { 1: "tailwind", "-1": "headwind", 0: "mixed" };
 const DIR_COLORS = { 1: "#34d399", "-1": "#f87171", 0: "#fbbf24" };
 const DIR_BG_D = { 1: "rgba(52,211,153,0.12)", "-1": "rgba(248,113,113,0.12)", 0: "rgba(251,191,36,0.10)" };
 const DIR_BG_L = { 1: "rgba(4,120,87,0.08)", "-1": "rgba(220,38,38,0.08)", 0: "rgba(234,179,8,0.08)" };
-const DIR_ICON = { 1: "\u25B2", "-1": "\u25BC", 0: "\u25C6" };
+const DIR_ICON = { 1: "▲", "-1": "▼", 0: "◆" };
 
 function dirBg(d, dark) { return dark ? DIR_BG_D[d] : DIR_BG_L[d]; }
 function dirCol(d, dark) {
@@ -44,9 +44,9 @@ export default function ResearchScenarios({ T }) {
       {/* HEADER */}
       <div style={{ marginBottom: 24 }}>
         <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: T.textTer, textTransform: "uppercase", fontFamily: Fn, marginBottom: 4 }}>Scenario Analysis</div>
-        <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: T.text, fontFamily: Fn, letterSpacing: "-0.02em" }}>Narrative \u2192 Portfolio Map</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: T.text, fontFamily: Fn, letterSpacing: "-0.02em" }}>Narrative → Portfolio Map</h2>
         <p style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, margin: "4px 0 0", lineHeight: 1.5 }}>
-          {NARRATIVES.length} narratives, each impacting \u22655 of the 26 holdings. Click any narrative or holding to explore exposure.
+          {NARRATIVES.length} narratives, each impacting ≥5 of the 26 holdings. Click any narrative or holding to explore exposure.
         </p>
       </div>
 
@@ -178,7 +178,7 @@ export default function ResearchScenarios({ T }) {
                         <span style={{ fontSize: 12, color: dirCol(h.d, dark) }}>{DIR_ICON[h.d]}</span>
                         <div style={{ flex: 1 }}>
                           <div style={{ fontSize: 11, fontWeight: 600, color: T.text, fontFamily: Fn }}>{holding.n}</div>
-                          <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn }}>{holding.s} \u00B7 {holding.co}</div>
+                          <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn }}>{holding.s} · {holding.co}</div>
                         </div>
                         <span style={{ fontSize: 9, fontWeight: 600, color: dirCol(h.d, dark), fontFamily: Fn, textTransform: "uppercase" }}>
                           {DIR_LABELS[h.d]}
@@ -196,7 +196,7 @@ export default function ResearchScenarios({ T }) {
                       Holding Exposure
                     </div>
                     <h3 style={{ fontSize: 15, fontWeight: 700, margin: "0 0 3px", color: T.text, fontFamily: Fn }}>{h.n}</h3>
-                    <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginBottom: 18 }}>{h.s} \u00B7 {h.co}</div>
+                    <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginBottom: 18 }}>{h.s} · {h.co}</div>
                     <div style={{ fontSize: 9, fontWeight: 600, color: T.textTer, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: Fn, marginBottom: 8 }}>
                       Narratives ({holdingNarratives.length})
                     </div>
@@ -241,7 +241,7 @@ export default function ResearchScenarios({ T }) {
                     {h.n.split(" ")[0].slice(0, 9)}
                   </th>
                 ))}
-                <th style={{ padding: "6px 6px", textAlign: "center", color: T.textTer, borderBottom: `1px solid ${T.border}`, fontSize: 8 }}>\u03A3</th>
+                <th style={{ padding: "6px 6px", textAlign: "center", color: T.textTer, borderBottom: `1px solid ${T.border}`, fontSize: 8 }}>Σ</th>
               </tr>
             </thead>
             <tbody>
@@ -303,7 +303,7 @@ export default function ResearchScenarios({ T }) {
                 {mostAsym.map(h => (
                   <div key={h.t} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", fontSize: 11, fontFamily: Fn }}>
                     <span style={{ color: T.text }}>{h.n}</span>
-                    <span><span style={{ color: dirCol(1, dark) }}>{h.tw}\u25B2</span>{" / "}<span style={{ color: dirCol(-1, dark) }}>{h.hw}\u25BC</span></span>
+                    <span><span style={{ color: dirCol(1, dark) }}>{h.tw}▲</span>{" / "}<span style={{ color: dirCol(-1, dark) }}>{h.hw}▼</span></span>
                   </div>
                 ))}
               </Card>

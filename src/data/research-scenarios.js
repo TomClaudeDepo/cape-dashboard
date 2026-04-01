@@ -55,7 +55,7 @@ export const NARRATIVES = [
   },
   {
     id: 2, cat: "geo", name: "Hormuz reopening / ceasefire trade",
-    desc: "Strait reopens, Brent collapses back to $70\u201380, massive rotation out of energy/defense into beaten-down growth.",
+    desc: "Strait reopens, Brent collapses back to $70–80, massive rotation out of energy/defense into beaten-down growth.",
     hits: [
       { t: "VOLV", d: 1 }, { t: "SIE", d: 1 }, { t: "AI", d: 1 }, { t: "AKZA", d: 1 },
       { t: "VIE", d: 1 }, { t: "9988", d: 1 }, { t: "0700", d: 1 }, { t: "AMZN", d: 1 },
@@ -86,7 +86,7 @@ export const NARRATIVES = [
     ],
   },
   {
-    id: 6, cat: "rates", name: "Fed rate cuts (2\u20133x in H2 2026)",
+    id: 6, cat: "rates", name: "Fed rate cuts (2–3x in H2 2026)",
     desc: "Inflation fades, Fed cuts multiple times in H2, duration rally, growth outperforms value.",
     hits: [
       { t: "MSFT", d: 1 }, { t: "GOOGL", d: 1 }, { t: "AMZN", d: 1 }, { t: "NOW", d: 1 },
@@ -96,7 +96,7 @@ export const NARRATIVES = [
   },
   {
     id: 7, cat: "rates", name: "Fed on hold indefinitely",
-    desc: "Inflation too hot to cut, growth too strong to hike. \u2018Higher for longer\u2019 kills rate-sensitive sectors.",
+    desc: "Inflation too hot to cut, growth too strong to hike. ‘Higher for longer’ kills rate-sensitive sectors.",
     hits: [
       { t: "NOW", d: -1 }, { t: "MSCI", d: -1 }, { t: "MSFT", d: -1 }, { t: "AMZN", d: -1 },
       { t: "NFLX", d: 0 }, { t: "JPM", d: 1 }, { t: "ICE", d: 0 },
@@ -195,7 +195,7 @@ export const NARRATIVES = [
   },
   {
     id: 19, cat: "mkt", name: "Quality premium expands",
-    desc: "Flight to quality in uncertainty \u2014 high ROIC, low leverage names outperform. Classic QARP environment.",
+    desc: "Flight to quality in uncertainty — high ROIC, low leverage names outperform. Classic QARP environment.",
     hits: [
       { t: "MSFT", d: 1 }, { t: "GOOGL", d: 1 }, { t: "NFLX", d: 1 }, { t: "NVDA", d: 1 },
       { t: "TSMC", d: 1 }, { t: "MSCI", d: 1 }, { t: "ICE", d: 1 }, { t: "AI", d: 1 },
