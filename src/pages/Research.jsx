@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Fn } from "../theme";
+import { Fn, Fh } from "../theme";
 import { Card, Pill, TabBar } from "../components/shared";
 import ResearchBKNG from "./ResearchBKNG";
 import ResearchCEG from "./ResearchCEG";
@@ -89,7 +89,7 @@ export default function ResearchPg({ T }) {
   return (
     <div>
       <div style={{ marginBottom: 32 }}>
-        <h1 style={{ fontFamily: Fn, fontSize: 28, fontWeight: 300, letterSpacing: "-0.03em", color: T.text, margin: 0 }}>Research</h1>
+        <h1 style={{ fontFamily: Fh, fontSize: 28, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Research</h1>
         <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>
           Cape Capital equity research · {reports.length} reports · March 2026
         </p>

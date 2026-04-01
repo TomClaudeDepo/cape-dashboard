@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Fs, Fn } from "../theme";
+import { Fs, Fn, Fh } from "../theme";
 import { portfolioGics, acwiGics, portfolioCo, acwiCo, ccyAll, acwiCcy } from "../data/portfolio";
 import { Card, Bars, TabBar, Stat } from "../components/shared";
 
@@ -48,7 +48,7 @@ export default function AllocPg({ T }) {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: Fs, fontSize: 28, fontWeight: 300, color: T.text, margin: 0 }}>Allocation</h1>
+        <h1 style={{ fontFamily: Fh, fontSize: 28, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Allocation</h1>
         <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Portfolio structure vs MSCI ACWI (2,263 names) &middot; 24 Mar 2026 &middot; EUR</p>
       </div>
 

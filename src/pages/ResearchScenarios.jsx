@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Fn } from "../theme";
+import { Fn, Fh } from "../theme";
 import { Card } from "../components/shared";
 import { HOLDINGS, CATS, NARRATIVES } from "../data/research-scenarios";
 import { useMobile } from "../hooks/useMobile";
@@ -44,7 +44,7 @@ export default function ResearchScenarios({ T }) {
       {/* HEADER */}
       <div style={{ marginBottom: 24 }}>
         <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: T.textTer, textTransform: "uppercase", fontFamily: Fn, marginBottom: 4 }}>Scenario Analysis</div>
-        <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: T.text, fontFamily: Fn, letterSpacing: "-0.02em" }}>Narrative → Portfolio Map</h2>
+        <h2 style={{ fontSize: 22, fontWeight: 400, fontStyle: "italic", margin: 0, color: T.text, fontFamily: Fh, letterSpacing: "-0.02em" }}>Narrative → Portfolio Map</h2>
         <p style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, margin: "4px 0 0", lineHeight: 1.5 }}>
           {NARRATIVES.length} narratives, each impacting ≥5 of the 26 holdings. Click any narrative or holding to explore exposure.
         </p>

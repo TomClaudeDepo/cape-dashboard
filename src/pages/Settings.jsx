@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Fs, Fn } from "../theme";
+import { Fs, Fn, Fh } from "../theme";
 import { Card, Label, Pill } from "../components/shared";
 
 export default function SettingsPg({ T, dark, setDark, apiKey, setApiKey }) {
@@ -16,7 +16,7 @@ export default function SettingsPg({ T, dark, setDark, apiKey, setApiKey }) {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: Fs, fontSize: 28, fontWeight: 300, color: T.text, margin: 0 }}>Settings</h1>
+        <h1 style={{ fontFamily: Fh, fontSize: 28, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Settings</h1>
         <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Preferences and configuration</p>
       </div>
 

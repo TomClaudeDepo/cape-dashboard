@@ -1,4 +1,4 @@
-import { Fn, Fs } from "../theme";
+import { Fn, Fs, Fh } from "../theme";
 import { NAV, MV, CASH, CASH_PCT } from "../data/constants";
 import { holdings, navData, portfolioGics, acwiGics, VW, FW } from "../data/portfolio";
 import { fmtEur, fmtPct } from "../utils";
@@ -77,7 +77,7 @@ export default function OverviewPg({ T, onHoldingClick }) {
     <div>
       {/* ── Header ── */}
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: Fs, fontSize: 28, fontWeight: 300, letterSpacing: "-0.03em", color: T.text, margin: 0 }}>Portfolio summary</h1>
+        <h1 style={{ fontFamily: Fh, fontSize: 28, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Portfolio Summary</h1>
         <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Cape Equity Fund &middot; LU1200255203 &middot; 26 positions &middot; 30 Mar 2026 &middot; EUR</p>
       </div>
 

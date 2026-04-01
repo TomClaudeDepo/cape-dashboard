@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Fs, Fn } from "../theme";
+import { Fs, Fn, Fh } from "../theme";
 import { UR_PCT, ACWI_CONSTITUENTS, activeShare, benchmarkOverlapWt } from "../data/constants";
 import { holdings, VD, VM, VW, FD, FM, FW, acwiHoldingWts, earCal } from "../data/portfolio";
 import { fmtEur, fmtPct, fmtX, fmtPv, fmtBn } from "../utils";
@@ -31,7 +31,7 @@ export default function HoldingsPg({ T, onHoldingClick }) {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: Fs, fontSize: 28, fontWeight: 300, color: T.text, margin: 0 }}>Holdings</h1>
+        <h1 style={{ fontFamily: Fh, fontSize: 28, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Holdings</h1>
         <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>26 positions &middot; as of 20 Mar 2026 &middot; EUR</p>
       </div>
 

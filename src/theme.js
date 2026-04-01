@@ -1,6 +1,7 @@
 const F = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 export const Fs = F;
 export const Fn = F;
+export const Fh = "'Playfair Display', Georgia, 'Times New Roman', serif";
 
 export const LIGHT = {
   // Brand
