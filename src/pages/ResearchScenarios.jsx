@@ -41,9 +41,6 @@ export default function ResearchScenarios({ T }) {
 
   return (
     <div>
-      {/* HEADER */}
-
-
       {/* VIEW TOGGLE + CATEGORY FILTERS */}
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14, alignItems: "center" }}>
         {["narratives", "matrix"].map(v => (

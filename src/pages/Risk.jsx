@@ -276,25 +276,21 @@ export default function RiskPg({ T }) {
 
   return (
     <div>
-      {/* Header */}
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
+      {/* Tabs + Status */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
+        <TabBar tabs={tabs} active={tab} onChange={setTab} T={T} />
         <div style={{
-          padding: "14px 22px", borderRadius: T.radius, textAlign: "center",
+          display: "flex", alignItems: "center", gap: 10, padding: "8px 16px", borderRadius: T.radiusSm,
           background: statusBgs[overallStatus], border: "1px solid " + T.border,
         }}>
-          <div style={{ fontSize: 9, color: T.textTer, letterSpacing: "0.15em", fontWeight: 600, marginBottom: 4, fontFamily: Fn, textTransform: "uppercase" }}>Overall status</div>
-          <div style={{ fontSize: 20, fontWeight: 600, color: statusColors[overallStatus], fontFamily: Fn, letterSpacing: "0.05em" }}>
+          <div style={{ fontSize: 9, color: T.textTer, letterSpacing: "0.1em", fontWeight: 600, fontFamily: Fn, textTransform: "uppercase" }}>Status</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: statusColors[overallStatus], fontFamily: Fn }}>
             {statusLabels[overallStatus]}
           </div>
-          <div style={{ fontSize: 11, color: T.textTer, marginTop: 4, fontFamily: Fn }}>
+          <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>
             {breaches} breach{breaches !== 1 ? "es" : ""} · {warnings} warning{warnings !== 1 ? "s" : ""}
           </div>
         </div>
-      </div>
-
-      {/* Tabs */}
-      <div style={{ marginBottom: 20 }}>
-        <TabBar tabs={tabs} active={tab} onChange={setTab} T={T} />
       </div>
 
       {/* LIMITS TAB */}

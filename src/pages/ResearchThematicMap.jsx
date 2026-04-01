@@ -648,7 +648,7 @@ export default function ResearchThematicMap({ T }) {
   return (
     <div>
       {/* ── Header ── */}
-      <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: 10, marginBottom: 20 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 20 }}>
         {/* View toggle */}
         <div style={{ display: "flex", gap: 1, background: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)", borderRadius: 6, padding: 2 }}>
           {views.map(v => (

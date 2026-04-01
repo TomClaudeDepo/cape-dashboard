@@ -674,20 +674,6 @@ export default function MacroDashboard({ T: externalT }) {
 
   return (
     <div style={{ padding: standalone ? 22 : 0, background: standalone ? T.bg : "transparent", minHeight: standalone ? "100vh" : "auto", fontFamily: Fn, transition: "background 0.3s" }}>
-      {/* Title */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: 16 }}>
-        <div style={{ display: "flex", gap: 7, alignItems: "center" }}>
-          <span style={{ fontSize: 8.5, color: T.textTer, padding: "4px 9px", background: T.pillBg, borderRadius: 5 }}>{"Simulated \u00b7 FRED ready"}</span>
-          {standalone && (
-            <button
-              onClick={function () { sDk(!dk); }}
-              style={{ padding: "4px 10px", borderRadius: 5, border: "1px solid " + T.border, background: T.card, color: T.textSec, fontSize: 10, fontFamily: Fn, cursor: "pointer" }}
-            >
-              {dk ? "\u2600" : "\u263E"}
-            </button>
-          )}
-        </div>
-      </div>
 
       {/* Region tabs */}
       <div style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: "1px solid " + T.border, paddingBottom: 9, overflowX: "auto" }}>
