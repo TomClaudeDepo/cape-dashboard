@@ -12,6 +12,42 @@ const heldMap = {
   "CEG":true,"LLY":true,"RHM":true,"MELI":true,"SAF":true,"LIN":true,
   "BKR":true,"SU":true,"ETN":true,
 };
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   LOGO — polished company logo with white bg + fallback
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function Logo({ ticker, name, size = 20, color, isDark }) {
+  const [failed, setFailed] = useState(false);
+  const url = logoUrl(ticker);
+  const initial = (name || ticker || "?")[0].toUpperCase();
+  const containerBg = isDark ? "rgba(255,255,255,0.95)" : "#fff";
+  const containerBorder = isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)";
+
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: size <= 18 ? 4 : 5, flexShrink: 0,
+      background: (!url || failed) ? (color || "#888") + "18" : containerBg,
+      border: `1px solid ${(!url || failed) ? (color || "#888") + "20" : containerBorder}`,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      overflow: "hidden",
+      boxShadow: url && !failed ? "0 1px 3px rgba(0,0,0,0.06)" : "none",
+    }}>
+      {url && !failed ? (
+        <img src={url} alt="" style={{
+          width: size - 4, height: size - 4, objectFit: "contain",
+          borderRadius: size <= 18 ? 2 : 3,
+        }} onError={() => setFailed(true)} />
+      ) : (
+        <span style={{
+          fontSize: size * 0.42, fontWeight: 700, fontFamily: Fn,
+          color: color || "#888", lineHeight: 1,
+        }}>
+          {initial}
+        </span>
+      )}
+    </div>
+  );
+}
 const isHeld = t => heldMap[t] !== undefined ? heldMap[t] : holdings.some(h => h.t === t || h.t.startsWith(t + "."));
 const getHeld = s => { const seen = new Set(), out = []; s.themes.forEach(t => t.companies.forEach(c => { if (isHeld(c.ticker) && !seen.has(c.ticker)) { seen.add(c.ticker); out.push(c); }})); return out; };
 const countHeld = s => getHeld(s).length;
@@ -206,22 +242,19 @@ function SectorTile({ sector, isActive, onClick, T, isDark, dimmed }) {
 
         {/* Held logos */}
         {held.length > 0 && (
-          <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-            {held.slice(0, 6).map(c => {
-              const logo = logoUrl(c.ticker);
-              return (
-                <div key={c.ticker} title={c.name} style={{
-                  display: "flex", alignItems: "center", gap: 3,
-                  padding: "3px 7px 3px 3px", borderRadius: 4,
-                  background: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.025)",
-                  border: `1px solid ${isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)"}`,
-                }}>
-                  {logo && <img src={logo} alt="" style={{ width: 14, height: 14, borderRadius: 3 }} onError={e => e.target.style.display = "none"} />}
-                  <span style={{ fontSize: 9, fontWeight: 600, fontFamily: Fn, color: T.textSec }}>{c.ticker}</span>
-                </div>
-              );
-            })}
-            {held.length > 6 && <span style={{ fontSize: 9, fontFamily: Fn, color: T.textTer, alignSelf: "center" }}>+{held.length - 6}</span>}
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+            {held.slice(0, 8).map(c => (
+              <div key={c.ticker} title={c.name} style={{
+                display: "flex", alignItems: "center", gap: 5,
+                padding: "3px 8px 3px 4px", borderRadius: 6,
+                background: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.02)",
+                border: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)"}`,
+              }}>
+                <Logo ticker={c.ticker} name={c.name} size={18} color={sector.color} isDark={isDark} />
+                <span style={{ fontSize: 9, fontWeight: 600, fontFamily: Fn, color: T.textSec }}>{c.ticker}</span>
+              </div>
+            ))}
+            {held.length > 8 && <span style={{ fontSize: 9, fontFamily: Fn, color: T.textTer }}>+{held.length - 8}</span>}
           </div>
         )}
       </div>
@@ -267,15 +300,14 @@ function ThemeRow({ theme, sector, isOpen, onClick, T, isDark }) {
           <div style={{ display: "grid", gap: 4 }}>
             {theme.companies.map((c, j) => {
               const held = isHeld(c.ticker);
-              const logo = logoUrl(c.ticker);
               return (
                 <div key={j} style={{
-                  display: "flex", alignItems: "flex-start", gap: 8, padding: "7px 10px",
-                  borderRadius: 5,
+                  display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 10px",
+                  borderRadius: 6,
                   background: held ? (sector.color + (isDark ? "0A" : "04")) : (isDark ? "rgba(255,255,255,0.015)" : "rgba(0,0,0,0.008)"),
                   border: held ? `1px solid ${sector.color}18` : "1px solid transparent",
                 }}>
-                  {logo && <img src={logo} alt="" style={{ width: 20, height: 20, borderRadius: 4, marginTop: 1 }} onError={e => e.target.style.display = "none"} />}
+                  <Logo ticker={c.ticker} name={c.name} size={24} color={sector.color} isDark={isDark} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                       <span style={{ fontSize: 11, fontWeight: 700, fontFamily: Fn, color: T.text }}>{c.name}</span>
@@ -349,19 +381,17 @@ function SectorExpanded({ sector, onClose, T, isDark, searchTerm }) {
 
           {/* Held positions + evidence toggle — single clean row */}
           <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
-            {held.length > 0 && held.map(c => {
-              const logo = logoUrl(c.ticker);
-              return (
-                <div key={c.ticker} style={{
-                  display: "flex", alignItems: "center", gap: 3,
-                  padding: "3px 6px 3px 3px", borderRadius: 4,
-                  background: sector.color + (isDark ? "10" : "06"),
-                }}>
-                  {logo && <img src={logo} alt="" style={{ width: 14, height: 14, borderRadius: 3 }} onError={e => e.target.style.display = "none"} />}
-                  <span style={{ fontSize: 9, fontWeight: 700, fontFamily: Fn, color: T.text }}>{c.ticker}</span>
-                </div>
-              );
-            })}
+            {held.length > 0 && held.map(c => (
+              <div key={c.ticker} style={{
+                display: "flex", alignItems: "center", gap: 5,
+                padding: "3px 8px 3px 4px", borderRadius: 6,
+                background: sector.color + (isDark ? "10" : "06"),
+                border: `1px solid ${sector.color}${isDark ? "18" : "10"}`,
+              }}>
+                <Logo ticker={c.ticker} name={c.name} size={18} color={sector.color} isDark={isDark} />
+                <span style={{ fontSize: 9, fontWeight: 700, fontFamily: Fn, color: T.text }}>{c.ticker}</span>
+              </div>
+            ))}
             {held.length === 0 && (
               <span style={{ fontSize: 9, fontFamily: Fn, color: T.textTer }}>No positions held</span>
             )}
