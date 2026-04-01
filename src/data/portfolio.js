@@ -25,7 +25,7 @@ export const holdings = [
   {name:"ROCKWELL",t:"ROK",ccy:"USD",mv:13081895.50,wt:3.41,ugl:398677.79,up:3.14,gics:"Industrials",co:"USA"},
   {name:"SAMSUNG",t:"005930.KS",ccy:"USD",mv:15137476.13,wt:3.95,ugl:1441655.12,up:10.53,gics:"Information Technology",co:"South Korea"},
   {name:"SERVICENOW",t:"NOW",ccy:"USD",mv:7467857.14,wt:1.95,ugl:-1323791.88,up:-15.06,gics:"Information Technology",co:"USA"},
-  {name:"TAIWAN SEMI",t:"TSM",ccy:"USD",mv:19035718.63,wt:4.97,ugl:10021279.96,up:111.17,gics:"Information Technology",co:"USA"},
+  {name:"TAIWAN SEMI",t:"TSM",ccy:"USD",mv:19035718.63,wt:4.97,ugl:10021279.96,up:111.17,gics:"Information Technology",co:"Taiwan"},
   {name:"THERMO FISHER",t:"TMO",ccy:"USD",mv:17989776.17,wt:4.70,ugl:-1433713.32,up:-7.38,gics:"Health Care",co:"USA"},
 ].sort((a, b) => b.mv - a.mv);
 

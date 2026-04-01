@@ -48,11 +48,11 @@ const assetAllocation = [
 ];
 
 const countryAllocation = [
-  { country: "USA", pct: 56.00 }, { country: "China (Cayman Is.)", pct: 7.81 },
-  { country: "Sweden", pct: 7.22 }, { country: "France", pct: 6.33 },
-  { country: "Japan", pct: 4.77 }, { country: "Taiwan", pct: 4.97 },
-  { country: "Switzerland", pct: 4.28 }, { country: "South Korea", pct: 3.95 },
-  { country: "Germany", pct: 2.15 }, { country: "Netherlands", pct: 1.52 },
+  { country: "USA", pct: 56.84 }, { country: "China (Cayman Is.)", pct: 7.84 },
+  { country: "Sweden", pct: 7.24 }, { country: "France", pct: 6.35 },
+  { country: "Taiwan", pct: 4.99 }, { country: "Japan", pct: 4.79 },
+  { country: "Switzerland", pct: 4.30 }, { country: "South Korea", pct: 3.97 },
+  { country: "Germany", pct: 2.16 }, { country: "Netherlands", pct: 1.53 },
 ];
 
 // Cash breakdown from NAV report (Liquidity_at_sight sheet) — 31 Mar 2026
