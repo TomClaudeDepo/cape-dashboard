@@ -19,48 +19,192 @@ const totalCos = s => s.themes.reduce((n, t) => n + t.companies.length, 0);
 const unique = arr => [...new Set(arr)];
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   SECTOR TILE — calm, minimal surface
+   SECTOR ICONS — custom SVGs per sector for visual identity
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function SectorIcon({ sectorId, color, size = 36 }) {
+  const s = { width: size, height: size, flexShrink: 0 };
+  const icons = {
+    it: (
+      <svg viewBox="0 0 36 36" fill="none" style={s}>
+        <rect x="6" y="6" width="24" height="24" rx="3" stroke={color} strokeWidth="1.5" opacity="0.3"/>
+        <rect x="10" y="10" width="16" height="16" rx="1.5" stroke={color} strokeWidth="1.5"/>
+        <circle cx="18" cy="18" r="3.5" fill={color} opacity="0.8"/>
+        <line x1="18" y1="6" x2="18" y2="10" stroke={color} strokeWidth="1.2"/>
+        <line x1="18" y1="26" x2="18" y2="30" stroke={color} strokeWidth="1.2"/>
+        <line x1="6" y1="18" x2="10" y2="18" stroke={color} strokeWidth="1.2"/>
+        <line x1="26" y1="18" x2="30" y2="18" stroke={color} strokeWidth="1.2"/>
+        <line x1="12" y1="6" x2="12" y2="10" stroke={color} strokeWidth="1" opacity="0.5"/>
+        <line x1="24" y1="6" x2="24" y2="10" stroke={color} strokeWidth="1" opacity="0.5"/>
+        <line x1="12" y1="26" x2="12" y2="30" stroke={color} strokeWidth="1" opacity="0.5"/>
+        <line x1="24" y1="26" x2="24" y2="30" stroke={color} strokeWidth="1" opacity="0.5"/>
+      </svg>
+    ),
+    health: (
+      <svg viewBox="0 0 36 36" fill="none" style={s}>
+        <path d="M18 8C14 8 10 11.5 10 16c0 6 8 13 8 13s8-7 8-13c0-4.5-4-8-8-8z" stroke={color} strokeWidth="1.5" opacity="0.25"/>
+        <path d="M12 18h4l2-4 4 8 2-4h4" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="18" cy="12" r="1.5" fill={color} opacity="0.4"/>
+      </svg>
+    ),
+    financials: (
+      <svg viewBox="0 0 36 36" fill="none" style={s}>
+        <path d="M6 28h24" stroke={color} strokeWidth="1.5" opacity="0.4"/>
+        <path d="M18 8L6 14h24L18 8z" stroke={color} strokeWidth="1.5" fill={color} fillOpacity="0.08"/>
+        <rect x="9" y="16" width="3" height="10" rx="0.5" fill={color} opacity="0.5"/>
+        <rect x="16.5" y="14" width="3" height="12" rx="0.5" fill={color} opacity="0.7"/>
+        <rect x="24" y="18" width="3" height="8" rx="0.5" fill={color} opacity="0.4"/>
+      </svg>
+    ),
+    industrials: (
+      <svg viewBox="0 0 36 36" fill="none" style={s}>
+        <circle cx="18" cy="18" r="9" stroke={color} strokeWidth="1.5" opacity="0.25"/>
+        <circle cx="18" cy="18" r="5" stroke={color} strokeWidth="1.5"/>
+        <circle cx="18" cy="18" r="1.8" fill={color} opacity="0.7"/>
+        <line x1="18" y1="7" x2="18" y2="11" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="18" y1="25" x2="18" y2="29" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="7" y1="18" x2="11" y2="18" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="25" y1="18" x2="29" y2="18" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="10.2" y1="10.2" x2="13" y2="13" stroke={color} strokeWidth="1.2" strokeLinecap="round" opacity="0.5"/>
+        <line x1="23" y1="23" x2="25.8" y2="25.8" stroke={color} strokeWidth="1.2" strokeLinecap="round" opacity="0.5"/>
+        <line x1="25.8" y1="10.2" x2="23" y2="13" stroke={color} strokeWidth="1.2" strokeLinecap="round" opacity="0.5"/>
+        <line x1="13" y1="23" x2="10.2" y2="25.8" stroke={color} strokeWidth="1.2" strokeLinecap="round" opacity="0.5"/>
+      </svg>
+    ),
+    consdisc: (
+      <svg viewBox="0 0 36 36" fill="none" style={s}>
+        <path d="M18 6l3.5 7.5H29l-6 5 2.5 8L18 22l-7.5 4.5 2.5-8-6-5h7.5L18 6z" stroke={color} strokeWidth="1.5" fill={color} fillOpacity="0.08"/>
+        <circle cx="18" cy="16" r="3" fill={color} opacity="0.4"/>
+      </svg>
+    ),
+    commsvc: (
+      <svg viewBox="0 0 36 36" fill="none" style={s}>
+        <circle cx="18" cy="18" r="3" fill={color} opacity="0.7"/>
+        <path d="M12 12a8.5 8.5 0 0 1 12 0" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.8"/>
+        <path d="M24 24a8.5 8.5 0 0 1-12 0" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.8"/>
+        <path d="M8.5 8.5a13.5 13.5 0 0 1 19 0" stroke={color} strokeWidth="1.2" strokeLinecap="round" opacity="0.35"/>
+        <path d="M27.5 27.5a13.5 13.5 0 0 1-19 0" stroke={color} strokeWidth="1.2" strokeLinecap="round" opacity="0.35"/>
+      </svg>
+    ),
+    energy: (
+      <svg viewBox="0 0 36 36" fill="none" style={s}>
+        <path d="M20 6L12 20h6l-2 10 10-14h-6l2-10z" stroke={color} strokeWidth="1.5" strokeLinejoin="round" fill={color} fillOpacity="0.12"/>
+        <path d="M15 18l3-6" stroke={color} strokeWidth="1.2" strokeLinecap="round" opacity="0.5"/>
+      </svg>
+    ),
+    materials: (
+      <svg viewBox="0 0 36 36" fill="none" style={s}>
+        <path d="M18 6l10 6v12l-10 6-10-6V12l10-6z" stroke={color} strokeWidth="1.5" fill={color} fillOpacity="0.06"/>
+        <path d="M18 6v12m0 0l10-6m-10 6l-10-6m10 6v12m0 0l10-6m-10 6l-10-6" stroke={color} strokeWidth="0.8" opacity="0.3"/>
+        <circle cx="18" cy="18" r="2" fill={color} opacity="0.5"/>
+      </svg>
+    ),
+    consstap: (
+      <svg viewBox="0 0 36 36" fill="none" style={s}>
+        <path d="M18 8c-6 0-10 3-10 6v2c0 3 4 6 10 6s10-3 10-6v-2c0-3-4-6-10-6z" stroke={color} strokeWidth="1.5" fill={color} fillOpacity="0.06"/>
+        <ellipse cx="18" cy="14" rx="10" ry="4" stroke={color} strokeWidth="0.8" opacity="0.3"/>
+        <path d="M8 16v6c0 3 4 6 10 6s10-3 10-6v-6" stroke={color} strokeWidth="1.5"/>
+        <ellipse cx="18" cy="22" rx="6" ry="2" fill={color} opacity="0.15"/>
+      </svg>
+    ),
+    utilities: (
+      <svg viewBox="0 0 36 36" fill="none" style={s}>
+        <circle cx="18" cy="18" r="11" stroke={color} strokeWidth="1" opacity="0.2"/>
+        <path d="M10 26l4-10 4 5 4-8 4 6" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="18" cy="10" r="3" stroke={color} strokeWidth="1.2" fill={color} fillOpacity="0.15"/>
+        <line x1="18" y1="13" x2="18" y2="18" stroke={color} strokeWidth="1" opacity="0.4"/>
+      </svg>
+    ),
+  };
+  return icons[sectorId] || (
+    <svg viewBox="0 0 36 36" fill="none" style={s}>
+      <circle cx="18" cy="18" r="10" stroke={color} strokeWidth="1.5" opacity="0.4"/>
+      <circle cx="18" cy="18" r="4" fill={color} opacity="0.5"/>
+    </svg>
+  );
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SECTOR TILE — visually rich card with icon, themes, holdings
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 function SectorTile({ sector, isActive, onClick, T, isDark, dimmed }) {
   const held = getHeld(sector);
+  const [hov, setHov] = useState(false);
   return (
     <div onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
       style={{
         background: T.card,
-        borderRadius: 8,
+        borderRadius: 10,
         cursor: "pointer",
         overflow: "hidden",
-        transition: "all 0.2s ease",
-        border: `1px solid ${isActive ? sector.color : T.border}`,
-        opacity: dimmed ? 0.3 : 1,
+        transition: "all 0.25s ease",
+        border: `1px solid ${isActive ? sector.color : hov && !dimmed ? sector.color + "50" : T.border}`,
+        opacity: dimmed ? 0.25 : 1,
+        transform: hov && !dimmed && !isActive ? "translateY(-2px)" : "none",
+        boxShadow: hov && !dimmed ? `0 4px 16px ${sector.color}12` : "none",
       }}
-      onMouseEnter={e => { if (!isActive && !dimmed) e.currentTarget.style.borderColor = sector.color + "60"; }}
-      onMouseLeave={e => { if (!isActive && !dimmed) e.currentTarget.style.borderColor = T.border; }}
     >
-      {/* Thin color accent */}
-      <div style={{ height: 2, background: sector.color, opacity: isActive ? 1 : 0.4 }} />
-
-      <div style={{ padding: "14px 16px 12px" }}>
-        {/* Name + weight row */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: held.length > 0 ? 10 : 4 }}>
-          <div>
-            <span style={{ fontSize: 14, fontWeight: 700, fontFamily: Fn, color: T.text, letterSpacing: "-0.01em" }}>
-              {sector.short}
-            </span>
-            <span style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, marginLeft: 6 }}>
-              {sector.themes.length} themes
-            </span>
-          </div>
-          {sector.weight > 0 ? (
-            <span style={{ fontSize: 18, fontWeight: 800, fontFamily: Fn, color: sector.color, letterSpacing: "-0.04em", fontFeatureSettings: '"tnum"' }}>
-              {sector.weight}<span style={{ fontSize: 10, fontWeight: 600, opacity: 0.7 }}>%</span>
-            </span>
-          ) : (
-            <span style={{ fontSize: 8, fontWeight: 600, fontFamily: Fn, color: T.textTer, letterSpacing: "0.04em" }}>WATCHLIST</span>
-          )}
+      {/* ── Visual header zone — icon + color gradient ── */}
+      <div style={{
+        position: "relative",
+        padding: "18px 18px 14px",
+        background: `linear-gradient(135deg, ${sector.color}${isDark ? "0C" : "08"} 0%, transparent 70%)`,
+        borderBottom: `1px solid ${sector.color}${isDark ? "12" : "0A"}`,
+      }}>
+        {/* Subtle large watermark icon behind */}
+        <div style={{
+          position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)",
+          opacity: isDark ? 0.06 : 0.05, pointerEvents: "none",
+        }}>
+          <SectorIcon sectorId={sector.id} color={sector.color} size={72} />
         </div>
 
-        {/* Held logos — only visual element beyond name/weight */}
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, position: "relative" }}>
+          {/* Foreground icon */}
+          <div style={{
+            padding: 6, borderRadius: 8,
+            background: sector.color + (isDark ? "14" : "0C"),
+            border: `1px solid ${sector.color}${isDark ? "20" : "14"}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <SectorIcon sectorId={sector.id} color={sector.color} size={32} />
+          </div>
+
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {/* Name row */}
+            <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 2 }}>
+              <span style={{ fontSize: 14, fontWeight: 700, fontFamily: Fn, color: T.text, letterSpacing: "-0.01em" }}>
+                {sector.short}
+              </span>
+              {sector.weight > 0 ? (
+                <span style={{ fontSize: 17, fontWeight: 800, fontFamily: Fn, color: sector.color, letterSpacing: "-0.04em", fontFeatureSettings: '"tnum"' }}>
+                  {sector.weight}<span style={{ fontSize: 9, fontWeight: 600, opacity: 0.7 }}>%</span>
+                </span>
+              ) : (
+                <span style={{ fontSize: 8, fontWeight: 600, fontFamily: Fn, color: T.textTer, letterSpacing: "0.04em", padding: "1px 5px", borderRadius: 3, border: `1px solid ${T.border}` }}>WATCHLIST</span>
+              )}
+            </div>
+            {/* Theme count */}
+            <span style={{ fontSize: 10, fontFamily: Fn, color: T.textTer }}>
+              {sector.themes.length} themes · {totalCos(sector)} companies
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Body — key themes tagline + held logos ── */}
+      <div style={{ padding: "10px 18px 14px" }}>
+        {/* Key themes tagline */}
+        <div style={{
+          fontSize: 10, fontFamily: Fn, color: T.textSec, lineHeight: 1.45,
+          marginBottom: held.length > 0 ? 10 : 0,
+          display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+        }}>
+          {sector.keyThemes}
+        </div>
+
+        {/* Held logos */}
         {held.length > 0 && (
           <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
             {held.slice(0, 6).map(c => {
@@ -68,10 +212,11 @@ function SectorTile({ sector, isActive, onClick, T, isDark, dimmed }) {
               return (
                 <div key={c.ticker} title={c.name} style={{
                   display: "flex", alignItems: "center", gap: 3,
-                  padding: "2px 6px 2px 3px", borderRadius: 4,
+                  padding: "3px 7px 3px 3px", borderRadius: 4,
                   background: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.025)",
+                  border: `1px solid ${isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)"}`,
                 }}>
-                  {logo && <img src={logo} alt="" style={{ width: 12, height: 12, borderRadius: 2 }} onError={e => e.target.style.display = "none"} />}
+                  {logo && <img src={logo} alt="" style={{ width: 14, height: 14, borderRadius: 3 }} onError={e => e.target.style.display = "none"} />}
                   <span style={{ fontSize: 9, fontWeight: 600, fontFamily: Fn, color: T.textSec }}>{c.ticker}</span>
                 </div>
               );
