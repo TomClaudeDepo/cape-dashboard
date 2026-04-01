@@ -1,46 +1,48 @@
 import { useState } from "react";
 import { Fs, Fn, Fh } from "../theme";
 import { portfolioGics, acwiGics, portfolioCo, acwiCo, ccyAll, acwiCcy } from "../data/portfolio";
+import { NAV, MV_PCT, FWD_PCT, CASH_PCT, CA_PCT, CL_PCT } from "../data/constants";
 import { Card, Bars, TabBar, Stat } from "../components/shared";
 
-// Asset type from NAV report 31 Mar 2026
+// Asset type breakdown — derived from constants
 const assetTypes = [
-  { name: "Equities", wt: 98.77 },
-  { name: "FX Forwards", wt: -0.77 },
-  { name: "Cash & Liquidity", wt: 2.03 },
-  { name: "Current Assets", wt: 0.04 },
-  { name: "Current Liabilities", wt: -0.07 },
+  { name: "Equities", wt: MV_PCT },
+  { name: "FX Forwards", wt: FWD_PCT },
+  { name: "Cash & Liquidity", wt: CASH_PCT },
+  { name: "Current Assets", wt: CA_PCT },
+  { name: "Current Liabilities", wt: CL_PCT },
 ];
 
 // Country allocation from NAV report (by issuer country)
 const countryAllocNAV = [
-  { name: "USA", wt: 55.38 },
-  { name: "China (Cayman Is.)", wt: 7.97 },
-  { name: "Sweden", wt: 7.23 },
-  { name: "France", wt: 5.83 },
-  { name: "Japan", wt: 5.00 },
-  { name: "Taiwan", wt: 4.90 },
-  { name: "South Korea", wt: 4.46 },
-  { name: "Switzerland", wt: 4.21 },
-  { name: "Germany", wt: 2.28 },
-  { name: "Netherlands", wt: 1.50 },
+  { name: "USA", wt: 56.84 },
+  { name: "China (Cayman Is.)", wt: 7.84 },
+  { name: "Sweden", wt: 7.24 },
+  { name: "France", wt: 6.35 },
+  { name: "Taiwan", wt: 4.99 },
+  { name: "Japan", wt: 4.79 },
+  { name: "Switzerland", wt: 4.30 },
+  { name: "South Korea", wt: 3.97 },
+  { name: "Germany", wt: 2.16 },
+  { name: "Netherlands", wt: 1.53 },
 ];
 
 // Sector from NAV report (economic sector)
 const sectorAllocNAV = [
-  { name: "Internet/Software/IT", wt: 23.89 },
-  { name: "Electronics/Semis", wt: 14.45 },
-  { name: "Pharmaceuticals", wt: 9.11 },
-  { name: "Misc. Services", wt: 8.63 },
-  { name: "Banks/Financials", wt: 9.22 },
-  { name: "Industrials", wt: 7.39 },
-  { name: "Chemicals", wt: 5.05 },
-  { name: "Retail", wt: 3.98 },
-  { name: "Vehicles", wt: 3.19 },
-  { name: "Telecom", wt: 2.93 },
-  { name: "Life Sciences", wt: 4.55 },
-  { name: "Electrical", wt: 2.28 },
-  { name: "Utilities", wt: 2.28 },
+  { name: "Internet/Software/IT", wt: 20.50 },
+  { name: "Electronics/Semis", wt: 13.75 },
+  { name: "Misc. Services", wt: 12.66 },
+  { name: "Pharmaceuticals", wt: 9.38 },
+  { name: "Banks/Financials", wt: 9.31 },
+  { name: "Industrials", wt: 7.47 },
+  { name: "Chemicals", wt: 5.57 },
+  { name: "Life Sciences", wt: 4.71 },
+  { name: "Retail", wt: 4.10 },
+  { name: "Vehicles", wt: 3.20 },
+  { name: "Telecom", wt: 2.89 },
+  { name: "Utilities", wt: 2.31 },
+  { name: "Electrical", wt: 2.16 },
+  { name: "Computer/Networking", wt: 2.01 },
 ];
 
 export default function AllocPg({ T }) {

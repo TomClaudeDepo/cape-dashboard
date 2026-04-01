@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Fn } from "../theme";
 import { Card, Pill, TabBar } from "../components/shared";
-
-const NAV_DATE = "31 Mar 2026";
-const FUND_NAV = 383132062.97;
+import { NAV as FUND_NAV, NAV_DATE, MV_PCT, FWD_PCT, CASH_PCT, CA_PCT, CL_PCT } from "../data/constants";
 
 const positions = [
   { name: "NOVARTIS", pct: 4.28 },
@@ -32,8 +30,8 @@ const positions = [
   { name: "SERVICENOW", pct: 1.95 },
   { name: "TAIWAN SEMI", pct: 4.97 },
   { name: "THERMO FISHER", pct: 4.70 },
-  { type: "Cash & Liquidity", pct: 1.99 }, { type: "Current Assets", pct: 0.04 },
-  { type: "Forwards", pct: -1.56 }, { type: "Current Liabilities", pct: -0.08 },
+  { type: "Cash & Liquidity", pct: CASH_PCT }, { type: "Current Assets", pct: CA_PCT },
+  { type: "Forwards", pct: FWD_PCT }, { type: "Current Liabilities", pct: CL_PCT },
 ];
 
 const currencyExposure = [
@@ -42,9 +40,9 @@ const currencyExposure = [
 ];
 
 const assetAllocation = [
-  { type: "Equities", pct: 99.61 }, { type: "FX Forwards", pct: -1.56 },
-  { type: "Cash & Liquidity", pct: 1.99 }, { type: "Current Assets", pct: 0.04 },
-  { type: "Current Liabilities", pct: -0.08 },
+  { type: "Equities", pct: MV_PCT }, { type: "FX Forwards", pct: FWD_PCT },
+  { type: "Cash & Liquidity", pct: CASH_PCT }, { type: "Current Assets", pct: CA_PCT },
+  { type: "Current Liabilities", pct: CL_PCT },
 ];
 
 const countryAllocation = [
