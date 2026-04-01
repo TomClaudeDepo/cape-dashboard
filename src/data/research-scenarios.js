@@ -1,164 +1,297 @@
-/* ─── Portfolio Scenario Sensitivity Data ───
-   Impact scale: +2 Strong Positive, +1 Positive, 0 Neutral, -1 Negative, -2 Strong Negative
+/* ─── Narrative → Portfolio Impact Map ───
+   30 narratives, each impacting ≥5 of the 26 holdings.
+   Direction: +1 = tailwind, -1 = headwind, 0 = mixed/ambiguous
    Updated: April 2026
-   Source: Cape Capital Executive Summary — Global Market Narratives
 */
 
-export const scenarios = [
-  {
-    id: "soft_landing", name: "Soft Landing", short: "Soft Landing", icon: "☀️", color: "#047857", horizon: "6–18 months",
-    summary: "Inflation gradually returns toward 2–2.5% while GDP holds at roughly 1.8–2.0%. Central banks begin cutting once disinflation is sustained. Consumer spending remains solid, supported by real wage growth and resilient labour markets. Oil drifts toward $75–85 and no major geopolitical shock intervenes. Risk assets rally, credit spreads compress, and cyclicals lead.",
-    triggers: ["Core PCE decelerating toward 2.3% by early 2027","Oil stabilises below $90; no new supply shocks","Fed begins cutting cycle — one or two 25bp cuts","Consumer confidence remains above 100"],
-    indicators: ["CPI/PCE trending down to 2–3%","10Y Treasury yield falling below 3.5%","ISM Manufacturing crossing back above 50","IG credit spreads below 100bp"],
-  },
-  {
-    id: "recession", name: "US Recession", short: "Recession", icon: "📉", color: "#DC2626", horizon: "6–18 months",
-    summary: "Cumulative Fed tightening tips the economy into contraction. GDP turns negative for at least two consecutive quarters, unemployment rises above 5%, and corporate earnings fall 15–20%. Credit spreads blow out, cyclicals and financials lead losses, and Treasuries rally hard as the Fed eventually cuts aggressively. The IMF flagged a roughly 30% probability of this outcome in 2026.",
-    triggers: ["Fed keeps policy too tight as data softens","Unexpected exogenous shock (trade war, fiscal crisis)","Wage-price spiral forces overtightening","Major consumer credit event (auto/mortgage delinquencies)"],
-    indicators: ["2s/10s curve inverted for 6+ months","Unemployment crossing above 5%","ISM Manufacturing and Services both below 48","HY OAS widening above 600bp"],
-  },
-  {
-    id: "sticky_inflation", name: "Sticky Inflation", short: "Inflation", icon: "🔥", color: "#EA580C", horizon: "6–18 months",
-    summary: "Inflation refuses to normalise. Core CPI stays stuck above 3.5%, driven by persistent services inflation, wage pressures, or a second commodity shock. Central banks delay cuts or threaten further hikes. Bond yields grind higher, high-multiple equities re-price, and the market rotates from growth into value and real assets. The WEF ranked inflation as a top near-term risk in its 2026 outlook.",
-    triggers: ["Oil spikes back above $100 on supply disruption","Wage growth re-accelerates above 4.5%","Shelter/services inflation stays sticky above 4%","Breakeven inflation rates climb past 3%"],
-    indicators: ["Core CPI/PCE stuck above 3.5%","5Y breakevens rising above 2.8%","Fed minutes turning hawkish — rate cuts deferred","Gold and commodities trending higher"],
-  },
-  {
-    id: "china_hard_landing", name: "China Hard Landing", short: "China Crash", icon: "🏗️", color: "#9B1B1B", horizon: "6–12 months",
-    summary: "China's property correction deepens into a national growth crisis. Real estate investment — already down roughly 17% year-on-year by late 2025 — drags GDP below 4%. Household wealth declines sap consumption. The rest of the world feels it through weaker commodity demand and reduced trade volumes. Asian and commodity-linked equities drop; safe-haven currencies strengthen.",
-    triggers: ["Home prices declining 10%+ for multiple consecutive months","Major developer bond defaults or restructuring failures","Stimulus packages fail to arrest property downturn","Yuan weakening past 7.5 against USD"],
-    indicators: ["China PMI falling below 48","Property-related credit growth near zero","Copper and iron ore prices falling 15%+","Capital outflows accelerating — FX reserves declining"],
-  },
-  {
-    id: "china_stimulus", name: "China Stimulus Pivot", short: "China Bull", icon: "🇨🇳", color: "#1D4ED8", horizon: "6–18 months",
-    summary: "Chinese authorities aggressively stimulate the economy with large fiscal packages, credit injections, and a decisive pivot toward domestic consumption. Growth re-accelerates above IMF forecasts (currently 4.5% for 2026) as policy support offsets the property slump. Commodity demand recovers, EM equities rally, and global growth surprises to the upside.",
-    triggers: ["Major fiscal packages — infrastructure, tax cuts, consumer incentives","PBOC aggressive easing — RRR cuts, MLF injections","Social security expansion and housing support measures","Shift from investment-led to consumption-led growth model"],
-    indicators: ["Sharp upturn in M2 growth and total social financing","Improvement in retail sales and auto sales data","Yuan stabilising or appreciating","Commodity import volumes recovering"],
-  },
-  {
-    id: "ukraine_escalation", name: "Russia–Ukraine Escalation", short: "Ukraine War", icon: "⚔️", color: "#7C3AED", horizon: "Short (event-driven)",
-    summary: "A major escalation beyond the current stalemate — new fronts, heavier weaponry, or fresh severe sanctions on Russian energy — jolts markets. European gas and oil prices spike 20%+ on thin inventories. The IMF warned that escalated conflict would drive broad commodity prices higher and keep inflation elevated for longer. Europe gets hit hardest: the euro weakens, European equities sell off, and energy stocks rally.",
-    triggers: ["Major combat escalation or new fronts opening","New rounds of severe sanctions on Russian energy","Russian gas supply to Europe cut further","Nuclear escalation rhetoric or incidents"],
-    indicators: ["European natural gas (TTF) surging 30%+","Brent oil spiking 20%+","European PMIs dropping below 45","EUR/USD falling below 1.05"],
-  },
-  {
-    id: "oil_shock", name: "Middle East Oil Shock", short: "Oil Shock", icon: "🛢️", color: "#B45309", horizon: "Short (event-driven)",
-    summary: "A large-scale Middle East conflict — such as an Iran–Israel war spreading to Gulf states — disrupts oil supply. Brent spikes above $120 and possibly toward $140. Global inflation surges, forcing central banks to tighten into weakening demand. Risk assets sell off sharply; energy stocks and gold rally. The portfolio's zero energy weight becomes a significant drag in this scenario.",
-    triggers: ["Direct attacks on Gulf oil facilities","Strait of Hormuz closure or severe disruption","New comprehensive Iran sanctions","OPEC+ production cuts compounding supply loss"],
-    indicators: ["Brent crude jumping 30%+ in weeks","Shipping insurance costs spiking in Persian Gulf","US inflation breakevens jumping 50bp+","Airline and transport stocks collapsing"],
-  },
-  {
-    id: "trade_war", name: "Trade & Tech Decoupling", short: "Trade War", icon: "🏴", color: "#DC2626", horizon: "6–24 months",
-    summary: "Escalating US–China trade frictions and technology bans lead to a partial global decoupling. Supply chains bifurcate into rival blocs. New broad tariffs (25–35% on EU, Japan, Korea) and retaliatory measures compress global trade volumes by 3–5%. The WEF ranked geoeconomic confrontation as the top near-term risk for 2026. Manufacturing PMIs collapse, and trade-exposed industrials suffer acutely.",
-    triggers: ["New Section 301 tariffs on EU/Japan/Korea — 25–35%","Semiconductor and rare-earth export controls tightened","Formation of new rival trade or payments blocs","China tariffs escalate to 40–50%"],
-    indicators: ["Bilateral trade volumes falling 5%+","Companies announcing supply-chain relocations","Trade-weighted barriers index rising sharply","Global manufacturing PMIs below 47"],
-  },
-  {
-    id: "ai_boom", name: "AI Productivity Boom", short: "AI Boom", icon: "🚀", color: "#1D4ED8", horizon: "12–36 months",
-    summary: "Rapid AI adoption drives unprecedented productivity gains and earnings upside. Hyperscaler capex exceeds guidance, enterprise AI reaches inflection, and corporate profit margins expand as automation scales. Semiconductor demand surges, tech stocks re-rate higher, and rates stay subdued thanks to deflationary productivity gains. The portfolio's heavy tech/AI exposure becomes a major tailwind.",
-    triggers: ["Hyperscaler capex exceeding $700B annually","Enterprise AI adoption reaching inflection — Copilot, Now Assist scaling","Semiconductor shortages intensifying at advanced nodes","Corporate earnings surprising to upside on margin expansion"],
-    indicators: ["R&D and IT investment surging as share of GDP","Unit labour costs flattening despite wage growth","TSMC advanced-node utilisation above 95%","Nasdaq making new highs, breadth expanding"],
-  },
-  {
-    id: "ai_bust", name: "AI Bubble Burst", short: "AI Bust", icon: "💥", color: "#9B1B1B", horizon: "3–12 months",
-    summary: "Hype around AI fails to meet near-term expectations. Hyperscalers cut 2027 capex guidance 10–20% after disappointing ROI metrics. Key IPOs flop, enterprise adoption proves slower than projected, and AI-adjacent stocks re-price violently. The IMF warned of an abrupt repricing if AI fails to deliver. With roughly 40% of the portfolio linked to the AI buildout, this is the highest-severity scenario for the book.",
-    triggers: ["Hyperscaler capex guidance cuts of 10–20%","Disappointing enterprise AI adoption metrics","High-profile AI startup failures or IPO flops","Evidence of overcapacity in GPU/data centre infrastructure"],
-    indicators: ["Tech sector P/E ratios compressing rapidly","Semiconductor order cancellations or deferrals","Nvidia revenue guidance disappointing for first time","VIX spiking above 35 with tech leading losses"],
-  },
+export const HOLDINGS = [
+  { t: "NVDA", n: "Nvidia", s: "IT", co: "US" },
+  { t: "TSMC", n: "Taiwan Semi", s: "IT", co: "TW" },
+  { t: "AVGO", n: "Broadcom", s: "IT", co: "US" },
+  { t: "MSFT", n: "Microsoft", s: "IT", co: "US" },
+  { t: "GOOGL", n: "Alphabet", s: "Comm", co: "US" },
+  { t: "AMZN", n: "Amazon", s: "Disc", co: "US" },
+  { t: "NOW", n: "ServiceNow", s: "IT", co: "US" },
+  { t: "GLW", n: "Corning", s: "IT", co: "US" },
+  { t: "005930", n: "Samsung", s: "IT", co: "KR" },
+  { t: "NFLX", n: "Netflix", s: "Comm", co: "US" },
+  { t: "JPM", n: "JP Morgan", s: "Fin", co: "US" },
+  { t: "ICE", n: "ICE", s: "Fin", co: "US" },
+  { t: "MSCI", n: "MSCI", s: "Fin", co: "US" },
+  { t: "6501", n: "Hitachi", s: "Ind", co: "JP" },
+  { t: "SIE", n: "Siemens", s: "Ind", co: "DE" },
+  { t: "VOLV", n: "Volvo", s: "Ind", co: "SE" },
+  { t: "EPI", n: "Epiroc", s: "Ind", co: "SE" },
+  { t: "ROK", n: "Rockwell", s: "Ind", co: "US" },
+  { t: "AI", n: "Air Liquide", s: "Mat", co: "FR" },
+  { t: "AKZA", n: "Akzo Nobel", s: "Mat", co: "NL" },
+  { t: "9988", n: "Alibaba", s: "Disc", co: "CN" },
+  { t: "0700", n: "Tencent", s: "Comm", co: "CN" },
+  { t: "NOVN", n: "Novartis", s: "HC", co: "CH" },
+  { t: "PFE", n: "Pfizer", s: "HC", co: "US" },
+  { t: "TMO", n: "Thermo Fisher", s: "HC", co: "US" },
+  { t: "VIE", n: "Veolia", s: "Util", co: "FR" },
 ];
 
-export const holdingImpacts = [
-  { name:"NVIDIA",ticker:"NVDA",wt:4.63,gics:"IT",
-    impacts:{soft_landing:2,recession:-1,sticky_inflation:-1,china_hard_landing:-1,china_stimulus:1,ukraine_escalation:-1,oil_shock:-1,trade_war:-1,ai_boom:2,ai_bust:-2},
-    rationale:{soft_landing:"AI capex unimpeded, lower energy costs for data centres",recession:"Risk-off compresses high multiple; but AI demand relatively resilient",sticky_inflation:"Higher rates pressure 20x+ multiple; power costs rise",china_hard_landing:"Some China DC revenue at risk; indirect demand hit",china_stimulus:"China AI investment ramps; positive for advanced chip demand",ukraine_escalation:"Energy costs spike for DCs; risk-off on high beta",oil_shock:"Power cost headwind for DC operators; but AI demand structural",trade_war:"Chip tariffs and export controls tighten; hyperscaler demand partially offsets",ai_boom:"Revenue trajectory toward $200B+; re-rates higher on full utilisation",ai_bust:"Guidance cut as hyperscaler orders slow — could fall 30–40%"}},
-  { name:"TAIWAN SEMI",ticker:"TSM",wt:4.71,gics:"IT",
-    impacts:{soft_landing:2,recession:-1,sticky_inflation:0,china_hard_landing:-1,china_stimulus:1,ukraine_escalation:0,oil_shock:0,trade_war:-1,ai_boom:2,ai_bust:-2},
-    rationale:{soft_landing:"AI demand continues, advanced-node ramp proceeds",recession:"Smartphone/PC demand weakens; AI offsets partially",sticky_inflation:"Pricing power offsets macro headwinds — relatively insulated",china_hard_landing:"China revenue ~10% — some demand erosion",china_stimulus:"China chip demand and capex recovery",ukraine_escalation:"No direct exposure; mostly unaffected",oil_shock:"Taiwan energy mix limits exposure; costs passed through",trade_war:"Taiwan-origin chips could face tariffs; Arizona fab partially offsets",ai_boom:"2nm premium pricing, 65%+ gross margins, AI revenue share expands",ai_bust:"AI revenue share decelerates; utilisation drops at advanced nodes"}},
-  { name:"PFIZER",ticker:"PFE",wt:5.07,gics:"Health Care",
-    impacts:{soft_landing:1,recession:1,sticky_inflation:1,china_hard_landing:0,china_stimulus:0,ukraine_escalation:1,oil_shock:1,trade_war:1,ai_boom:0,ai_bust:1},
-    rationale:{soft_landing:"Modest lift from improved sentiment; pipeline progress",recession:"6.2% yield attracts defensive capital; pharma demand inelastic",sticky_inflation:"Pharma pricing power — can raise drug prices above CPI",china_hard_landing:"Minimal China revenue exposure",china_stimulus:"Not a meaningful beneficiary",ukraine_escalation:"Classic defensive — rotation into healthcare",oil_shock:"Defensive rotation; minimal energy input costs",trade_war:"Pharma generally exempted from tariffs",ai_boom:"Not an AI beneficiary",ai_bust:"Rotation into defensive healthcare from tech"}},
-  { name:"ICE",ticker:"ICE",wt:4.84,gics:"Financials",
-    impacts:{soft_landing:1,recession:0,sticky_inflation:1,china_hard_landing:0,china_stimulus:0,ukraine_escalation:1,oil_shock:1,trade_war:1,ai_boom:0,ai_bust:1},
-    rationale:{soft_landing:"Capital markets activity picks up; data services steady",recession:"Exchange volumes spike in volatile markets, offsetting AUM fees",sticky_inflation:"Energy/commodity exchange volumes surge under volatile prices",china_hard_landing:"Indirect — global vol may benefit exchange volumes",china_stimulus:"Not a meaningful direct beneficiary",ukraine_escalation:"Commodity and energy exchange volumes surge",oil_shock:"Oil futures volumes spike; ICE energy franchise benefits directly",trade_war:"FX and commodity volumes surge amid trade turbulence",ai_boom:"Data services demand grows; but not a primary beneficiary",ai_bust:"Volatility drives record exchange volumes"}},
-  { name:"NETFLIX",ticker:"NFLX",wt:4.94,gics:"Comm. Services",
-    impacts:{soft_landing:2,recession:-1,sticky_inflation:-1,china_hard_landing:0,china_stimulus:0,ukraine_escalation:0,oil_shock:-1,trade_war:1,ai_boom:1,ai_bust:0},
-    rationale:{soft_landing:"Consumer confidence rebuilds; subscriber growth reaccelerates",recession:"Subscription fatigue in cost-of-living squeeze; ad revenue weakens",sticky_inflation:"Consumer belt-tightening pressures subscriber retention",china_hard_landing:"No meaningful China presence",china_stimulus:"Not a direct beneficiary",ukraine_escalation:"Entertainment demand relatively insulated from energy crisis",oil_shock:"Consumer spending compressed by energy costs",trade_war:"Domestic digital service — tariff-immune; potential share gainer",ai_boom:"Mild lift from positive tech sentiment; AI content tools boost margins",ai_bust:"Not directly AI-exposed; modest sympathy weakness"}},
-  { name:"MICROSOFT",ticker:"MSFT",wt:4.54,gics:"IT",
-    impacts:{soft_landing:2,recession:-1,sticky_inflation:-1,china_hard_landing:0,china_stimulus:0,ukraine_escalation:0,oil_shock:-1,trade_war:0,ai_boom:2,ai_bust:-2},
-    rationale:{soft_landing:"Azure growth continues, AI Copilot revenue scales",recession:"Enterprise IT budgets tighten; but subscription revenue sticky",sticky_inflation:"Cloud margins pressured by electricity costs; multiple compresses",china_hard_landing:"Minimal China exposure — mostly US/Europe enterprise",china_stimulus:"Not a meaningful direct beneficiary",ukraine_escalation:"Cloud business relatively insulated; some European weakness",oil_shock:"DC electricity costs rise; margin pressure",trade_war:"Services trade relatively insulated from tariffs",ai_boom:"Azure reaccelerates to 40%+; Copilot revenue scales past $10B",ai_bust:"Azure AI growth slows; massive capex looks like poor capital allocation"}},
-  { name:"THERMO FISHER",ticker:"TMO",wt:4.65,gics:"Health Care",
-    impacts:{soft_landing:1,recession:0,sticky_inflation:0,china_hard_landing:-1,china_stimulus:1,ukraine_escalation:0,oil_shock:0,trade_war:0,ai_boom:0,ai_bust:1},
-    rationale:{soft_landing:"Life sciences demand stabilises after post-COVID normalisation",recession:"Healthcare demand relatively insulated; pharma R&D spend stable",sticky_inflation:"Pricing power in instruments and consumables",china_hard_landing:"China ~10% of revenue — at risk",china_stimulus:"China lab and pharma spending recovers with stimulus",ukraine_escalation:"Healthcare demand insulated from energy crisis",oil_shock:"Modest supply chain cost impact; mostly insulated",trade_war:"Lab equipment may face tariffs; but essential for pharma R&D",ai_boom:"Not a meaningful AI beneficiary",ai_bust:"Defensive rotation into healthcare names"}},
-  { name:"JP MORGAN",ticker:"JPM",wt:4.38,gics:"Financials",
-    impacts:{soft_landing:1,recession:-1,sticky_inflation:1,china_hard_landing:0,china_stimulus:0,ukraine_escalation:0,oil_shock:0,trade_war:0,ai_boom:1,ai_bust:0},
-    rationale:{soft_landing:"Capital markets activity picks up; credit fears abate",recession:"Loan losses rise; IB revenue collapses — partially offset by NII",sticky_inflation:"Higher rates support NII; fortress balance sheet captures market share",china_hard_landing:"Limited direct exposure; EM loan book small",china_stimulus:"Not a meaningful direct beneficiary",ukraine_escalation:"Trading revenues from volatility offset credit concerns",oil_shock:"Energy trading revenues offset broader credit concerns",trade_war:"Domestic franchise insulated; trading revenues benefit from vol",ai_boom:"Capital markets revenue strong in risk-on environment",ai_bust:"Market decline hurts IB; diversified enough for neutral"}},
-  { name:"MSCI",ticker:"MSCI",wt:4.80,gics:"Financials",
-    impacts:{soft_landing:1,recession:-1,sticky_inflation:-1,china_hard_landing:-1,china_stimulus:1,ukraine_escalation:-1,oil_shock:-1,trade_war:-1,ai_boom:1,ai_bust:-1},
-    rationale:{soft_landing:"AUM in linked ETFs rises with equity markets",recession:"Risk-off reduces AUM; fee income declines with market levels",sticky_inflation:"Equity markets weak; AUM-linked fees decline",china_hard_landing:"EM index AUM declines as China equities sell off",china_stimulus:"EM equity inflows drive index-linked AUM higher",ukraine_escalation:"European and global equity weakness reduces AUM",oil_shock:"Broad equity decline reduces AUM-linked revenue",trade_war:"Global equity sell-off compresses AUM",ai_boom:"AUM hits records as equity markets rally broadly",ai_bust:"AUM declines as tech selloff drags global indices"}},
-  { name:"HITACHI",ticker:"6501.T",wt:4.90,gics:"Industrials",
-    impacts:{soft_landing:1,recession:-1,sticky_inflation:-1,china_hard_landing:-1,china_stimulus:1,ukraine_escalation:-1,oil_shock:-1,trade_war:-1,ai_boom:1,ai_bust:-1},
-    rationale:{soft_landing:"DC and infrastructure demand firm",recession:"Cyclical industrial demand weakens globally",sticky_inflation:"Yen weakness and energy costs squeeze margins",china_hard_landing:"Japan exports to China decline; Hitachi Energy demand weakens",china_stimulus:"Asian infrastructure investment benefits Hitachi Energy and Lumada",ukraine_escalation:"Japanese energy import costs spike; European grid orders may rise",oil_shock:"Japan energy costs surge; yen likely weakens further",trade_war:"Japanese-origin equipment faces tariffs",ai_boom:"Lumada digital and Hitachi Energy benefit from DC power demand",ai_bust:"DC infrastructure orders moderate; Lumada growth slows"}},
-  { name:"NOVARTIS",ticker:"NOVN.SW",wt:4.32,gics:"Health Care",
-    impacts:{soft_landing:1,recession:1,sticky_inflation:1,china_hard_landing:0,china_stimulus:0,ukraine_escalation:1,oil_shock:1,trade_war:1,ai_boom:0,ai_bust:1},
-    rationale:{soft_landing:"Steady pharma compounder; modest lift from sentiment",recession:"CHF safe haven; pharma demand entirely non-cyclical",sticky_inflation:"Pharma pricing power; CHF appreciation buffers",china_hard_landing:"Minimal China revenue exposure",china_stimulus:"Not a meaningful beneficiary",ukraine_escalation:"Classic defensive plus CHF strength as safe haven",oil_shock:"Defensive pharma; zero energy input sensitivity",trade_war:"Pharma generally exempted from tariffs",ai_boom:"Not an AI beneficiary",ai_bust:"Rotation into defensive healthcare from tech"}},
-  { name:"ALPHABET",ticker:"GOOGL",wt:3.85,gics:"Comm. Services",
-    impacts:{soft_landing:2,recession:-1,sticky_inflation:-1,china_hard_landing:0,china_stimulus:0,ukraine_escalation:0,oil_shock:-1,trade_war:0,ai_boom:2,ai_bust:-1},
-    rationale:{soft_landing:"Search + Cloud + AI all benefit from healthy spending",recession:"Ad revenue sensitive to consumer spending — largest driver weakens",sticky_inflation:"Higher rates compress multiple; some ad budget trimming",china_hard_landing:"Minimal China presence — already blocked",china_stimulus:"Not a meaningful beneficiary",ukraine_escalation:"European ad revenue softens; diversified globally",oil_shock:"Consumer spending compressed → ad budgets trimmed",trade_war:"Digital services relatively insulated from tariffs",ai_boom:"Google Cloud crosses $80B run-rate; Gemini monetises across Search",ai_bust:"Cloud AI slows; but Search franchise provides floor"}},
-  { name:"AMAZON",ticker:"AMZN",wt:3.99,gics:"Cons. Disc.",
-    impacts:{soft_landing:2,recession:-1,sticky_inflation:-1,china_hard_landing:0,china_stimulus:0,ukraine_escalation:0,oil_shock:-1,trade_war:0,ai_boom:2,ai_bust:-1},
-    rationale:{soft_landing:"Consumer + cloud both benefit from resilient economy",recession:"Consumer spending contracts; retail negative — AWS partially offsets",sticky_inflation:"Consumer spending compressed; cloud margins pressured by electricity",china_hard_landing:"Minimal direct China exposure",china_stimulus:"Not a meaningful beneficiary",ukraine_escalation:"European retail demand weakens; cloud insulated",oil_shock:"Logistics and fulfilment costs spike; consumer spending compressed",trade_war:"Mostly domestic; some tariff impact on third-party sellers",ai_boom:"AWS AI workloads scale; retail margins expand from automation",ai_bust:"AWS AI growth disappoints; retail and advertising diversify"}},
-  { name:"SAMSUNG",ticker:"005930.KS",wt:4.01,gics:"IT",
-    impacts:{soft_landing:2,recession:-1,sticky_inflation:0,china_hard_landing:-1,china_stimulus:1,ukraine_escalation:0,oil_shock:0,trade_war:-1,ai_boom:2,ai_bust:-2},
-    rationale:{soft_landing:"Memory demand healthy; HBM pricing power sustained",recession:"Smartphone/PC memory demand weakens; AI partially offsets",sticky_inflation:"Pricing power in memory cycle; relatively insulated",china_hard_landing:"China major customer for memory and displays",china_stimulus:"China smartphone and electronics demand recovers",ukraine_escalation:"Limited direct European exposure",oil_shock:"Korean energy costs rise modestly; global pricing offsets",trade_war:"Korean semis face potential tariffs; China market access restricted",ai_boom:"HBM demand explodes; memory division profits surge to records",ai_bust:"Memory demand outside AI already weak; HBM cools sharply"}},
-  { name:"TENCENT",ticker:"0700.HK",wt:4.00,gics:"Comm. Services",
-    impacts:{soft_landing:1,recession:0,sticky_inflation:0,china_hard_landing:-2,china_stimulus:2,ukraine_escalation:0,oil_shock:0,trade_war:-2,ai_boom:0,ai_bust:0},
-    rationale:{soft_landing:"Risk-on benefits EM equities; yuan strengthens",recession:"US recession may boost relative EM attractiveness — wash",sticky_inflation:"Mostly a China domestic story; insulated from US inflation",china_hard_landing:"Consumer and ad spend directly tied to Chinese economic health",china_stimulus:"Primary beneficiary — gaming, fintech, cloud all lever to Chinese GDP",ukraine_escalation:"Largely insulated from European energy dynamics",oil_shock:"China energy costs rise; but Tencent is digital platform",trade_war:"ADR risk; regulatory uncertainty; tariff-driven consumer weakness in China",ai_boom:"Domestic AI ecosystem partially independent of Western AI",ai_bust:"Domestic AI ecosystem partially independent — limited contagion"}},
-  { name:"ALIBABA",ticker:"9988.HK",wt:3.95,gics:"Cons. Disc.",
-    impacts:{soft_landing:1,recession:0,sticky_inflation:0,china_hard_landing:-2,china_stimulus:2,ukraine_escalation:0,oil_shock:0,trade_war:-2,ai_boom:0,ai_bust:0},
-    rationale:{soft_landing:"Risk-on benefits EM; Chinese consumer sentiment improves",recession:"US recession may marginally boost relative EM appeal",sticky_inflation:"Mostly a China domestic e-commerce story",china_hard_landing:"Consumer spending tied to household wealth — property crunch devastating",china_stimulus:"Primary beneficiary — e-commerce, cloud, consumer lever to stimulus",ukraine_escalation:"Largely insulated from European energy dynamics",oil_shock:"China import costs rise but Alibaba is domestic platform",trade_war:"ADR risk; tariffs crush Chinese export sellers; regulatory overhang",ai_boom:"Domestic cloud AI partially independent of Western AI",ai_bust:"Domestic cloud ecosystem partially insulated"}},
-  { name:"EPIROC",ticker:"EPI-A.ST",wt:3.96,gics:"Industrials",
-    impacts:{soft_landing:1,recession:-1,sticky_inflation:0,china_hard_landing:-1,china_stimulus:1,ukraine_escalation:0,oil_shock:0,trade_war:-1,ai_boom:1,ai_bust:0},
-    rationale:{soft_landing:"Mining capex continues with commodities stable",recession:"Mining activity slows under demand destruction",sticky_inflation:"Commodity prices firm supports mining investment; inflation pass-through",china_hard_landing:"China largest metals consumer; mining capex deferred",china_stimulus:"Infrastructure stimulus drives metals demand → mining capex",ukraine_escalation:"Sanctions may redirect mining flows; net neutral",oil_shock:"Equipment energy costs rise; offset by commodity price gains",trade_war:"Mining equipment exports face tariffs; customer capex deferred",ai_boom:"Copper demand for DC power distribution supports mining investment",ai_bust:"Not meaningfully AI-exposed"}},
-  { name:"VOLVO",ticker:"VOLV-B.ST",wt:3.17,gics:"Industrials",
-    impacts:{soft_landing:1,recession:-2,sticky_inflation:-1,china_hard_landing:-1,china_stimulus:1,ukraine_escalation:-2,oil_shock:-2,trade_war:-2,ai_boom:0,ai_bust:0},
-    rationale:{soft_landing:"Trucking volumes stabilise; fleet replacement cycle resumes",recession:"Truck orders collapse — highly cyclical revenue base",sticky_inflation:"Diesel costs surge; customer economics deteriorate → order cancellations",china_hard_landing:"Chinese construction equipment demand collapses",china_stimulus:"Infrastructure stimulus drives construction and truck demand in Asia",ukraine_escalation:"Diesel costs explode; European freight demand slumps",oil_shock:"Diesel costs surge; trucking economics collapse",trade_war:"25–35% tariff on Swedish trucks; orders already vulnerable",ai_boom:"No meaningful AI exposure",ai_bust:"No meaningful AI exposure"}},
-  { name:"ROCKWELL",ticker:"ROK",wt:3.36,gics:"Industrials",
-    impacts:{soft_landing:1,recession:-1,sticky_inflation:0,china_hard_landing:0,china_stimulus:0,ukraine_escalation:0,oil_shock:0,trade_war:-1,ai_boom:1,ai_bust:0},
-    rationale:{soft_landing:"US manufacturing investment resumes; automation demand healthy",recession:"US manufacturing capex deferred; automation structural",sticky_inflation:"Automation demand driven by labour cost inflation — partial hedge",china_hard_landing:"Mostly US-centric; limited direct China exposure",china_stimulus:"Not a primary beneficiary",ukraine_escalation:"Mostly US domestic; indirect global slowdown risk",oil_shock:"US manufacturing somewhat insulated",trade_war:"Domestic advantage partially offset by customer capex uncertainty",ai_boom:"Factory automation benefits from broader tech investment cycle",ai_bust:"Not directly AI-exposed; industrial automation continues"}},
-  { name:"CORNING",ticker:"GLW",wt:2.76,gics:"IT",
-    impacts:{soft_landing:1,recession:-1,sticky_inflation:0,china_hard_landing:-1,china_stimulus:1,ukraine_escalation:0,oil_shock:0,trade_war:-1,ai_boom:2,ai_bust:-2},
-    rationale:{soft_landing:"Fibre demand for DC buildout continues steadily",recession:"Telecom and display demand weakens; DC fibre partially offsets",sticky_inflation:"Pricing power on specialty glass; energy costs for manufacturing rise",china_hard_landing:"Display and telecom demand in China weakens",china_stimulus:"China display, telecom, and infrastructure fibre demand recovers",ukraine_escalation:"European demand weakens; DC fibre orders are global",oil_shock:"Glass manufacturing energy costs rise; passed through with lag",trade_war:"Some glass products trade-exposed; optical cables face tariffs",ai_boom:"Optical fibre revenue grows 40%+; additional hyperscaler deals",ai_bust:"Hyperscaler fibre deals deferred; optical growth stalls"}},
-  { name:"AIR LIQUIDE",ticker:"AI.PA",wt:4.02,gics:"Materials",
-    impacts:{soft_landing:1,recession:-1,sticky_inflation:-1,china_hard_landing:-1,china_stimulus:1,ukraine_escalation:-2,oil_shock:-1,trade_war:-1,ai_boom:1,ai_bust:0},
-    rationale:{soft_landing:"European industrial production stabilises; steady compounder",recession:"Industrial gas demand weakens with manufacturing output",sticky_inflation:"Energy-intensive production; European energy costs squeeze margins",china_hard_landing:"Asian industrial demand weakens; electronics segment slows",china_stimulus:"Electronics and industrial gas demand in Asia recovers",ukraine_escalation:"Production extremely energy-intensive; European energy crisis devastating",oil_shock:"Energy costs spike for gas production; European operations hit hardest",trade_war:"European industrial demand weakens; cross-border supply disrupted",ai_boom:"Electronics segment growing on semiconductor gas demand",ai_bust:"Non-AI industrial gas demand provides stability"}},
-  { name:"BROADCOM",ticker:"AVGO",wt:1.92,gics:"IT",
-    impacts:{soft_landing:2,recession:-1,sticky_inflation:-1,china_hard_landing:0,china_stimulus:0,ukraine_escalation:0,oil_shock:-1,trade_war:-1,ai_boom:2,ai_bust:-2},
-    rationale:{soft_landing:"AI chip demand continues; VMware integration proceeds",recession:"Multiple compresses under risk-off; enterprise software slows",sticky_inflation:"High multiple vulnerable to rate pressure",china_hard_landing:"Mostly US hyperscaler and enterprise customers",china_stimulus:"Not a primary beneficiary",ukraine_escalation:"Not directly exposed; risk-off may compress multiple",oil_shock:"DC power costs rise; but AI demand structural",trade_war:"Chip tariffs potential; hyperscaler demand resilient",ai_boom:"Custom AI chip revenue surges; VMware cross-sell accelerates",ai_bust:"AI chip orders cancelled; $100B revenue target collapses"}},
-  { name:"SERVICENOW",ticker:"NOW",wt:1.98,gics:"IT",
-    impacts:{soft_landing:2,recession:-1,sticky_inflation:-1,china_hard_landing:0,china_stimulus:0,ukraine_escalation:0,oil_shock:0,trade_war:0,ai_boom:2,ai_bust:-1},
-    rationale:{soft_landing:"Enterprise software demand strengthens; deals accelerate",recession:"Enterprise IT budgets tighten; deal cycles elongate",sticky_inflation:"High multiple vulnerable to rate pressure; subscription revenue sticky",china_hard_landing:"Minimal China exposure",china_stimulus:"Not a meaningful beneficiary",ukraine_escalation:"Enterprise spending may slow; workflow automation structural",oil_shock:"Not directly exposed; minor enterprise budget caution",trade_war:"SaaS not trade-exposed; services cross borders easily",ai_boom:"Now Assist AI drives subscription growth above 25%",ai_bust:"Now Assist growth decelerates; workflow automation non-discretionary"}},
-  { name:"VEOLIA",ticker:"VIE.PA",wt:2.30,gics:"Utilities",
-    impacts:{soft_landing:1,recession:0,sticky_inflation:0,china_hard_landing:0,china_stimulus:0,ukraine_escalation:-1,oil_shock:0,trade_war:0,ai_boom:0,ai_bust:1},
-    rationale:{soft_landing:"European activity stable; regulated water and waste steady",recession:"Essential water/waste services largely insulated",sticky_inflation:"Regulated tariffs adjust with inflation — built-in pass-through",china_hard_landing:"Minimal China exposure",china_stimulus:"Not a meaningful beneficiary",ukraine_escalation:"Some energy costs for waste processing; European industrial volumes weaken",oil_shock:"Waste processing energy costs rise modestly; regulated tariffs adjust",trade_war:"Essential local services; not trade-exposed",ai_boom:"No meaningful AI exposure",ai_bust:"Defensive rotation benefit as utility"}},
-  { name:"SIEMENS",ticker:"SIE.DE",wt:2.16,gics:"Industrials",
-    impacts:{soft_landing:1,recession:-1,sticky_inflation:-1,china_hard_landing:-1,china_stimulus:1,ukraine_escalation:-2,oil_shock:-1,trade_war:-2,ai_boom:1,ai_bust:0},
-    rationale:{soft_landing:"Smart Infrastructure backlog converts; digital industries stabilise",recession:"German industrial output weakens; order intake slows",sticky_inflation:"German energy costs and wages squeeze margins",china_hard_landing:"China large end-market for factory automation",china_stimulus:"China factory automation and infrastructure orders recover",ukraine_escalation:"German industrial production contracts under energy crisis",oil_shock:"German industry acutely sensitive to energy costs",trade_war:"German industrials face 25–35% tariffs; order cancellations",ai_boom:"DC power and automation orders surge — Smart Infra benefits",ai_bust:"Record backlog provides buffer; non-AI orders sustain"}},
-  { name:"AKZO NOBEL",ticker:"AKZA.AS",wt:1.55,gics:"Materials",
-    impacts:{soft_landing:1,recession:-2,sticky_inflation:-1,china_hard_landing:-1,china_stimulus:1,ukraine_escalation:-2,oil_shock:-1,trade_war:-2,ai_boom:0,ai_bust:0},
-    rationale:{soft_landing:"Construction and auto demand stabilise; volumes recover",recession:"Construction demand collapses; coatings are early-cycle",sticky_inflation:"Energy-intensive production; raw material costs spike",china_hard_landing:"China construction and auto demand weakens significantly",china_stimulus:"China construction and renovation demand recovers",ukraine_escalation:"European energy costs devastate chemical/coatings production",oil_shock:"Petrochemical input costs surge; margins compress",trade_war:"Coatings demand tied to construction and auto — both tariff-sensitive",ai_boom:"No meaningful AI exposure",ai_bust:"No meaningful AI exposure"}},
+export const CATS = [
+  { id: "geo", label: "Geopolitics & Energy", color: "#e74c3c" },
+  { id: "rates", label: "Rates & Monetary", color: "#3498db" },
+  { id: "infl", label: "Inflation Path", color: "#e67e22" },
+  { id: "ai", label: "AI / Technology", color: "#9b59b6" },
+  { id: "mkt", label: "Market Structure", color: "#1abc9c" },
+  { id: "macro", label: "Macro / Structural", color: "#7f8c8d" },
+  { id: "credit", label: "Credit & Stability", color: "#c0392b" },
+  { id: "sector", label: "Sector-Specific", color: "#2ecc71" },
 ];
 
-export const clusters = [
-  { id:"ai",name:"AI Infrastructure Chain",color:"#1D4ED8",
-    tickers:["NVDA","TSM","AVGO","005930.KS","MSFT","GOOGL","AMZN","GLW","6501.T","NOW","SIE.DE"],
-    description:"11 names deriving meaningful revenue from AI/DC buildout. A single hyperscaler capex cut moves 40%+ of the book simultaneously." },
-  { id:"cyclical",name:"Cyclical Industrials",color:"#EA580C",
-    tickers:["VOLV-B.ST","EPI-A.ST","ROK","SIE.DE","6501.T","AI.PA","AKZA.AS"],
-    description:"Shares exposure to global manufacturing PMIs, capex cycles, and trade policy. European energy + tariffs = double headwind." },
-  { id:"china",name:"China Exposure",color:"#DC2626",
-    tickers:["9988.HK","0700.HK","TSM","005930.KS"],
-    description:"Direct China holdings plus supply-chain exposure. Trade war, tech decoupling, and property crunch hit simultaneously." },
-  { id:"defensive",name:"Defensive / All-Weather",color:"#047857",
-    tickers:["PFE","ICE","NOVN.SW","JPM","TMO","VIE.PA"],
-    description:"Healthcare, exchanges, and essential services providing ballast. ICE benefits from volatility in nearly every stress case." },
+export const NARRATIVES = [
+  {
+    id: 1, cat: "geo", name: "Hormuz escalation / $150 oil",
+    desc: "Strait closure drags into summer, scarcity pricing in diesel/jet fuel, global recession risk rises sharply.",
+    hits: [
+      { t: "VOLV", d: -1 }, { t: "SIE", d: -1 }, { t: "AI", d: -1 }, { t: "AKZA", d: -1 },
+      { t: "VIE", d: -1 }, { t: "EPI", d: 0 }, { t: "9988", d: -1 }, { t: "0700", d: -1 },
+    ],
+  },
+  {
+    id: 2, cat: "geo", name: "Hormuz reopening / ceasefire trade",
+    desc: "Strait reopens, Brent collapses back to $70\u201380, massive rotation out of energy/defense into beaten-down growth.",
+    hits: [
+      { t: "VOLV", d: 1 }, { t: "SIE", d: 1 }, { t: "AI", d: 1 }, { t: "AKZA", d: 1 },
+      { t: "VIE", d: 1 }, { t: "9988", d: 1 }, { t: "0700", d: 1 }, { t: "AMZN", d: 1 },
+    ],
+  },
+  {
+    id: 3, cat: "geo", name: "US-China tariff escalation",
+    desc: "New rounds of tariffs or export controls hit supply chains, particularly semiconductors and consumer goods.",
+    hits: [
+      { t: "NVDA", d: -1 }, { t: "TSMC", d: -1 }, { t: "AVGO", d: -1 }, { t: "005930", d: -1 },
+      { t: "9988", d: -1 }, { t: "0700", d: -1 }, { t: "AMZN", d: -1 },
+    ],
+  },
+  {
+    id: 4, cat: "geo", name: "Nearshoring / friendshoring acceleration",
+    desc: "Supply chain diversification benefits industrials and infrastructure plays.",
+    hits: [
+      { t: "SIE", d: 1 }, { t: "6501", d: 1 }, { t: "ROK", d: 1 }, { t: "VOLV", d: 1 },
+      { t: "EPI", d: 1 },
+    ],
+  },
+  {
+    id: 5, cat: "geo", name: "Taiwan Strait risk re-pricing",
+    desc: "Markets start pricing chokepoint/invasion risk more seriously after Hormuz precedent.",
+    hits: [
+      { t: "TSMC", d: -1 }, { t: "NVDA", d: -1 }, { t: "AVGO", d: -1 }, { t: "005930", d: 0 },
+      { t: "MSFT", d: -1 }, { t: "GOOGL", d: -1 },
+    ],
+  },
+  {
+    id: 6, cat: "rates", name: "Fed rate cuts (2\u20133x in H2 2026)",
+    desc: "Inflation fades, Fed cuts multiple times in H2, duration rally, growth outperforms value.",
+    hits: [
+      { t: "MSFT", d: 1 }, { t: "GOOGL", d: 1 }, { t: "AMZN", d: 1 }, { t: "NOW", d: 1 },
+      { t: "NFLX", d: 1 }, { t: "NVDA", d: 1 }, { t: "MSCI", d: 1 }, { t: "ICE", d: 1 },
+      { t: "JPM", d: 0 }, { t: "AVGO", d: 1 },
+    ],
+  },
+  {
+    id: 7, cat: "rates", name: "Fed on hold indefinitely",
+    desc: "Inflation too hot to cut, growth too strong to hike. \u2018Higher for longer\u2019 kills rate-sensitive sectors.",
+    hits: [
+      { t: "NOW", d: -1 }, { t: "MSCI", d: -1 }, { t: "MSFT", d: -1 }, { t: "AMZN", d: -1 },
+      { t: "NFLX", d: 0 }, { t: "JPM", d: 1 }, { t: "ICE", d: 0 },
+    ],
+  },
+  {
+    id: 8, cat: "rates", name: "Yield curve steepening",
+    desc: "Long end sells off on fiscal concerns, short end anchored. Banks benefit, growth de-rates.",
+    hits: [
+      { t: "JPM", d: 1 }, { t: "ICE", d: 1 }, { t: "MSCI", d: 0 }, { t: "NOW", d: -1 },
+      { t: "MSFT", d: -1 }, { t: "NVDA", d: -1 },
+    ],
+  },
+  {
+    id: 9, cat: "infl", name: "Stagflation redux",
+    desc: "Oil shock feeds into sticky core inflation while growth slows. 1970s comparisons intensify.",
+    hits: [
+      { t: "VOLV", d: -1 }, { t: "SIE", d: -1 }, { t: "AI", d: -1 }, { t: "AKZA", d: -1 },
+      { t: "AMZN", d: -1 }, { t: "9988", d: -1 }, { t: "ROK", d: -1 }, { t: "EPI", d: -1 },
+    ],
+  },
+  {
+    id: 10, cat: "infl", name: "Disinflation resumes / goldilocks",
+    desc: "Oil shock proves transitory, services inflation fades. Perfect environment for risk assets.",
+    hits: [
+      { t: "MSFT", d: 1 }, { t: "GOOGL", d: 1 }, { t: "AMZN", d: 1 }, { t: "NVDA", d: 1 },
+      { t: "NOW", d: 1 }, { t: "NFLX", d: 1 }, { t: "MSCI", d: 1 },
+    ],
+  },
+  {
+    id: 11, cat: "infl", name: "Second-wave inflation (CPI 4%+)",
+    desc: "Oil + tariffs + wage growth re-accelerate CPI. 2022 PTSD returns, central banks frozen.",
+    hits: [
+      { t: "NOW", d: -1 }, { t: "MSFT", d: -1 }, { t: "AMZN", d: -1 }, { t: "NFLX", d: -1 },
+      { t: "AKZA", d: -1 }, { t: "AI", d: -1 }, { t: "VOLV", d: -1 },
+    ],
+  },
+  {
+    id: 12, cat: "ai", name: "AI monetisation proof",
+    desc: "Hyperscalers show real revenue from AI products, earnings beats justify capex. Rally broadens from chips to software.",
+    hits: [
+      { t: "MSFT", d: 1 }, { t: "GOOGL", d: 1 }, { t: "AMZN", d: 1 }, { t: "NVDA", d: 1 },
+      { t: "AVGO", d: 1 }, { t: "TSMC", d: 1 }, { t: "NOW", d: 1 }, { t: "005930", d: 1 },
+      { t: "GLW", d: 1 }, { t: "6501", d: 1 },
+    ],
+  },
+  {
+    id: 13, cat: "ai", name: "AI capex disappointment",
+    desc: "ROI skepticism grows, capex guidance cut. Echoes of 2000 telecom overbuild narrative.",
+    hits: [
+      { t: "NVDA", d: -1 }, { t: "AVGO", d: -1 }, { t: "TSMC", d: -1 }, { t: "005930", d: -1 },
+      { t: "GLW", d: -1 }, { t: "MSFT", d: 0 }, { t: "GOOGL", d: 0 }, { t: "AMZN", d: 0 },
+      { t: "6501", d: -1 },
+    ],
+  },
+  {
+    id: 14, cat: "ai", name: "AI disruption of legacy software",
+    desc: "Agents replace SaaS tools, massive TAM destruction for incumbent enterprise software.",
+    hits: [
+      { t: "NOW", d: -1 }, { t: "MSCI", d: -1 }, { t: "ICE", d: 0 }, { t: "MSFT", d: 0 },
+      { t: "GOOGL", d: 1 },
+    ],
+  },
+  {
+    id: 15, cat: "ai", name: "AI infrastructure / power demand",
+    desc: "Data center power + cooling + connectivity demand drives re-rating across infrastructure names.",
+    hits: [
+      { t: "NVDA", d: 1 }, { t: "TSMC", d: 1 }, { t: "AVGO", d: 1 }, { t: "GLW", d: 1 },
+      { t: "005930", d: 1 }, { t: "6501", d: 1 }, { t: "SIE", d: 1 },
+    ],
+  },
+  {
+    id: 16, cat: "ai", name: "Semiconductor cycle downturn",
+    desc: "Inventory correction post-AI build, memory pricing weakens, equipment orders slow.",
+    hits: [
+      { t: "NVDA", d: -1 }, { t: "TSMC", d: -1 }, { t: "AVGO", d: -1 }, { t: "005930", d: -1 },
+      { t: "GLW", d: -1 },
+    ],
+  },
+  {
+    id: 17, cat: "mkt", name: "Broadening rally / equal-weight leads",
+    desc: "Earnings growth extends beyond Mag7, mid-caps and non-US outperform.",
+    hits: [
+      { t: "SIE", d: 1 }, { t: "VOLV", d: 1 }, { t: "EPI", d: 1 }, { t: "ROK", d: 1 },
+      { t: "6501", d: 1 }, { t: "AKZA", d: 1 }, { t: "VIE", d: 1 }, { t: "PFE", d: 1 },
+      { t: "NOVN", d: 1 }, { t: "AI", d: 1 },
+    ],
+  },
+  {
+    id: 18, cat: "mkt", name: "Concentration risk unwind",
+    desc: "Top 10 stocks underperform, passive flow reversal, active management renaissance.",
+    hits: [
+      { t: "NVDA", d: -1 }, { t: "MSFT", d: -1 }, { t: "GOOGL", d: -1 }, { t: "AMZN", d: -1 },
+      { t: "NFLX", d: -1 }, { t: "AVGO", d: -1 }, { t: "TSMC", d: -1 },
+    ],
+  },
+  {
+    id: 19, cat: "mkt", name: "Quality premium expands",
+    desc: "Flight to quality in uncertainty \u2014 high ROIC, low leverage names outperform. Classic QARP environment.",
+    hits: [
+      { t: "MSFT", d: 1 }, { t: "GOOGL", d: 1 }, { t: "NFLX", d: 1 }, { t: "NVDA", d: 1 },
+      { t: "TSMC", d: 1 }, { t: "MSCI", d: 1 }, { t: "ICE", d: 1 }, { t: "AI", d: 1 },
+      { t: "NOW", d: 1 },
+    ],
+  },
+  {
+    id: 20, cat: "mkt", name: "International > US rotation",
+    desc: "Valuation gap narrows, European / Asian equities re-rate. Dollar weakening supports translation.",
+    hits: [
+      { t: "SIE", d: 1 }, { t: "NOVN", d: 1 }, { t: "AI", d: 1 }, { t: "VIE", d: 1 },
+      { t: "6501", d: 1 }, { t: "9988", d: 1 }, { t: "0700", d: 1 }, { t: "AKZA", d: 1 },
+      { t: "VOLV", d: 1 }, { t: "EPI", d: 1 }, { t: "005930", d: 1 }, { t: "TSMC", d: 1 },
+    ],
+  },
+  {
+    id: 21, cat: "mkt", name: "Earnings recession / margin compression",
+    desc: "Input costs (oil, wages) compress margins, revenue growth slows, negative EPS revisions.",
+    hits: [
+      { t: "AKZA", d: -1 }, { t: "AI", d: -1 }, { t: "VOLV", d: -1 }, { t: "SIE", d: -1 },
+      { t: "EPI", d: -1 }, { t: "ROK", d: -1 }, { t: "GLW", d: -1 }, { t: "PFE", d: 0 },
+      { t: "TMO", d: -1 },
+    ],
+  },
+  {
+    id: 22, cat: "macro", name: "Dollar weakening trend",
+    desc: "Twin deficits + de-dollarisation + rate cuts = DXY decline. EM assets and non-US equities benefit.",
+    hits: [
+      { t: "NOVN", d: 1 }, { t: "SIE", d: 1 }, { t: "AI", d: 1 }, { t: "VIE", d: 1 },
+      { t: "6501", d: 1 }, { t: "9988", d: 1 }, { t: "0700", d: 1 }, { t: "VOLV", d: 1 },
+      { t: "EPI", d: 1 }, { t: "005930", d: 1 }, { t: "TSMC", d: 1 },
+    ],
+  },
+  {
+    id: 23, cat: "macro", name: "Dollar strength / safe-haven bid",
+    desc: "Geopolitical chaos drives capital to US. Dollar smile in action, crushes non-US earnings translation.",
+    hits: [
+      { t: "NOVN", d: -1 }, { t: "SIE", d: -1 }, { t: "AI", d: -1 }, { t: "VIE", d: -1 },
+      { t: "6501", d: -1 }, { t: "9988", d: -1 }, { t: "0700", d: -1 }, { t: "VOLV", d: -1 },
+      { t: "EPI", d: -1 }, { t: "005930", d: -1 }, { t: "TSMC", d: -1 },
+    ],
+  },
+  {
+    id: 24, cat: "macro", name: "China stimulus bazooka",
+    desc: "Property crisis forces major fiscal response, reflation trade, commodity demand recovery.",
+    hits: [
+      { t: "9988", d: 1 }, { t: "0700", d: 1 }, { t: "EPI", d: 1 }, { t: "VOLV", d: 1 },
+      { t: "005930", d: 1 }, { t: "AI", d: 1 }, { t: "AKZA", d: 1 },
+    ],
+  },
+  {
+    id: 25, cat: "macro", name: "China property hard landing",
+    desc: "Deflationary spiral deepens, commodity demand destruction, EM contagion.",
+    hits: [
+      { t: "9988", d: -1 }, { t: "0700", d: -1 }, { t: "EPI", d: -1 }, { t: "VOLV", d: -1 },
+      { t: "005930", d: -1 }, { t: "AKZA", d: -1 }, { t: "AI", d: -1 },
+    ],
+  },
+  {
+    id: 26, cat: "macro", name: "Manufacturing renaissance / reshoring",
+    desc: "US reshoring capex + infrastructure + defense = ISM recovery, industrials and automation outperform.",
+    hits: [
+      { t: "SIE", d: 1 }, { t: "6501", d: 1 }, { t: "ROK", d: 1 }, { t: "VOLV", d: 1 },
+      { t: "EPI", d: 1 }, { t: "GLW", d: 1 },
+    ],
+  },
+  {
+    id: 27, cat: "macro", name: "Consumer cracks emerge",
+    desc: "Lower-income stress, delinquencies rise, discretionary spending weakens.",
+    hits: [
+      { t: "AMZN", d: -1 }, { t: "9988", d: -1 }, { t: "NFLX", d: 0 }, { t: "AKZA", d: -1 },
+      { t: "VOLV", d: -1 }, { t: "GOOGL", d: -1 },
+    ],
+  },
+  {
+    id: 28, cat: "credit", name: "Private credit contagion spreads",
+    desc: "BDC redemption gates, NAV markdowns cascade, bank funding lines tighten. Broader credit crunch.",
+    hits: [
+      { t: "JPM", d: -1 }, { t: "ICE", d: -1 }, { t: "MSCI", d: -1 }, { t: "AMZN", d: -1 },
+      { t: "NOW", d: -1 },
+    ],
+  },
+  {
+    id: 29, cat: "sector", name: "Copper / critical minerals squeeze",
+    desc: "AI + electrification + defense demand vs. constrained supply. Multi-year bull market.",
+    hits: [
+      { t: "EPI", d: 1 }, { t: "AI", d: 0 }, { t: "SIE", d: 1 }, { t: "6501", d: 1 },
+      { t: "VIE", d: 1 },
+    ],
+  },
+  {
+    id: 30, cat: "sector", name: "M&A supercycle returns",
+    desc: "Deregulation + cheaper financing + CEO confidence = mega-deal wave. Banks and serial acquirers benefit.",
+    hits: [
+      { t: "JPM", d: 1 }, { t: "ICE", d: 1 }, { t: "MSCI", d: 1 }, { t: "AVGO", d: 1 },
+      { t: "TMO", d: 1 }, { t: "NOW", d: 1 },
+    ],
+  },
 ];

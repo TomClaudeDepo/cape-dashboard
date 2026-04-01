@@ -1,459 +1,325 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import { Fn } from "../theme";
-import { Card, Label, Pill } from "../components/shared";
-import { scenarios, holdingImpacts, clusters } from "../data/research-scenarios";
+import { Card } from "../components/shared";
+import { HOLDINGS, CATS, NARRATIVES } from "../data/research-scenarios";
 import { useMobile } from "../hooks/useMobile";
 
-/* ─── Helpers ─── */
-const impactLabel = v => v === 2 ? "Strong ↑" : v === 1 ? "Mild ↑" : v === 0 ? "Neutral" : v === -1 ? "Mild ↓" : "Strong ↓";
-const impactColor = (v, T) => v === 2 ? T.green : v === 1 ? (T.green + "99") : v === 0 ? T.textTer : v === -1 ? (T.orange + "99") : T.capRed;
+const DIR_LABELS = { 1: "tailwind", "-1": "headwind", 0: "mixed" };
+const DIR_COLORS = { 1: "#34d399", "-1": "#f87171", 0: "#fbbf24" };
+const DIR_BG_D = { 1: "rgba(52,211,153,0.12)", "-1": "rgba(248,113,113,0.12)", 0: "rgba(251,191,36,0.10)" };
+const DIR_BG_L = { 1: "rgba(4,120,87,0.08)", "-1": "rgba(220,38,38,0.08)", 0: "rgba(234,179,8,0.08)" };
+const DIR_ICON = { 1: "\u25B2", "-1": "\u25BC", 0: "\u25C6" };
 
-const cellBg = (v, isDark) => {
-  if (v === 2) return isDark ? "rgba(52,211,153,0.32)" : "rgba(4,120,87,0.16)";
-  if (v === 1) return isDark ? "rgba(52,211,153,0.14)" : "rgba(4,120,87,0.07)";
-  if (v === 0) return "transparent";
-  if (v === -1) return isDark ? "rgba(251,146,60,0.14)" : "rgba(234,88,12,0.07)";
-  return isDark ? "rgba(239,68,68,0.28)" : "rgba(155,27,27,0.14)";
-};
-
-const cellText = (v, isDark) => {
-  if (v === 2) return isDark ? "#34d399" : "#047857";
-  if (v === 1) return isDark ? "#6ee7b7" : "#059669";
-  if (v === 0) return isDark ? "#6b7280" : "#9ca3af";
-  if (v === -1) return isDark ? "#fdba74" : "#ea580c";
-  return isDark ? "#f87171" : "#b91c1c";
-};
-
-const cellSymbol = v => v === 2 ? "▲▲" : v === 1 ? "▲" : v === 0 ? "—" : v === -1 ? "▼" : "▼▼";
-
-/* ─── Aggregate portfolio score per scenario ─── */
-function computeAggregateScores() {
-  const totalWt = holdingImpacts.reduce((s, h) => s + h.wt, 0);
-  return scenarios.map(sc => {
-    let weighted = 0;
-    holdingImpacts.forEach(h => {
-      weighted += (h.wt / totalWt) * (h.impacts[sc.id] || 0);
-    });
-    return { id: sc.id, name: sc.short, icon: sc.icon, color: sc.color, score: weighted };
-  });
+function dirBg(d, dark) { return dark ? DIR_BG_D[d] : DIR_BG_L[d]; }
+function dirCol(d, dark) {
+  if (!dark) return d === 1 ? "#047857" : d === -1 ? "#b91c1c" : "#a16207";
+  return DIR_COLORS[d];
 }
 
-/* ─── Section 1: Portfolio Sensitivity Overview ─── */
-function SensitivityOverview({ T }) {
-  const isDark = T.bg !== "#F8F9FC";
-  const scores = useMemo(computeAggregateScores, []);
-  const sorted = [...scores].sort((a, b) => a.score - b.score);
-  const maxAbs = Math.max(...sorted.map(s => Math.abs(s.score)), 0.01);
-
-  return (
-    <Card T={T} style={{ marginBottom: 24 }}>
-      <Label T={T}>Portfolio Sensitivity by Narrative</Label>
-      <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 20 }}>
-        Weighted average holding impact · scale −2 (strong negative) to +2 (strong positive)
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {sorted.map(s => {
-          const pct = (s.score / maxAbs) * 100;
-          const isNeg = s.score < 0;
-          const barColor = isNeg
-            ? (s.score < -0.5 ? T.capRed : T.orange)
-            : (s.score > 0.5 ? T.green : (isDark ? "#6ee7b7" : "#059669"));
-          return (
-            <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: Fn }}>
-              <div style={{ width: 22, textAlign: "center", fontSize: 14 }}>{s.icon}</div>
-              <div style={{ width: 100, fontSize: 11, color: T.textSec, flexShrink: 0 }}>{s.name}</div>
-              <div style={{ flex: 1, position: "relative", height: 22, display: "flex", alignItems: "center" }}>
-                {/* center line */}
-                <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: T.border }} />
-                {/* bar */}
-                <div style={{
-                  position: "absolute",
-                  ...(isNeg
-                    ? { right: "50%", width: `${Math.abs(pct) * 0.5}%` }
-                    : { left: "50%", width: `${Math.abs(pct) * 0.5}%` }),
-                  height: 16,
-                  background: barColor,
-                  borderRadius: 3,
-                  opacity: 0.85,
-                  transition: "width 0.4s ease",
-                }} />
-              </div>
-              <div style={{
-                width: 48, textAlign: "right", fontSize: 12, fontWeight: 600,
-                color: isNeg ? T.capRed : T.green, fontFamily: Fn,
-              }}>
-                {s.score > 0 ? "+" : ""}{s.score.toFixed(2)}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </Card>
-  );
-}
-
-/* ─── Section 2: Heat Map Matrix ─── */
-function HeatMap({ T, onSelectScenario, mobile }) {
-  const isDark = T.bg !== "#F8F9FC";
-  const [tooltip, setTooltip] = useState(null);
-  const matRef = useRef(null);
-
-  // Sort holdings by weight descending
-  const sorted = useMemo(() => [...holdingImpacts].sort((a, b) => b.wt - a.wt), []);
-
-  const headerH = 72;
-  const rowH = 32;
-  const nameW = mobile ? 80 : 110;
-  const cellW = mobile ? 38 : 52;
-
-  return (
-    <Card T={T} style={{ marginBottom: 24, overflow: "hidden" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
-        <div>
-          <Label T={T}>Holding × Narrative Sensitivity Matrix</Label>
-          <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4 }}>
-            Click a column header to expand narrative detail
-          </div>
-        </div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          {[
-            { v: 2, l: "Strong ↑" }, { v: 1, l: "Mild ↑" }, { v: 0, l: "Neutral" },
-            { v: -1, l: "Mild ↓" }, { v: -2, l: "Strong ↓" },
-          ].map(({ v, l }) => (
-            <div key={v} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, fontFamily: Fn, color: T.textTer }}>
-              <div style={{ width: 12, height: 12, borderRadius: 2, background: cellBg(v, isDark), border: `1px solid ${T.border}` }} />
-              {l}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div ref={matRef} style={{ overflowX: "auto", position: "relative" }}>
-        <table style={{ borderCollapse: "collapse", fontFamily: Fn, fontSize: mobile ? 10 : 11, minWidth: nameW + scenarios.length * cellW + 10 }}>
-          <thead>
-            <tr>
-              <th style={{ width: nameW, textAlign: "left", padding: "4px 6px", color: T.textTer, fontWeight: 500, fontSize: 10, verticalAlign: "bottom", height: headerH, position: "sticky", left: 0, background: T.card, zIndex: 2 }}>
-                Holding
-              </th>
-              {scenarios.map(sc => (
-                <th key={sc.id} style={{
-                  width: cellW, padding: "4px 2px", textAlign: "center", verticalAlign: "bottom", height: headerH, cursor: "pointer",
-                }} onClick={() => onSelectScenario(sc.id)}>
-                  <div style={{ writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 10, color: T.textSec, fontWeight: 500, whiteSpace: "nowrap", lineHeight: 1.2 }}>
-                    {sc.icon} {sc.short}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {sorted.map((h, ri) => (
-              <tr key={h.ticker} style={{ borderTop: `1px solid ${T.border}22` }}>
-                <td style={{
-                  padding: "4px 6px", fontWeight: 500, color: T.text, fontSize: mobile ? 9 : 10,
-                  whiteSpace: "nowrap", position: "sticky", left: 0, background: T.card, zIndex: 1,
-                }}>
-                  {h.name}
-                  <span style={{ color: T.textTer, fontWeight: 400, marginLeft: 4 }}>{h.wt.toFixed(1)}%</span>
-                </td>
-                {scenarios.map(sc => {
-                  const v = h.impacts[sc.id] || 0;
-                  const key = `${h.ticker}-${sc.id}`;
-                  return (
-                    <td key={sc.id} style={{
-                      textAlign: "center", padding: 2, height: rowH, position: "relative",
-                    }}
-                      onMouseEnter={(e) => {
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        const matRect = matRef.current?.getBoundingClientRect() || { left: 0, top: 0 };
-                        setTooltip({
-                          key, text: h.rationale[sc.id],
-                          label: `${h.name} × ${sc.short}: ${impactLabel(v)}`,
-                          x: rect.left - matRect.left + rect.width / 2,
-                          y: rect.top - matRect.top - 4,
-                        });
-                      }}
-                      onMouseLeave={() => setTooltip(null)}
-                    >
-                      <div style={{
-                        width: "100%", height: rowH - 4, borderRadius: 3,
-                        background: cellBg(v, isDark),
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        color: cellText(v, isDark), fontSize: mobile ? 9 : 10, fontWeight: 600,
-                        transition: "background 0.2s",
-                      }}>
-                        {cellSymbol(v)}
-                      </div>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Tooltip */}
-        {tooltip && !mobile && (
-          <div style={{
-            position: "absolute", left: tooltip.x, top: tooltip.y,
-            transform: "translate(-50%, -100%)",
-            background: isDark ? "#1f2937" : "#fff",
-            border: `1px solid ${T.border}`,
-            borderRadius: 6, padding: "8px 12px", maxWidth: 280,
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)", zIndex: 10,
-            pointerEvents: "none",
-          }}>
-            <div style={{ fontSize: 10, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 4 }}>{tooltip.label}</div>
-            <div style={{ fontSize: 10, color: T.textSec, fontFamily: Fn, lineHeight: 1.5 }}>{tooltip.text}</div>
-          </div>
-        )}
-      </div>
-    </Card>
-  );
-}
-
-/* ─── Section 3: Narrative Detail Cards ─── */
-function NarrativeDetails({ T, activeScenario, setActiveScenario, mobile }) {
-  const isDark = T.bg !== "#F8F9FC";
-
-  // Compute per-scenario holding impacts sorted by magnitude
-  const holdingsByScenario = useMemo(() => {
-    const map = {};
-    scenarios.forEach(sc => {
-      map[sc.id] = [...holdingImpacts]
-        .map(h => ({ ...h, impact: h.impacts[sc.id] || 0, rat: h.rationale[sc.id] || "" }))
-        .sort((a, b) => b.impact - a.impact || b.wt - a.wt);
-    });
-    return map;
-  }, []);
-
-  return (
-    <Card T={T} style={{ marginBottom: 24 }}>
-      <Label T={T}>Narrative Detail</Label>
-      <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 16 }}>
-        Select a narrative to see triggers, indicators, and per-holding rationale
-      </div>
-
-      {/* Tabs */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
-        {scenarios.map(sc => {
-          const active = activeScenario === sc.id;
-          return (
-            <button key={sc.id} onClick={() => setActiveScenario(sc.id)} style={{
-              padding: "6px 12px", borderRadius: 6, fontSize: 11, fontFamily: Fn, fontWeight: active ? 600 : 400,
-              background: active ? (sc.color + "1A") : "transparent",
-              border: `1px solid ${active ? sc.color : T.border}`,
-              color: active ? sc.color : T.textSec,
-              cursor: "pointer", transition: "all 0.2s",
-              display: "flex", alignItems: "center", gap: 4,
-            }}>
-              <span>{sc.icon}</span> {sc.short}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Active scenario detail */}
-      {(() => {
-        const sc = scenarios.find(s => s.id === activeScenario);
-        if (!sc) return null;
-        const holdings = holdingsByScenario[sc.id] || [];
-        const winners = holdings.filter(h => h.impact > 0);
-        const losers = holdings.filter(h => h.impact < 0);
-        const neutral = holdings.filter(h => h.impact === 0);
-
-        return (
-          <div>
-            {/* Header */}
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-              <span style={{ fontSize: 28 }}>{sc.icon}</span>
-              <div>
-                <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: Fn }}>{sc.name}</div>
-                <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn }}>Horizon: {sc.horizon}</div>
-              </div>
-            </div>
-
-            {/* Summary */}
-            <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 20px 0" }}>
-              {sc.summary}
-            </p>
-
-            {/* Triggers & Indicators side by side */}
-            <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 24 }}>
-              <div style={{ background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)", borderRadius: 8, padding: 14, border: `1px solid ${T.border}44` }}>
-                <div style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
-                  Triggers / Validation
-                </div>
-                {sc.triggers.map((t, i) => (
-                  <div key={i} style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6, marginBottom: 4, paddingLeft: 12, position: "relative" }}>
-                    <span style={{ position: "absolute", left: 0, color: sc.color }}>›</span>
-                    {t}
-                  </div>
-                ))}
-              </div>
-              <div style={{ background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)", borderRadius: 8, padding: 14, border: `1px solid ${T.border}44` }}>
-                <div style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
-                  Indicators to Watch
-                </div>
-                {sc.indicators.map((ind, i) => (
-                  <div key={i} style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6, marginBottom: 4, paddingLeft: 12, position: "relative" }}>
-                    <span style={{ position: "absolute", left: 0, color: T.textTer }}>•</span>
-                    {ind}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Winners / Losers / Neutral */}
-            <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr 1fr", gap: 12 }}>
-              {/* Winners */}
-              <div>
-                <div style={{ fontSize: 10, fontWeight: 600, color: T.green, fontFamily: Fn, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
-                  Beneficiaries ({winners.length})
-                </div>
-                {winners.map(h => (
-                  <div key={h.ticker} style={{
-                    display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 8,
-                    padding: "6px 8px", borderRadius: 6, background: cellBg(h.impact, isDark),
-                  }}>
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: T.text, fontFamily: Fn }}>
-                        {h.name}
-                        <span style={{ fontWeight: 400, color: cellText(h.impact, isDark), marginLeft: 6 }}>
-                          {impactLabel(h.impact)}
-                        </span>
-                      </div>
-                      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 2, lineHeight: 1.5 }}>
-                        {h.rat}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {/* Losers */}
-              <div>
-                <div style={{ fontSize: 10, fontWeight: 600, color: T.capRed, fontFamily: Fn, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
-                  Headwinds ({losers.length})
-                </div>
-                {losers.map(h => (
-                  <div key={h.ticker} style={{
-                    display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 8,
-                    padding: "6px 8px", borderRadius: 6, background: cellBg(h.impact, isDark),
-                  }}>
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: T.text, fontFamily: Fn }}>
-                        {h.name}
-                        <span style={{ fontWeight: 400, color: cellText(h.impact, isDark), marginLeft: 6 }}>
-                          {impactLabel(h.impact)}
-                        </span>
-                      </div>
-                      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 2, lineHeight: 1.5 }}>
-                        {h.rat}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {/* Neutral */}
-              <div>
-                <div style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
-                  Neutral ({neutral.length})
-                </div>
-                {neutral.map(h => (
-                  <div key={h.ticker} style={{
-                    display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 8,
-                    padding: "6px 8px", borderRadius: 6, background: cellBg(0, isDark),
-                    border: `1px solid ${T.border}33`,
-                  }}>
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: T.text, fontFamily: Fn }}>
-                        {h.name}
-                        <span style={{ fontWeight: 400, color: T.textTer, marginLeft: 6 }}>Neutral</span>
-                      </div>
-                      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 2, lineHeight: 1.5 }}>
-                        {h.rat}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        );
-      })()}
-    </Card>
-  );
-}
-
-/* ─── Section 4: Cluster Risk Summary ─── */
-function ClusterSummary({ T }) {
-  const isDark = T.bg !== "#F8F9FC";
-
-  return (
-    <Card T={T} style={{ marginBottom: 24 }}>
-      <Label T={T}>Correlation Clusters</Label>
-      <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 4, marginBottom: 16 }}>
-        Holdings that move together under stress — regardless of GICS sector labels
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
-        {clusters.map(c => {
-          // compute cluster weight
-          const clusterWt = holdingImpacts.filter(h => c.tickers.includes(h.ticker)).reduce((s, h) => s + h.wt, 0);
-          return (
-            <div key={c.id} style={{
-              padding: 14, borderRadius: 8,
-              border: `1px solid ${c.color}33`,
-              background: c.color + "0A",
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: c.color, fontFamily: Fn }}>{c.name}</div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec, fontFamily: Fn }}>{clusterWt.toFixed(1)}%</div>
-              </div>
-              <div style={{ fontSize: 10, color: T.textSec, fontFamily: Fn, lineHeight: 1.6, marginBottom: 8 }}>
-                {c.description}
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                {c.tickers.map(t => {
-                  const h = holdingImpacts.find(hi => hi.ticker === t);
-                  return (
-                    <span key={t} style={{
-                      fontSize: 9, fontFamily: Fn, padding: "2px 6px", borderRadius: 4,
-                      background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
-                      color: T.textSec,
-                    }}>
-                      {h ? h.name : t}
-                    </span>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </Card>
-  );
-}
-
-/* ─── Main Page ─── */
-export default function ScenariosPg({ T }) {
+export default function ResearchScenarios({ T }) {
   const mobile = useMobile();
-  const [activeScenario, setActiveScenario] = useState("soft_landing");
+  const dark = T.bg === "#0a0b0d" || T.bg === "#0B0D11" || T.bg === "#000" || T.text === "#E2E4E9" || T.text === "#F1F3F5";
+  const [selectedNarr, setSelectedNarr] = useState(null);
+  const [selectedHolding, setSelectedHolding] = useState(null);
+  const [catFilter, setCatFilter] = useState(null);
+  const [view, setView] = useState("narratives");
+
+  const filtered = useMemo(() => {
+    let list = NARRATIVES;
+    if (catFilter) list = list.filter(n => n.cat === catFilter);
+    return list;
+  }, [catFilter]);
+
+  const holdingNarratives = useMemo(() => {
+    if (!selectedHolding) return [];
+    return NARRATIVES.filter(n => n.hits.some(h => h.t === selectedHolding))
+      .map(n => ({ ...n, dir: n.hits.find(h => h.t === selectedHolding).d }));
+  }, [selectedHolding]);
+
+  const narr = selectedNarr ? NARRATIVES.find(n => n.id === selectedNarr) : null;
+  const catForId = id => CATS.find(c => c.id === id);
 
   return (
     <div>
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontFamily: Fn, fontSize: 28, fontWeight: 300, letterSpacing: "-0.03em", color: T.text, margin: 0 }}>
-          Scenario Analysis
-        </h1>
-        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>
-          Portfolio sensitivity to 10 market narratives · 26 holdings · April 2026
+      {/* HEADER */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: T.textTer, textTransform: "uppercase", fontFamily: Fn, marginBottom: 4 }}>Scenario Analysis</div>
+        <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: T.text, fontFamily: Fn, letterSpacing: "-0.02em" }}>Narrative \u2192 Portfolio Map</h2>
+        <p style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, margin: "4px 0 0", lineHeight: 1.5 }}>
+          {NARRATIVES.length} narratives, each impacting \u22655 of the 26 holdings. Click any narrative or holding to explore exposure.
         </p>
       </div>
 
-      <SensitivityOverview T={T} />
-      <HeatMap T={T} onSelectScenario={setActiveScenario} mobile={mobile} />
-      <NarrativeDetails T={T} activeScenario={activeScenario} setActiveScenario={setActiveScenario} mobile={mobile} />
-      <ClusterSummary T={T} />
+      {/* VIEW TOGGLE + CATEGORY FILTERS */}
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14, alignItems: "center" }}>
+        {["narratives", "matrix"].map(v => (
+          <button key={v} onClick={() => setView(v)} style={{
+            padding: "5px 12px", borderRadius: T.radiusSm || 6, fontSize: 10, fontWeight: 600, fontFamily: Fn,
+            background: view === v ? T.text : "transparent", color: view === v ? T.bg : T.textTer,
+            border: `1px solid ${view === v ? T.text : T.border}`, cursor: "pointer", transition: "all 0.15s",
+            textTransform: "uppercase", letterSpacing: "0.06em",
+          }}>
+            {v === "narratives" ? "Card View" : "Matrix"}
+          </button>
+        ))}
+        <div style={{ width: 1, height: 18, background: T.border, margin: "0 4px" }} />
+        <button onClick={() => setCatFilter(null)} style={{
+          padding: "4px 9px", borderRadius: T.radiusSm || 6, fontSize: 9, fontFamily: Fn, cursor: "pointer",
+          background: !catFilter ? (dark ? "#1a1c21" : "#f3f4f6") : "transparent",
+          border: `1px solid ${!catFilter ? (dark ? "#3a3d45" : "#d1d5db") : T.border}`,
+          color: !catFilter ? T.text : T.textTer, letterSpacing: "0.04em",
+        }}>ALL</button>
+        {CATS.map(c => (
+          <button key={c.id} onClick={() => setCatFilter(catFilter === c.id ? null : c.id)} style={{
+            padding: "4px 9px", borderRadius: T.radiusSm || 6, fontSize: 9, fontFamily: Fn, cursor: "pointer",
+            background: catFilter === c.id ? c.color + "18" : "transparent",
+            border: `1px solid ${catFilter === c.id ? c.color + "50" : T.border}`,
+            color: catFilter === c.id ? c.color : T.textTer, letterSpacing: "0.04em", transition: "all 0.15s",
+          }}>{c.label}</button>
+        ))}
+      </div>
+
+      {/* ═══════════════ CARD VIEW ═══════════════ */}
+      {view === "narratives" ? (
+        <div style={{ display: "grid", gridTemplateColumns: (selectedNarr || selectedHolding) && !mobile ? "1fr 320px" : "1fr", gap: 14 }}>
+          <div>
+            {/* HOLDING CHIPS */}
+            <div style={{ marginBottom: 14, display: "flex", flexWrap: "wrap", gap: 4 }}>
+              {HOLDINGS.map(h => {
+                const isActive = selectedHolding === h.t;
+                const hitCount = NARRATIVES.filter(n => n.hits.some(x => x.t === h.t)).length;
+                return (
+                  <button key={h.t} onClick={() => { setSelectedHolding(isActive ? null : h.t); setSelectedNarr(null); }}
+                    style={{
+                      padding: "3px 7px", borderRadius: 4, fontSize: 9, fontFamily: Fn, cursor: "pointer",
+                      background: isActive ? T.text : (dark ? "#14161a" : "#f9fafb"),
+                      color: isActive ? T.bg : T.textSec,
+                      border: `1px solid ${isActive ? T.text : T.border}`, transition: "all 0.15s",
+                      fontWeight: isActive ? 700 : 400,
+                    }}>
+                    {h.t.length > 4 ? h.n.split(" ")[0] : h.n} <span style={{ opacity: 0.5 }}>({hitCount})</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* NARRATIVE CARDS */}
+            <div style={{ display: "grid", gap: 6 }}>
+              {filtered.map(n => {
+                const cat = catForId(n.cat);
+                const isSelected = selectedNarr === n.id;
+                const holdingHighlight = selectedHolding ? n.hits.find(h => h.t === selectedHolding) : null;
+                const dimmed = selectedHolding && !holdingHighlight;
+                return (
+                  <div key={n.id} onClick={() => { setSelectedNarr(isSelected ? null : n.id); setSelectedHolding(null); }}
+                    style={{
+                      background: isSelected ? (dark ? "#1a1c21" : "#f9fafb") : T.card,
+                      border: `1px solid ${isSelected ? cat.color + "40" : dimmed ? (dark ? "#1a1c21" : "#e5e7eb") : T.border}`,
+                      borderRadius: T.radius || 8, padding: mobile ? "12px 12px" : "12px 14px", cursor: "pointer",
+                      transition: "all 0.15s", opacity: dimmed ? 0.3 : 1,
+                      borderLeft: `3px solid ${cat.color}`, boxShadow: T.shadow,
+                    }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: mobile ? "flex-start" : "center", gap: 10, flexDirection: mobile ? "column" : "row" }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 3 }}>{n.name}</div>
+                        <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, lineHeight: 1.45 }}>{n.desc}</div>
+                      </div>
+                      <div style={{ display: "flex", gap: 3, flexWrap: "wrap", flexShrink: 0, maxWidth: mobile ? "100%" : 180, justifyContent: "flex-end" }}>
+                        {n.hits.map(h => {
+                          const holding = HOLDINGS.find(x => x.t === h.t);
+                          const isHighlighted = selectedHolding === h.t;
+                          return (
+                            <span key={h.t} style={{
+                              fontSize: 8, fontFamily: Fn, padding: "2px 5px", borderRadius: 3,
+                              background: dirBg(h.d, dark), color: dirCol(h.d, dark), fontWeight: 600,
+                              border: isHighlighted ? `1px solid ${dirCol(h.d, dark)}` : "1px solid transparent",
+                            }}>
+                              {DIR_ICON[h.d]} {holding.n.split(" ")[0].slice(0, 8)}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: 10, marginTop: 6, fontSize: 9, fontFamily: Fn, color: T.textTer }}>
+                      <span style={{ color: cat.color }}>{cat.label}</span>
+                      <span>{n.hits.length} holdings</span>
+                      <span style={{ color: dirCol(1, dark) }}>{n.hits.filter(h => h.d === 1).length} tailwinds</span>
+                      <span style={{ color: dirCol(-1, dark) }}>{n.hits.filter(h => h.d === -1).length} headwinds</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* DETAIL PANEL */}
+          {(narr || selectedHolding) && !mobile && (
+            <div style={{
+              background: T.card, border: `1px solid ${T.border}`, borderRadius: T.radius || 8, padding: 18, boxShadow: T.shadow,
+              position: "sticky", top: 20, maxHeight: "calc(100vh - 100px)", overflowY: "auto",
+            }}>
+              {narr && (
+                <>
+                  <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", color: catForId(narr.cat).color, textTransform: "uppercase", fontFamily: Fn, marginBottom: 6 }}>
+                    {catForId(narr.cat).label}
+                  </div>
+                  <h3 style={{ fontSize: 15, fontWeight: 700, margin: "0 0 6px", color: T.text, fontFamily: Fn }}>{narr.name}</h3>
+                  <p style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.5, margin: "0 0 18px" }}>{narr.desc}</p>
+                  <div style={{ fontSize: 9, fontWeight: 600, color: T.textTer, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: Fn, marginBottom: 8 }}>
+                    Impacted Holdings ({narr.hits.length})
+                  </div>
+                  {narr.hits.sort((a, b) => b.d - a.d).map(h => {
+                    const holding = HOLDINGS.find(x => x.t === h.t);
+                    return (
+                      <div key={h.t} style={{
+                        display: "flex", alignItems: "center", gap: 8, padding: "7px 8px",
+                        borderRadius: T.radiusSm || 6, background: dirBg(h.d, dark), marginBottom: 3,
+                      }}>
+                        <span style={{ fontSize: 12, color: dirCol(h.d, dark) }}>{DIR_ICON[h.d]}</span>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 11, fontWeight: 600, color: T.text, fontFamily: Fn }}>{holding.n}</div>
+                          <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn }}>{holding.s} \u00B7 {holding.co}</div>
+                        </div>
+                        <span style={{ fontSize: 9, fontWeight: 600, color: dirCol(h.d, dark), fontFamily: Fn, textTransform: "uppercase" }}>
+                          {DIR_LABELS[h.d]}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+              {selectedHolding && !narr && (() => {
+                const h = HOLDINGS.find(x => x.t === selectedHolding);
+                return (
+                  <>
+                    <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", color: T.textTer, textTransform: "uppercase", fontFamily: Fn, marginBottom: 6 }}>
+                      Holding Exposure
+                    </div>
+                    <h3 style={{ fontSize: 15, fontWeight: 700, margin: "0 0 3px", color: T.text, fontFamily: Fn }}>{h.n}</h3>
+                    <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginBottom: 18 }}>{h.s} \u00B7 {h.co}</div>
+                    <div style={{ fontSize: 9, fontWeight: 600, color: T.textTer, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: Fn, marginBottom: 8 }}>
+                      Narratives ({holdingNarratives.length})
+                    </div>
+                    {holdingNarratives.sort((a, b) => b.dir - a.dir).map(n => {
+                      const cat = catForId(n.cat);
+                      return (
+                        <div key={n.id} onClick={e => { e.stopPropagation(); setSelectedNarr(n.id); setSelectedHolding(null); }}
+                          style={{
+                            padding: "8px 8px", borderRadius: T.radiusSm || 6, background: dirBg(n.dir, dark), marginBottom: 3,
+                            cursor: "pointer", borderLeft: `3px solid ${cat.color}`,
+                          }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span style={{ fontSize: 11, fontWeight: 600, color: T.text, fontFamily: Fn }}>{n.name}</span>
+                            <span style={{ fontSize: 9, color: dirCol(n.dir, dark), fontFamily: Fn, fontWeight: 600 }}>
+                              {DIR_ICON[n.dir]} {DIR_LABELS[n.dir]}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: 9, color: cat.color, fontFamily: Fn, marginTop: 2 }}>{cat.label}</div>
+                        </div>
+                      );
+                    })}
+                  </>
+                );
+              })()}
+            </div>
+          )}
+        </div>
+      ) : (
+        /* ═══════════════ MATRIX VIEW ═══════════════ */
+        <div style={{ overflowX: "auto", borderRadius: T.radius || 8, border: `1px solid ${T.border}`, background: T.card, boxShadow: T.shadow }}>
+          <table style={{ borderCollapse: "collapse", fontSize: 9, fontFamily: Fn, width: "100%" }}>
+            <thead>
+              <tr>
+                <th style={{ position: "sticky", left: 0, zIndex: 2, background: T.card, padding: "6px 10px", textAlign: "left", color: T.textTer, borderBottom: `1px solid ${T.border}`, minWidth: 180 }}>Narrative</th>
+                {HOLDINGS.map(h => (
+                  <th key={h.t} onClick={() => { setSelectedHolding(selectedHolding === h.t ? null : h.t); setView("narratives"); }}
+                    style={{
+                      padding: "6px 3px", textAlign: "center", color: T.textTer, borderBottom: `1px solid ${T.border}`,
+                      cursor: "pointer", minWidth: 28, whiteSpace: "nowrap",
+                      writingMode: "vertical-rl", transform: "rotate(180deg)", height: 72, fontSize: 8,
+                    }}>
+                    {h.n.split(" ")[0].slice(0, 9)}
+                  </th>
+                ))}
+                <th style={{ padding: "6px 6px", textAlign: "center", color: T.textTer, borderBottom: `1px solid ${T.border}`, fontSize: 8 }}>\u03A3</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(n => {
+                const cat = catForId(n.cat);
+                return (
+                  <tr key={n.id} style={{ borderBottom: `1px solid ${dark ? "#14161a" : "#f3f4f6"}`, transition: "background 0.1s" }}
+                    onMouseEnter={e => e.currentTarget.style.background = dark ? "#14161a" : "#f9fafb"}
+                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                    <td style={{
+                      position: "sticky", left: 0, zIndex: 1, background: T.card, padding: "5px 10px",
+                      borderLeft: `3px solid ${cat.color}`, whiteSpace: "nowrap", color: T.text, fontWeight: 500, fontSize: 9,
+                    }}>
+                      {n.name}
+                    </td>
+                    {HOLDINGS.map(h => {
+                      const hit = n.hits.find(x => x.t === h.t);
+                      return (
+                        <td key={h.t} style={{
+                          textAlign: "center", padding: 2,
+                          background: hit ? dirBg(hit.d, dark) : "transparent",
+                        }}>
+                          {hit && <span style={{ color: dirCol(hit.d, dark), fontSize: 9 }}>{DIR_ICON[hit.d]}</span>}
+                        </td>
+                      );
+                    })}
+                    <td style={{ textAlign: "center", padding: "5px 6px", color: T.textSec, fontWeight: 600, fontSize: 9 }}>{n.hits.length}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* SUMMARY STATS */}
+      <div style={{ marginTop: 20, display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 8 }}>
+        {(() => {
+          const exposureCounts = HOLDINGS.map(h => ({
+            ...h, total: NARRATIVES.filter(n => n.hits.some(x => x.t === h.t)).length,
+            tw: NARRATIVES.filter(n => n.hits.some(x => x.t === h.t && x.d === 1)).length,
+            hw: NARRATIVES.filter(n => n.hits.some(x => x.t === h.t && x.d === -1)).length,
+          })).sort((a, b) => b.total - a.total);
+          const top5 = exposureCounts.slice(0, 5);
+          const mostAsym = [...exposureCounts].sort((a, b) => Math.abs(b.tw - b.hw) - Math.abs(a.tw - a.hw)).slice(0, 5);
+          return (
+            <>
+              <Card T={T}>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", color: T.textTer, textTransform: "uppercase", fontFamily: Fn, marginBottom: 10 }}>Most Exposed</div>
+                {top5.map(h => (
+                  <div key={h.t} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", fontSize: 11, fontFamily: Fn }}>
+                    <span style={{ color: T.text }}>{h.n}</span>
+                    <span style={{ color: T.textTer }}>{h.total} narratives</span>
+                  </div>
+                ))}
+              </Card>
+              <Card T={T}>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", color: T.textTer, textTransform: "uppercase", fontFamily: Fn, marginBottom: 10 }}>Most Asymmetric</div>
+                {mostAsym.map(h => (
+                  <div key={h.t} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", fontSize: 11, fontFamily: Fn }}>
+                    <span style={{ color: T.text }}>{h.n}</span>
+                    <span><span style={{ color: dirCol(1, dark) }}>{h.tw}\u25B2</span>{" / "}<span style={{ color: dirCol(-1, dark) }}>{h.hw}\u25BC</span></span>
+                  </div>
+                ))}
+              </Card>
+              <Card T={T}>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", color: T.textTer, textTransform: "uppercase", fontFamily: Fn, marginBottom: 10 }}>By Category</div>
+                {CATS.filter(c => filtered.some(n => n.cat === c.id)).map(c => (
+                  <div key={c.id} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", fontSize: 11, fontFamily: Fn }}>
+                    <span style={{ color: c.color }}>{c.label}</span>
+                    <span style={{ color: T.textTer }}>{filtered.filter(n => n.cat === c.id).length}</span>
+                  </div>
+                ))}
+              </Card>
+            </>
+          );
+        })()}
+      </div>
     </div>
   );
 }
