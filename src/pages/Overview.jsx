@@ -1,5 +1,5 @@
 import { Fn, Fs, Fh } from "../theme";
-import { NAV, MV, CASH, CASH_PCT } from "../data/constants";
+import { NAV, MV, CASH, CASH_PCT, NUM_HOLDINGS, DTD_PCT } from "../data/constants";
 import { holdings, navData, portfolioGics, acwiGics, VW, FW } from "../data/portfolio";
 import { fmtEur, fmtPct } from "../utils";
 import { Card, Label, Pill, Stat } from "../components/shared";
@@ -71,16 +71,15 @@ function MetricCell({ label, value, unit, T, color }) {
 
 export default function OverviewPg({ T, onHoldingClick }) {
   const mob = useMobile();
-  const investedPct = ((MV / NAV) * 100).toFixed(1);
 
   return (
     <div>
 
-      {/* ── Top stats: AUM, Invested, Cash ── */}
+      {/* ── Top stats: AUM, Holdings, DTD ── */}
       <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(3, 1fr)", gap: 12, marginBottom: 24 }}>
         <Stat T={T} label="Net asset value" value={"\u20AC" + fmtEur(NAV)} sub="Fund currency EUR" delay={0} />
-        <Stat T={T} label="Invested" value={investedPct + "%"} delta={"\u20AC" + fmtEur(MV)} sub="Securities / NAV" delay={0.06} />
-        <Stat T={T} label="Cash" value={CASH_PCT.toFixed(1) + "%"} delta={"\u20AC" + fmtEur(CASH)} sub="of NAV" delay={0.12} />
+        <Stat T={T} label="Holdings" value={NUM_HOLDINGS} sub="Concentrated equity" delay={0.06} />
+        <Stat T={T} label="DTD performance" value={(DTD_PCT >= 0 ? "+" : "") + DTD_PCT.toFixed(2) + "%"} sub="Share class A" delay={0.12} />
       </div>
 
       {/* ── Portfolio Fundamentals ── */}
