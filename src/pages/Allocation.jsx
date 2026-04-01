@@ -3,7 +3,7 @@ import { Fs, Fn, Fh } from "../theme";
 import { portfolioGics, acwiGics, portfolioCo, acwiCo, ccyAll, acwiCcy } from "../data/portfolio";
 import { Card, Bars, TabBar, Stat } from "../components/shared";
 
-// Asset type from NAV report 24 Mar 2026
+// Asset type from NAV report 31 Mar 2026
 const assetTypes = [
   { name: "Equities", wt: 98.77 },
   { name: "FX Forwards", wt: -0.77 },
@@ -49,7 +49,7 @@ export default function AllocPg({ T }) {
     <div>
       <div style={{ marginBottom: 24 }}>
         <h1 style={{ fontFamily: Fh, fontSize: 36, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Allocation</h1>
-        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Portfolio structure vs MSCI ACWI (2,263 names) &middot; 24 Mar 2026 &middot; EUR</p>
+        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Portfolio structure vs MSCI ACWI (2,263 names) &middot; 31 Mar 2026 &middot; EUR</p>
       </div>
 
       {/* Summary stats */}

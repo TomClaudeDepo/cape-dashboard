@@ -2,60 +2,60 @@ import { useState } from "react";
 import { Fn } from "../theme";
 import { Card, Pill, TabBar } from "../components/shared";
 
-const NAV_DATE = "30 Mar 2026";
-const FUND_NAV = 380047339.04;
+const NAV_DATE = "31 Mar 2026";
+const FUND_NAV = 383132062.97;
 
 const positions = [
-  { name: "NOVARTIS", pct: 4.32 },
-  { name: "SIEMENS", pct: 2.16 },
-  { name: "AIR LIQUIDE", pct: 4.02 },
+  { name: "NOVARTIS", pct: 4.28 },
+  { name: "SIEMENS", pct: 2.15 },
+  { name: "AIR LIQUIDE", pct: 4.03 },
   { name: "VEOLIA", pct: 2.30 },
-  { name: "HITACHI", pct: 4.90 },
-  { name: "ALIBABA", pct: 3.95 },
-  { name: "TENCENT", pct: 4.00 },
-  { name: "AKZO NOBEL", pct: 1.55 },
-  { name: "VOLVO", pct: 3.17 },
-  { name: "EPIROC", pct: 3.96 },
-  { name: "ALPHABET", pct: 3.85 },
-  { name: "AMAZON", pct: 3.99 },
-  { name: "BROADCOM", pct: 1.92 },
-  { name: "CORNING", pct: 2.76 },
-  { name: "ICE", pct: 4.84 },
-  { name: "JP MORGAN", pct: 4.38 },
+  { name: "HITACHI", pct: 4.77 },
+  { name: "ALIBABA", pct: 3.85 },
+  { name: "TENCENT", pct: 3.96 },
+  { name: "AKZO NOBEL", pct: 1.52 },
+  { name: "VOLVO", pct: 3.19 },
+  { name: "EPIROC", pct: 4.03 },
+  { name: "ALPHABET", pct: 3.99 },
+  { name: "AMAZON", pct: 4.08 },
+  { name: "BROADCOM", pct: 2.00 },
+  { name: "CORNING", pct: 2.88 },
+  { name: "ICE", pct: 4.79 },
+  { name: "JP MORGAN", pct: 4.48 },
   { name: "MSCI", pct: 4.80 },
-  { name: "MICROSOFT", pct: 4.54 },
-  { name: "NETFLIX", pct: 4.94 },
-  { name: "NVIDIA", pct: 4.63 },
-  { name: "PFIZER", pct: 5.07 },
-  { name: "ROCKWELL", pct: 3.36 },
-  { name: "SAMSUNG", pct: 4.01 },
-  { name: "SERVICENOW", pct: 1.98 },
-  { name: "TAIWAN SEMI", pct: 4.71 },
-  { name: "THERMO FISHER", pct: 4.65 },
-  { type: "Cash & Liquidity", pct: 2.08 }, { type: "Current Assets", pct: 0.06 },
-  { type: "Forwards", pct: -0.79 }, { type: "Current Liabilities", pct: -0.08 },
+  { name: "MICROSOFT", pct: 4.62 },
+  { name: "NETFLIX", pct: 5.04 },
+  { name: "NVIDIA", pct: 4.82 },
+  { name: "PFIZER", pct: 5.06 },
+  { name: "ROCKWELL", pct: 3.41 },
+  { name: "SAMSUNG", pct: 3.95 },
+  { name: "SERVICENOW", pct: 1.95 },
+  { name: "TAIWAN SEMI", pct: 4.97 },
+  { name: "THERMO FISHER", pct: 4.70 },
+  { type: "Cash & Liquidity", pct: 1.99 }, { type: "Current Assets", pct: 0.04 },
+  { type: "Forwards", pct: -1.56 }, { type: "Current Liabilities", pct: -0.08 },
 ];
 
 const currencyExposure = [
-  { ccy: "USD", pct: 65.31 }, { ccy: "CHF", pct: 9.73 }, { ccy: "HKD", pct: 7.95 },
-  { ccy: "SEK", pct: 7.38 }, { ccy: "JPY", pct: 5.48 }, { ccy: "EUR", pct: 4.14 },
+  { ccy: "USD", pct: 66.42 }, { ccy: "CHF", pct: 9.57 }, { ccy: "HKD", pct: 7.82 },
+  { ccy: "SEK", pct: 7.47 }, { ccy: "JPY", pct: 5.35 }, { ccy: "EUR", pct: 3.36 },
 ];
 
 const assetAllocation = [
-  { type: "Equities", pct: 98.73 }, { type: "FX Forwards", pct: -0.79 },
-  { type: "Cash & Liquidity", pct: 2.08 }, { type: "Current Assets", pct: 0.06 },
+  { type: "Equities", pct: 99.61 }, { type: "FX Forwards", pct: -1.56 },
+  { type: "Cash & Liquidity", pct: 1.99 }, { type: "Current Assets", pct: 0.04 },
   { type: "Current Liabilities", pct: -0.08 },
 ];
 
 const countryAllocation = [
-  { country: "USA", pct: 55.69 }, { country: "China (Cayman Is.)", pct: 7.95 },
-  { country: "Sweden", pct: 7.12 }, { country: "France", pct: 6.33 },
-  { country: "Japan", pct: 4.90 }, { country: "Taiwan", pct: 4.71 },
-  { country: "Switzerland", pct: 4.32 }, { country: "South Korea", pct: 4.01 },
-  { country: "Germany", pct: 2.16 }, { country: "Netherlands", pct: 1.55 },
+  { country: "USA", pct: 56.00 }, { country: "China (Cayman Is.)", pct: 7.81 },
+  { country: "Sweden", pct: 7.22 }, { country: "France", pct: 6.33 },
+  { country: "Japan", pct: 4.77 }, { country: "Taiwan", pct: 4.97 },
+  { country: "Switzerland", pct: 4.28 }, { country: "South Korea", pct: 3.95 },
+  { country: "Germany", pct: 2.15 }, { country: "Netherlands", pct: 1.52 },
 ];
 
-// Cash breakdown from NAV report (Liquidity_at_sight sheet) — 30 Mar 2026
+// Cash breakdown from NAV report (Liquidity_at_sight sheet) — 31 Mar 2026
 const cashBreakdown = [
   { ccy: "CHF", type: "Cash Account", mvLocal: 18348449.12, fx: 1.090275, mvEur: 20004850.76, pctNav: 5.26 },
   { ccy: "DKK", type: "Cash Account", mvLocal: 21494.75, fx: 0.133831, mvEur: 2876.67, pctNav: 0.00 },

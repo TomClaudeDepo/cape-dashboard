@@ -67,7 +67,7 @@ export default function SettingsPg({ T, dark, setDark, apiKey, setApiKey }) {
           <div>Cape Equity Fund Dashboard</div>
           <div>Cape Capital AG &middot; Utoquai 55, 8008 Z&uuml;rich</div>
           <div>Benchmark: MSCI ACWI NTR (NDEEWNR)</div>
-          <div style={{ marginTop: 8, color: T.textTer }}>v1.0.0 &middot; Data as of 20 Mar 2026</div>
+          <div style={{ marginTop: 8, color: T.textTer }}>v1.0.0 &middot; Data as of 31 Mar 2026</div>
         </div>
       </Card>
     </div>

@@ -78,7 +78,7 @@ export default function OverviewPg({ T, onHoldingClick }) {
       {/* ── Header ── */}
       <div style={{ marginBottom: 24 }}>
         <h1 style={{ fontFamily: Fh, fontSize: 36, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", color: T.text, margin: 0 }}>Portfolio Summary</h1>
-        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Cape Equity Fund &middot; LU1200255203 &middot; 26 positions &middot; 30 Mar 2026 &middot; EUR</p>
+        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Cape Equity Fund &middot; LU1200255203 &middot; 26 positions &middot; 31 Mar 2026 &middot; EUR</p>
       </div>
 
       {/* ── Top stats: AUM, Invested, Cash ── */}
@@ -112,7 +112,7 @@ export default function OverviewPg({ T, onHoldingClick }) {
           <div style={{ fontSize: 11, color: T.textTer, textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: Fn, fontWeight: 600, marginBottom: 14 }}>GICS Sector Allocation</div>
           <SectorBars portfolio={portfolioGics} benchmark={acwiGics} T={T} />
           <div style={{ fontSize: 9, color: T.textTer, marginTop: 12, fontFamily: Fn, opacity: 0.6 }}>
-            vs MSCI ACWI (2,263 constituents) &middot; 30 Mar 2026
+            vs MSCI ACWI (2,263 constituents) &middot; 31 Mar 2026
           </div>
         </Card>
       </div>
