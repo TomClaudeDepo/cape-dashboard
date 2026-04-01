@@ -675,12 +675,7 @@ export default function MacroDashboard({ T: externalT }) {
   return (
     <div style={{ padding: standalone ? 22 : 0, background: standalone ? T.bg : "transparent", minHeight: standalone ? "100vh" : "auto", fontFamily: Fn, transition: "background 0.3s" }}>
       {/* Title */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-        <div>
-          <p style={{ fontSize: 9.5, color: T.textTer, margin: "2px 0 0" }}>
-            {(US.length + EU_IND.length + CN_IND.length + JP_IND.length) + " indicators \u00b7 4 regions \u00b7 Individual charts"}
-          </p>
-        </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: 16 }}>
         <div style={{ display: "flex", gap: 7, alignItems: "center" }}>
           <span style={{ fontSize: 8.5, color: T.textTer, padding: "4px 9px", background: T.pillBg, borderRadius: 5 }}>{"Simulated \u00b7 FRED ready"}</span>
           {standalone && (

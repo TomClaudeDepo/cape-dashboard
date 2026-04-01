@@ -88,12 +88,6 @@ export default function ResearchPg({ T }) {
   // Hub view
   return (
     <div>
-      <div style={{ marginBottom: 32 }}>
-        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>
-          Cape Capital equity research · {reports.length} reports · March 2026
-        </p>
-      </div>
-
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16 }}>
         {reports.map(r => {
           const bgColor = r.color === "green" ? T.greenBg : r.color === "deepBlue" ? "rgba(29,78,216,0.08)" : r.color === "purple" ? T.purple100 || "rgba(67,56,202,0.08)" : T.redBg;

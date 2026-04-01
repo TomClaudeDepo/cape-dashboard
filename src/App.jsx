@@ -126,7 +126,7 @@ function Dashboard({ dark, setDark }) {
       {/* Main */}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", transition: "background 0.3s" }}>
         <div style={{
-          height: 60, background: T.topbar, backdropFilter: T.glassBlur, WebkitBackdropFilter: T.glassBlur,
+          height: 80, background: T.topbar, backdropFilter: T.glassBlur, WebkitBackdropFilter: T.glassBlur,
           borderBottom: T.glassBorder, display: "flex", alignItems: "center", justifyContent: "space-between",
           padding: "0 28px", flexShrink: 0, transition: "background 0.3s", position: "sticky", top: 0, zIndex: 5,
         }}>
@@ -134,7 +134,10 @@ function Dashboard({ dark, setDark }) {
             <button className="hamburger" onClick={() => setSidebarOpen(!sidebarOpen)} style={{ display: "none", background: "none", border: "none", color: T.text, fontSize: 20, cursor: "pointer", padding: 0, lineHeight: 1 }}>
               {sidebarOpen ? "\u2715" : "\u2630"}
             </button>
-            <div style={{ fontSize: 28, color: T.text, fontFamily: Fh, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em" }}>{navItems[nav].l}</div>
+            <div>
+              <div style={{ fontSize: 28, color: T.text, fontFamily: Fh, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", lineHeight: 1.2 }}>{navItems[nav].l}</div>
+              {navItems[nav].sub && <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 2 }}>{navItems[nav].sub}</div>}
+            </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <button onClick={() => setCmdOpen(true)} style={{
@@ -161,7 +164,7 @@ function Dashboard({ dark, setDark }) {
         </div>
 
         <div style={{ flex: 1, overflowY: "auto", padding: "0 32px 28px" }}>
-          <div key={nav} style={{ maxWidth: 1140, margin: "0 auto", paddingTop: 16, animation: "fadeIn 0.3s ease" }}>
+          <div key={nav} style={{ maxWidth: 1140, margin: "0 auto", paddingTop: 24, animation: "fadeIn 0.3s ease" }}>
             {pages[nav]()}
             <div style={{ marginTop: 28, paddingTop: 14, borderTop: "1px solid " + T.border, fontSize: 10, color: T.textTer, fontFamily: Fn, textAlign: "center", opacity: 0.6 }}>
               Cape Capital AG &middot; Utoquai 55, 8008 Z&uuml;rich &middot; Benchmark: MSCI ACWI NTR (NDEEWNR) &middot; All data EUR unless stated
