@@ -22,6 +22,7 @@ export const navItems = [
   { l: "Scenarios", i: "scenarios", hash: "#scenarios" },
   { l: "Thematic Universe", i: "thematic", hash: "#thematic" },
   { l: "Research", i: "research", hash: "#research" },
+  { l: "Risk", i: "risk", hash: "#risk" },
   { l: "Macro", i: "macro", hash: "#macro" },
   { l: "Claude", i: "claude", hash: "#claude" },
   { l: "Settings", i: "settings", hash: "#settings" },

@@ -11,6 +11,7 @@ import AllocPg from "./pages/Allocation";
 import ResearchPg from "./pages/Research";
 import ThematicMapPg from "./pages/ResearchThematicMap";
 import MacroPg from "./pages/Macro";
+import RiskPg from "./pages/Risk";
 import ScenariosPg from "./pages/ResearchScenarios";
 import ClaudePg from "./pages/Claude";
 import SettingsPg from "./pages/Settings";
@@ -56,6 +57,7 @@ function Dashboard({ dark, setDark }) {
     () => <ScenariosPg T={T} />,
     () => <ThematicMapPg T={T} />,
     () => <ResearchPg T={T} />,
+    () => <RiskPg T={T} />,
     () => <MacroPg T={T} />,
     () => <ClaudePg T={T} apiKey={apiKey} />,
     () => <SettingsPg T={T} dark={dark} setDark={setDark} apiKey={apiKey} setApiKey={setApiKey} />,
