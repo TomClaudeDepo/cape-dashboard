@@ -30,9 +30,6 @@ export default function HoldingsPg({ T, onHoldingClick }) {
 
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
-        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>26 positions &middot; as of 31 Mar 2026 &middot; EUR</p>
-      </div>
 
       <Card T={T} style={{ marginBottom: 20 }}>
         <Label T={T}>Upcoming events</Label>

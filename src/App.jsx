@@ -161,7 +161,7 @@ function Dashboard({ dark, setDark }) {
         </div>
 
         <div style={{ flex: 1, overflowY: "auto", padding: "0 32px 28px" }}>
-          <div key={nav} style={{ maxWidth: 1140, margin: "0 auto", paddingTop: 28, animation: "fadeIn 0.3s ease" }}>
+          <div key={nav} style={{ maxWidth: 1140, margin: "0 auto", paddingTop: 16, animation: "fadeIn 0.3s ease" }}>
             {pages[nav]()}
             <div style={{ marginTop: 28, paddingTop: 14, borderTop: "1px solid " + T.border, fontSize: 10, color: T.textTer, fontFamily: Fn, textAlign: "center", opacity: 0.6 }}>
               Cape Capital AG &middot; Utoquai 55, 8008 Z&uuml;rich &middot; Benchmark: MSCI ACWI NTR (NDEEWNR) &middot; All data EUR unless stated

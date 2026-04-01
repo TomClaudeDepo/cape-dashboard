@@ -277,12 +277,7 @@ export default function RiskPg({ T }) {
   return (
     <div>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24, flexWrap: "wrap", gap: 16 }}>
-        <div>
-          <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>
-            Cape Equity Fund · SICAV-UCITS · NAV Date: {NAV_DATE} · TNA: EUR {(FUND_NAV / 1e6).toFixed(2)}m · 26 positions
-          </p>
-        </div>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
         <div style={{
           padding: "14px 22px", borderRadius: T.radius, textAlign: "center",
           background: statusBgs[overallStatus], border: "1px solid " + T.border,

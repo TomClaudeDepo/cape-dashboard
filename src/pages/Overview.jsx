@@ -75,10 +75,6 @@ export default function OverviewPg({ T, onHoldingClick }) {
 
   return (
     <div>
-      {/* ── Header ── */}
-      <div style={{ marginBottom: 24 }}>
-        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Cape Equity Fund &middot; LU1200255203 &middot; 26 positions &middot; 31 Mar 2026 &middot; EUR</p>
-      </div>
 
       {/* ── Top stats: AUM, Invested, Cash ── */}
       <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(3, 1fr)", gap: 12, marginBottom: 24 }}>

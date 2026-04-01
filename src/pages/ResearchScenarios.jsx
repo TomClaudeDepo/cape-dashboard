@@ -42,11 +42,7 @@ export default function ResearchScenarios({ T }) {
   return (
     <div>
       {/* HEADER */}
-      <div style={{ marginBottom: 24 }}>
-        <p style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, margin: "6px 0 0", lineHeight: 1.5 }}>
-          {NARRATIVES.length} narratives, each impacting ≥5 of the 26 holdings. Click any narrative or holding to explore exposure.
-        </p>
-      </div>
+
 
       {/* VIEW TOGGLE + CATEGORY FILTERS */}
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14, alignItems: "center" }}>

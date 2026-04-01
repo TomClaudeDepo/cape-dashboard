@@ -15,9 +15,6 @@ export default function SettingsPg({ T, dark, setDark, apiKey, setApiKey }) {
 
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
-        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Preferences and configuration</p>
-      </div>
 
       <Card T={T} style={{ marginBottom: 20, maxWidth: 600 }}>
         <Label T={T}>Appearance</Label>

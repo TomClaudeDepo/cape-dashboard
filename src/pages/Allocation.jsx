@@ -49,9 +49,6 @@ export default function AllocPg({ T }) {
   const [av, setAv] = useState("sector");
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
-        <p style={{ fontSize: 12, color: T.textTer, marginTop: 6, fontFamily: Fn }}>Portfolio structure vs MSCI ACWI (2,263 names) &middot; 31 Mar 2026 &middot; EUR</p>
-      </div>
 
       {/* Summary stats */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10, marginBottom: 24 }}>
