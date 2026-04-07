@@ -1,32 +1,32 @@
 import { MV } from './constants';
 
 export const holdings = [
-  {name:"NOVARTIS",t:"NOVN.SW",ccy:"CHF",mv:16395761.73,wt:4.28,ugl:2952546.77,up:21.96,gics:"Health Care",co:"Switzerland"},
-  {name:"SIEMENS",t:"SIE.DE",ccy:"EUR",mv:8228000.00,wt:2.15,ugl:-158405.08,up:-1.89,gics:"Industrials",co:"Germany"},
-  {name:"AIR LIQUIDE",t:"AI.PA",ccy:"EUR",mv:15425841.92,wt:4.03,ugl:1420761.55,up:10.14,gics:"Materials",co:"France"},
-  {name:"VEOLIA",t:"VIE.PA",ccy:"EUR",mv:8805136.00,wt:2.30,ugl:98952.52,up:1.14,gics:"Utilities",co:"France"},
-  {name:"HITACHI",t:"6501.T",ccy:"JPY",mv:18284272.80,wt:4.77,ugl:8009140.05,up:77.95,gics:"Industrials",co:"Japan"},
-  {name:"ALIBABA",t:"9988.HK",ccy:"HKD",mv:14743432.78,wt:3.85,ugl:-417460.77,up:-2.75,gics:"Cons. Disc.",co:"China"},
-  {name:"TENCENT",t:"0700.HK",ccy:"HKD",mv:15189461.45,wt:3.96,ugl:1525697.52,up:11.17,gics:"Comm. Services",co:"China"},
-  {name:"AKZO NOBEL",t:"AKZA.AS",ccy:"EUR",mv:5825280.00,wt:1.52,ugl:-1112021.19,up:-16.03,gics:"Materials",co:"Netherlands"},
-  {name:"VOLVO",t:"VOLV-B.ST",ccy:"SEK",mv:12207586.45,wt:3.19,ugl:-933246.98,up:-7.10,gics:"Industrials",co:"Sweden"},
-  {name:"EPIROC",t:"EPI-A.ST",ccy:"SEK",mv:15429891.21,wt:4.03,ugl:474248.52,up:3.17,gics:"Industrials",co:"Sweden"},
-  {name:"ALPHABET",t:"GOOGL",ccy:"USD",mv:15286585.66,wt:3.99,ugl:2917214.15,up:23.58,gics:"Comm. Services",co:"USA"},
-  {name:"AMAZON",t:"AMZN",ccy:"USD",mv:15635614.48,wt:4.08,ugl:54459.66,up:0.35,gics:"Cons. Disc.",co:"USA"},
-  {name:"BROADCOM",t:"AVGO",ccy:"USD",mv:7655819.30,wt:2.00,ugl:-637252.59,up:-7.68,gics:"Information Technology",co:"USA"},
-  {name:"CORNING",t:"GLW",ccy:"USD",mv:11045644.85,wt:2.88,ugl:6908898.69,up:167.01,gics:"Information Technology",co:"USA"},
-  {name:"ICE",t:"ICE",ccy:"USD",mv:18346148.24,wt:4.79,ugl:568796.34,up:3.20,gics:"Financials",co:"USA"},
-  {name:"JP MORGAN",t:"JPM",ccy:"USD",mv:17169119.94,wt:4.48,ugl:1802845.25,up:11.73,gics:"Financials",co:"USA"},
-  {name:"MSCI",t:"MSCI",ccy:"USD",mv:18384909.74,wt:4.80,ugl:-688105.94,up:-3.61,gics:"Financials",co:"USA"},
-  {name:"MICROSOFT",t:"MSFT",ccy:"USD",mv:17689255.51,wt:4.62,ugl:-737512.34,up:-4.00,gics:"Information Technology",co:"USA"},
-  {name:"NETFLIX",t:"NFLX",ccy:"USD",mv:19301766.19,wt:5.04,ugl:3456269.99,up:21.81,gics:"Comm. Services",co:"USA"},
-  {name:"NVIDIA",t:"NVDA",ccy:"USD",mv:18481374.76,wt:4.82,ugl:1583632.35,up:9.37,gics:"Information Technology",co:"USA"},
-  {name:"PFIZER",t:"PFE",ccy:"USD",mv:19386946.71,wt:5.06,ugl:1662353.01,up:9.38,gics:"Health Care",co:"USA"},
-  {name:"ROCKWELL",t:"ROK",ccy:"USD",mv:13081895.50,wt:3.41,ugl:398677.79,up:3.14,gics:"Industrials",co:"USA"},
-  {name:"SAMSUNG",t:"005930.KS",ccy:"USD",mv:15137476.13,wt:3.95,ugl:1441655.12,up:10.53,gics:"Information Technology",co:"South Korea"},
-  {name:"SERVICENOW",t:"NOW",ccy:"USD",mv:7467857.14,wt:1.95,ugl:-1323791.88,up:-15.06,gics:"Information Technology",co:"USA"},
-  {name:"TAIWAN SEMI",t:"TSM",ccy:"USD",mv:19035718.63,wt:4.97,ugl:10021279.96,up:111.17,gics:"Information Technology",co:"Taiwan"},
-  {name:"THERMO FISHER",t:"TMO",ccy:"USD",mv:17989776.17,wt:4.70,ugl:-1433713.32,up:-7.38,gics:"Health Care",co:"USA"},
+  {name:"NOVARTIS",t:"NOVN.SW",ccy:"CHF",mv:16767535.35,wt:4.29,ugl:3324320.39,up:24.73,gics:"Health Care",co:"Switzerland"},
+  {name:"SIEMENS",t:"SIE.DE",ccy:"EUR",mv:8534000.00,wt:2.18,ugl:147594.92,up:1.76,gics:"Industrials",co:"Germany"},
+  {name:"AIR LIQUIDE",t:"AI.PA",ccy:"EUR",mv:15651264.52,wt:4.00,ugl:1646184.15,up:11.75,gics:"Materials",co:"France"},
+  {name:"VEOLIA",t:"VIE.PA",ccy:"EUR",mv:9020816.00,wt:2.31,ugl:314632.52,up:3.61,gics:"Utilities",co:"France"},
+  {name:"HITACHI",t:"6501.T",ccy:"JPY",mv:19067478.15,wt:4.88,ugl:8792345.40,up:85.57,gics:"Industrials",co:"Japan"},
+  {name:"ALIBABA",t:"9988.HK",ccy:"HKD",mv:14649942.84,wt:3.75,ugl:-510950.71,up:-3.37,gics:"Cons. Disc.",co:"China"},
+  {name:"TENCENT",t:"0700.HK",ccy:"HKD",mv:15319669.28,wt:3.92,ugl:1655905.35,up:12.12,gics:"Comm. Services",co:"China"},
+  {name:"AKZO NOBEL",t:"AKZA.AS",ccy:"EUR",mv:5808704.00,wt:1.49,ugl:-1128597.19,up:-16.27,gics:"Materials",co:"Netherlands"},
+  {name:"VOLVO",t:"VOLV-B.ST",ccy:"SEK",mv:12430897.24,wt:3.18,ugl:-709936.19,up:-5.40,gics:"Industrials",co:"Sweden"},
+  {name:"EPIROC",t:"EPI-A.ST",ccy:"SEK",mv:15771570.64,wt:4.04,ugl:815927.95,up:5.46,gics:"Industrials",co:"Sweden"},
+  {name:"ALPHABET",t:"GOOGL",ccy:"USD",mv:15652189.42,wt:4.00,ugl:3282817.91,up:26.54,gics:"Comm. Services",co:"USA"},
+  {name:"AMAZON",t:"AMZN",ccy:"USD",mv:15708687.56,wt:4.02,ugl:127532.74,up:0.82,gics:"Cons. Disc.",co:"USA"},
+  {name:"BROADCOM",t:"AVGO",ccy:"USD",mv:7760951.43,wt:1.99,ugl:-532120.46,up:-6.42,gics:"Information Technology",co:"USA"},
+  {name:"CORNING",t:"GLW",ccy:"USD",mv:11986245.35,wt:3.07,ugl:7849499.19,up:189.75,gics:"Information Technology",co:"USA"},
+  {name:"ICE",t:"ICE",ccy:"USD",mv:18963303.61,wt:4.85,ugl:1185951.71,up:6.67,gics:"Financials",co:"USA"},
+  {name:"JP MORGAN",t:"JPM",ccy:"USD",mv:17151631.89,wt:4.39,ugl:1785357.20,up:11.62,gics:"Financials",co:"USA"},
+  {name:"MSCI",t:"MSCI",ccy:"USD",mv:18535065.36,wt:4.74,ugl:-537950.32,up:-2.82,gics:"Financials",co:"USA"},
+  {name:"MICROSOFT",t:"MSFT",ccy:"USD",mv:17801668.77,wt:4.55,ugl:-625099.08,up:-3.39,gics:"Information Technology",co:"USA"},
+  {name:"NETFLIX",t:"NFLX",ccy:"USD",mv:19158027.88,wt:4.90,ugl:3792075.45,up:24.68,gics:"Comm. Services",co:"USA"},
+  {name:"NVIDIA",t:"NVDA",ccy:"USD",mv:18751033.68,wt:4.80,ugl:1853291.27,up:10.97,gics:"Information Technology",co:"USA"},
+  {name:"PFIZER",t:"PFE",ccy:"USD",mv:18785199.55,wt:4.81,ugl:1713441.29,up:10.04,gics:"Health Care",co:"USA"},
+  {name:"ROCKWELL",t:"ROK",ccy:"USD",mv:13272305.43,wt:3.40,ugl:589087.72,up:4.64,gics:"Industrials",co:"USA"},
+  {name:"SAMSUNG",t:"005930.KS",ccy:"USD",mv:16089775.78,wt:4.12,ugl:2393954.77,up:17.48,gics:"Information Technology",co:"South Korea"},
+  {name:"SERVICENOW",t:"NOW",ccy:"USD",mv:7267422.73,wt:1.86,ugl:-1524226.29,up:-17.34,gics:"Information Technology",co:"USA"},
+  {name:"TAIWAN SEMI",t:"TSM",ccy:"USD",mv:18579544.63,wt:4.75,ugl:9787341.74,up:111.32,gics:"Information Technology",co:"Taiwan"},
+  {name:"THERMO FISHER",t:"TMO",ccy:"USD",mv:17942055.41,wt:4.59,ugl:-1481434.08,up:-7.63,gics:"Health Care",co:"USA"},
 ].sort((a, b) => b.mv - a.mv);
 
 export const VD = {"AIR LIQUIDE":{mc:100.2,fs:4.9,fe:10.4,en:12.5,e1:12.7,e2:11.8,pn:23.8,p1:24.4,p2:22.1,bn:3.4,sn:3.5},"AKZO NOBEL":{mc:8.4,fs:0.3,fe:10.6,en:7.7,e1:7.8,e2:7.3,pn:11.8,p1:12.0,p2:10.9,bn:1.7,sn:0.8},"ALIBABA":{mc:259.5,fs:14.3,fe:39.4,en:11.6,e1:16.3,e2:11.6,pn:16.6,p1:24.2,p2:16.5,bn:1.7,sn:1.8},"ALPHABET":{mc:2678.6,fs:17.9,fe:13.0,en:14.3,e1:15.0,e2:12.6,pn:23.0,p1:23.9,p2:20.4,bn:5.9,sn:6.8},"AMAZON":{mc:1857.5,fs:13.8,fe:17.1,en:10.2,e1:10.7,e2:8.7,pn:24.4,p1:25.7,p2:21.1,bn:4.0,sn:2.6},"BROADCOM":{mc:1235.7,fs:60.3,fe:50.3,en:17.6,e1:21.4,e2:13.9,pn:21.7,p1:26.8,p2:16.9,bn:10.9,sn:11.3},"CORNING":{mc:101.9,fs:19.3,fe:24.4,en:23.0,e1:24.0,e2:20.4,pn:41.7,p1:44.2,p2:35.2,bn:8.6,sn:6.1},"EPIROC":{mc:23.9,fs:6.6,fe:11.4,en:17.2,e1:17.8,e2:15.9,pn:27.2,p1:28.1,p2:24.7,bn:5.5,sn:4.0},"HITACHI":{mc:117.1,fs:8.6,fe:16.1,en:11.8,e1:13.2,e2:11.8,pn:22.7,p1:26.5,p2:22.6,bn:3.3,sn:1.9},"ICE":{mc:75.3,fs:-3.1,fe:11.1,en:14.5,e1:14.7,e2:13.9,pn:19.3,p1:19.8,p2:17.8,bn:2.9,sn:8.0},"JP MORGAN":{mc:662.1,fs:-14.0,fe:8.2,en:null,e1:null,e2:null,pn:12.9,p1:13.1,p2:12.1,bn:2.1,sn:3.9},"MICROSOFT":{mc:2299.6,fs:17.9,fe:17.1,en:12.1,e1:13.6,e2:11.7,pn:19.4,p1:21.6,p2:18.8,bn:5.0,sn:7.3},"MSCI":{mc:33.4,fs:10.4,fe:12.9,en:21.0,e1:21.5,e2:19.6,pn:28.1,p1:26.9,p2:23.8,bn:null,sn:10.9},"NETFLIX":{mc:342.4,fs:13.8,fe:22.1,en:23.4,e1:24.5,e2:20.5,pn:28.2,p1:29.6,p2:24.4,bn:10.9,sn:7.5},"NOVARTIS":{mc:264.0,fs:4.1,fe:6.3,en:13.6,e1:13.8,e2:12.8,pn:16.6,p1:17.0,p2:15.5,bn:5.9,sn:5.2},"NVIDIA":{mc:3533.5,fs:51.3,fe:46.2,en:16.0,e1:16.7,e2:13.0,pn:19.2,p1:20.2,p2:15.1,bn:11.8,sn:10.6},"PFIZER":{mc:133.5,fs:-3.9,fe:-7.0,en:8.4,e1:8.4,e2:8.8,pn:9.2,p1:9.1,p2:9.6,bn:1.7,sn:2.5},"ROCKWELL":{mc:34.3,fs:6.3,fe:13.1,en:20.2,e1:21.2,e2:19.1,pn:27.3,p1:29.0,p2:25.7,bn:9.0,sn:4.3},"SAMSUNG":{mc:671.2,fs:35.3,fe:69.2,en:3.9,e1:4.1,e2:3.4,pn:6.2,p1:6.6,p2:5.2,bn:1.8,sn:2.1},"SERVICENOW":{mc:90.3,fs:22.2,fe:20.4,en:16.3,e1:17.2,e2:14.1,pn:22.6,p1:23.7,p2:19.7,bn:6.1,sn:6.2},"SIEMENS":{mc:160.2,fs:7.2,fe:14.2,en:13.1,e1:13.8,e2:12.4,pn:17.4,p1:18.6,p2:16.2,bn:2.4,sn:1.9},"TAIWAN SEMI":{mc:1284.7,fs:29.7,fe:26.3,en:12.0,e1:12.6,e2:10.3,pn:21.8,p1:23.0,p2:18.7,bn:7.0,sn:8.9},"TENCENT":{mc:498.9,fs:14.0,fe:10.7,en:11.2,e1:11.6,e2:10.3,pn:14.0,p1:14.4,p2:12.8,bn:2.8,sn:4.7},"THERMO FISHER":{mc:152.6,fs:6.0,fe:8.8,en:17.2,e1:17.6,e2:16.3,pn:18.9,p1:19.3,p2:17.6,bn:3.0,sn:3.7},"VEOLIA":{mc:23.8,fs:5.1,fe:8.1,en:6.8,e1:6.9,e2:8.5,pn:13.1,p1:13.4,p2:12.2,bn:1.8,sn:0.5},"VOLVO":{mc:56.0,fs:4.9,fe:17.7,en:10.0,e1:10.3,e2:9.1,pn:13.8,p1:14.3,p2:12.3,bn:3.2,sn:1.2}};
@@ -578,7 +578,8 @@ export const navData = [
   ["2026-03-04",247.168],["2026-03-05",245.576],["2026-03-06",242.689],["2026-03-09",242.653],["2026-03-10",244.464],
   ["2026-03-11",243.992],["2026-03-12",241.526],["2026-03-13",241.321],["2026-03-16",242.698],["2026-03-17",243.329],
   ["2026-03-18",241.444],["2026-03-19",237.586],["2026-03-20",233.224],["2026-03-23",234.22],["2026-03-24",234.587],
-  ["2026-03-25",236.727],["2026-03-26",232.836],["2026-03-27",229.696],["2026-03-30",230.085],["2026-03-31",233.796]
+  ["2026-03-25",236.727],["2026-03-26",232.836],["2026-03-27",229.696],["2026-03-30",230.085],["2026-03-31",233.796],
+  ["2026-04-01",237.342],["2026-04-02",237.802]
 ].map(([d,v]) => ({ date: new Date(d), nav: v }));
 
 export const acwiHoldingWts = {"NVIDIA":4.6544,"TAIWAN SEMI":1.5734,"SAMSUNG":0.6966,"MSCI":0.0464,"PFIZER":0.1708,"ICE":0.0993,"MICROSOFT":2.9877,"NOVARTIS":0.3087,"HITACHI":0.1569,"NETFLIX":0.4320,"THERMO FISHER":0.1982,"EPIROC":0.0183,"JP MORGAN":0.8630,"AMAZON":2.1909,"ALIBABA":0.3013,"TENCENT":0.4617,"ALPHABET":3.5547,"AIR LIQUIDE":0.1234,"VOLVO":0.0527,"ROCKWELL":0.0454,"VEOLIA":0.0270,"CORNING":0.1119,"BROADCOM":1.5513,"SERVICENOW":0.1283,"AKZO NOBEL":0.0110,"SIEMENS":0.1969};
@@ -611,6 +612,6 @@ export const portfolioCo = (() => {
 
 export const acwiCo = [{name:"North America",wt:65.9},{name:"Europe",wt:15.4},{name:"Asia Pac ex Japan",wt:11.7},{name:"Japan",wt:5.0},{name:"Other",wt:2.0}];
 
-// Updated from NAV report 31 Mar 2026 — Allocation sheet, by currency (net incl. FX forwards)
-export const ccyAll = [{name:"CHF",wt:9.57},{name:"EUR",wt:3.36},{name:"GBP",wt:0.01},{name:"HKD",wt:7.82},{name:"JPY",wt:5.35},{name:"SEK",wt:7.47},{name:"USD",wt:66.42}];
+// Updated from NAV report 2 Apr 2026 — Allocation sheet, by currency (net incl. FX forwards)
+export const ccyAll = [{name:"CHF",wt:4.89},{name:"EUR",wt:8.35},{name:"GBP",wt:0.01},{name:"HKD",wt:7.67},{name:"JPY",wt:5.44},{name:"SEK",wt:7.47},{name:"USD",wt:66.16}];
 export const acwiCcy = [{name:"USD",wt:63.0},{name:"EUR",wt:8.1},{name:"JPY",wt:5.0},{name:"HKD",wt:3.1},{name:"CHF",wt:1.9},{name:"SEK",wt:0.7},{name:"KRW",wt:1.6},{name:"TWD",wt:2.3},{name:"GBP",wt:3.3},{name:"Other",wt:11.0}];
