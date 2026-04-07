@@ -5,6 +5,7 @@ import ResearchBKNG from "./ResearchBKNG";
 import ResearchCEG from "./ResearchCEG";
 import ResearchCNI from "./ResearchCNI";
 import ResearchGold from "./ResearchGold";
+import ResearchNEE from "./ResearchNEE";
 import ResearchNXT from "./ResearchNXT";
 import ResearchThemes from "./ResearchThemes";
 
@@ -55,6 +56,15 @@ const reports = [
     ],
   },
   {
+    id: "nee", ticker: "NEE", name: "NextEra Energy", sector: "Utilities / Clean Energy",
+    tagline: "America's largest utility meets the world's largest wind and solar generator",
+    date: "April 2026", type: "Business Primer", color: "green",
+    stats: [
+      { l: "Customers", v: "~6M" }, { l: "Capacity", v: "73 GW" },
+      { l: "Backlog", v: "30+ GW" }, { l: "States", v: "41" },
+    ],
+  },
+  {
     id: "themes10", ticker: "MULTI", name: "Ten Obscure Investable Themes", sector: "Cross-Sector / Thematic",
     tagline: "Structural mispricings at the intersection of forced capex and zero sell-side coverage",
     date: "March 2026", type: "Thematic Scan", color: "deepBlue",
@@ -80,6 +90,7 @@ const reportComponents = {
   ceg: ResearchCEG,
   cni: ResearchCNI,
   gold: ResearchGold,
+  nee: ResearchNEE,
   nxt: ResearchNXT,
   themes10: ResearchThemes,
 };
