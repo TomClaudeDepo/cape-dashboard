@@ -5,6 +5,7 @@ import ResearchBKNG from "./ResearchBKNG";
 import ResearchCEG from "./ResearchCEG";
 import ResearchCNI from "./ResearchCNI";
 import ResearchGold from "./ResearchGold";
+import ResearchNXT from "./ResearchNXT";
 import ResearchThemes from "./ResearchThemes";
 
 const reports = [
@@ -45,6 +46,15 @@ const reports = [
     ],
   },
   {
+    id: "nxt", ticker: "NXT", name: "Nextpower", sector: "Solar Technology / Renewables",
+    tagline: "World's largest solar tracker supplier — from single product to full-platform provider",
+    date: "April 2026", type: "Business Primer", color: "orange",
+    stats: [
+      { l: "Mkt Cap", v: "~$17B" }, { l: "FCF", v: "$622M" },
+      { l: "Backlog", v: ">$4.5B" }, { l: "Debt", v: "$0" },
+    ],
+  },
+  {
     id: "themes10", ticker: "MULTI", name: "Ten Obscure Investable Themes", sector: "Cross-Sector / Thematic",
     tagline: "Structural mispricings at the intersection of forced capex and zero sell-side coverage",
     date: "March 2026", type: "Thematic Scan", color: "deepBlue",
@@ -70,6 +80,7 @@ const reportComponents = {
   ceg: ResearchCEG,
   cni: ResearchCNI,
   gold: ResearchGold,
+  nxt: ResearchNXT,
   themes10: ResearchThemes,
 };
 
@@ -90,7 +101,7 @@ export default function ResearchPg({ T }) {
     <div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16 }}>
         {reports.map(r => {
-          const bgColor = r.color === "green" ? T.greenBg : r.color === "deepBlue" ? "rgba(29,78,216,0.08)" : r.color === "purple" ? T.purple100 || "rgba(67,56,202,0.08)" : T.redBg;
+          const bgColor = r.color === "green" ? T.greenBg : r.color === "deepBlue" ? "rgba(29,78,216,0.08)" : r.color === "purple" ? T.purple100 || "rgba(67,56,202,0.08)" : r.color === "orange" ? "rgba(234,88,12,0.08)" : T.redBg;
           return (
             <div key={r.id}
               onClick={() => setActive(r.id)}
