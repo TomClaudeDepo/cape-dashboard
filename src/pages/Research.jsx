@@ -7,6 +7,7 @@ import ResearchCNI from "./ResearchCNI";
 import ResearchGold from "./ResearchGold";
 import ResearchNEE from "./ResearchNEE";
 import ResearchNXT from "./ResearchNXT";
+import ResearchIBE from "./ResearchIBE";
 import ResearchThemes from "./ResearchThemes";
 
 const reports = [
@@ -65,6 +66,15 @@ const reports = [
     ],
   },
   {
+    id: "ibe", ticker: "IBE", name: "Iberdrola", sector: "Utilities / Renewables",
+    tagline: "Europe's largest utility — the company that bet on renewables two decades early",
+    date: "April 2026", type: "Business Primer", color: "green",
+    stats: [
+      { l: "Renewables", v: "~45 GW" }, { l: "Network RAB", v: "€51B" },
+      { l: "Supply Pts", v: "35M" }, { l: "Countries", v: "15+" },
+    ],
+  },
+  {
     id: "themes10", ticker: "MULTI", name: "Ten Obscure Investable Themes", sector: "Cross-Sector / Thematic",
     tagline: "Structural mispricings at the intersection of forced capex and zero sell-side coverage",
     date: "March 2026", type: "Thematic Scan", color: "deepBlue",
@@ -90,6 +100,7 @@ const reportComponents = {
   ceg: ResearchCEG,
   cni: ResearchCNI,
   gold: ResearchGold,
+  ibe: ResearchIBE,
   nee: ResearchNEE,
   nxt: ResearchNXT,
   themes10: ResearchThemes,
