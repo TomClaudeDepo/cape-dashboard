@@ -15,6 +15,11 @@ import {
   offshoreIntro, offshoreDrivers, offshoreCapacityPie,
   compoundingIntro, compoundingLoops, opportunityTable, keyRisks,
 } from "../data/research-ibe-forces";
+import {
+  finHeroStats, growthMetrics, forwardMultiples,
+  peerValuation, peerMedian, profitabilityComp, leverageComp,
+  capacityEvolution, productionEvolution, peerCapacity,
+} from "../data/research-ibe-fin";
 
 /* ═══════════════════════════════════════════ SHARED COMPONENTS ═══════════════════════════════════════════ */
 function PieChart({ data, size = 220, T, label }) {
@@ -217,13 +222,18 @@ export default function ResearchIBE({ T }) {
   const [section, setSection] = useState("primer");
   const [tab, setTab] = useState("Business Overview");
   const [fTab, setFTab] = useState("Electrification");
+  const [vTab, setVTab] = useState("Growth");
 
   const primerTabs = ["Business Overview", "Business Segments", "Products", "Competitive Position", "Value Chain", "Moat Analysis"];
   const forcesTabs = ["Electrification", "Data Centres & AI", "Grid Supercycle", "Energy Security", "Offshore Wind", "Compounding Effects"];
+  const finTabs = ["Growth", "Multiples", "Peer Valuation", "Profitability", "Leverage", "Capacity"];
 
   const prose = (text, s = {}) => <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 16px", ...s }}>{text}</p>;
   const sTitle = (t) => <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 16, letterSpacing: "-0.01em" }}>{t}</div>;
-  const activeHero = section === "primer" ? heroStats : forcesHeroStats;
+  const activeHero = section === "primer" ? heroStats : section === "forces" ? forcesHeroStats : finHeroStats;
+  const secColors = { primer: T.green, forces: T.orange, fin: T.deepBlue };
+  const secBgs = { primer: T.greenBg, forces: "rgba(234,88,12,0.08)", fin: "rgba(29,78,216,0.08)" };
+  const secLabels = { primer: "Business Primer", forces: "Structural Forces", fin: "Financials & Valuation" };
 
   /* ─── HEADER ─── */
   const header = (
@@ -231,12 +241,12 @@ export default function ResearchIBE({ T }) {
       <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
         <span style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 36, color: T.text }}>Iberdrola</span>
         <span style={{ fontSize: 14, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.04em" }}>IBE SM</span>
-        <Pill T={T} color={section==="primer"?T.green:T.orange} bg={section==="primer"?T.greenBg:"rgba(234,88,12,0.08)"}>{section==="primer"?"Business Primer":"Structural Forces"}</Pill>
+        <Pill T={T} color={secColors[section]} bg={secBgs[section]}>{secLabels[section]}</Pill>
       </div>
       <div style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, marginBottom: 16 }}>BME · Bilbao, Spain · Europe's largest utility by market capitalisation</div>
-      <div style={{ display: "flex", gap: 6, marginBottom: 20 }}>
-        {[["primer","Business Primer"],["forces","Structural Forces"]].map(([k,l]) => (
-          <button key={k} onClick={() => setSection(k)} style={{ padding: "10px 20px", borderRadius: T.radiusSm, border: section===k ? "2px solid "+(k==="primer"?T.green:T.orange) : "1px solid "+T.border, fontSize: 12, fontFamily: Fn, fontWeight: section===k?700:400, background: section===k?(k==="primer"?T.greenBg:"rgba(234,88,12,0.06)"):T.card, color: section===k?(k==="primer"?T.green:T.orange):T.textTer, cursor: "pointer", transition: "all 0.15s" }}>{l}</button>
+      <div style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
+        {[["primer","Business Primer"],["forces","Structural Forces"],["fin","Financials & Valuation"]].map(([k,l]) => (
+          <button key={k} onClick={() => setSection(k)} style={{ padding: "10px 20px", borderRadius: T.radiusSm, border: section===k ? "2px solid "+secColors[k] : "1px solid "+T.border, fontSize: 12, fontFamily: Fn, fontWeight: section===k?700:400, background: section===k?secBgs[k]:T.card, color: section===k?secColors[k]:T.textTer, cursor: "pointer", transition: "all 0.15s" }}>{l}</button>
         ))}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 10 }}>
@@ -408,5 +418,366 @@ export default function ResearchIBE({ T }) {
 
   const forcesContent = {"Electrification":electrificationTab,"Data Centres & AI":dataCentreTab,"Grid Supercycle":gridTab,"Energy Security":securityTab,"Offshore Wind":offshoreTab,"Compounding Effects":compoundingTab};
 
-  return (<div>{header}{section==="primer"?(<><Tabs tabs={primerTabs} active={tab} onChange={setTab} T={T}/>{primerContent[tab]}</>):(<><Tabs tabs={forcesTabs} active={fTab} onChange={setFTab} T={T}/>{forcesContent[fTab]}</>)}</div>);
+  /* ═══════════════════════════════════════════ FINANCIALS TABS ═══════════════════════════════════════════ */
+  const [selGrowth, setSelGrowth] = useState(null);
+  const growthTab = (
+    <div>
+      {prose("Consensus estimates show Iberdrola delivering steady mid-single-digit EPS and net income growth through 2029, underpinned by accelerating revenue growth as network investment scales. EBITDA growth, depressed in FY2025, is forecast to re-accelerate from FY2027 as new capacity and RAB additions compound.")}
+      {sTitle("Consensus YoY growth by metric — click a row to highlight")}
+      <Card T={T} style={{ padding: 0, overflow: "hidden", marginBottom: 28 }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: Fn, fontSize: 12 }}>
+            <thead><tr style={{ borderBottom: "2px solid " + T.border }}>
+              <th style={{ padding: "12px 16px", textAlign: "left", fontWeight: 600, color: T.text, fontSize: 11 }}>Metric</th>
+              {growthMetrics[0].values.map(v => <th key={v.year} style={{ padding: "12px 16px", textAlign: "right", fontWeight: 600, color: T.text, fontSize: 11 }}>{v.year}</th>)}
+            </tr></thead>
+            <tbody>{growthMetrics.map((gm, gi) => (
+              <tr key={gi} onClick={() => setSelGrowth(selGrowth === gi ? null : gi)} style={{ borderBottom: "1px solid " + T.border, cursor: "pointer", background: selGrowth === gi ? (T.text === "#0F172A" ? "rgba(29,78,216,0.04)" : "rgba(96,165,250,0.06)") : "transparent", transition: "background 0.15s" }}>
+                <td style={{ padding: "12px 16px", fontWeight: 600, color: gm.color }}><div style={{ display: "flex", alignItems: "center", gap: 8 }}><div style={{ width: 8, height: 8, borderRadius: 4, background: gm.color }} />{gm.metric}</div></td>
+                {gm.values.map((v, vi) => (
+                  <td key={vi} style={{ padding: "12px 16px", textAlign: "right", fontWeight: 600, color: v.value >= 0 ? T.green : T.capRed }}>
+                    {v.value >= 0 ? "+" : ""}{v.value.toFixed(1)}%
+                  </td>
+                ))}
+              </tr>
+            ))}</tbody>
+          </table>
+        </div>
+      </Card>
+      {selGrowth !== null && (
+        <Card T={T} style={{ padding: 24, marginBottom: 28 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: growthMetrics[selGrowth].color, fontFamily: Fn, marginBottom: 16 }}>{growthMetrics[selGrowth].metric} — YoY growth trajectory</div>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height: 140 }}>
+            {growthMetrics[selGrowth].values.map((v, i) => {
+              const maxAbs = Math.max(...growthMetrics[selGrowth].values.map(x => Math.abs(x.value)), 1);
+              const h = Math.max((Math.abs(v.value) / maxAbs) * 100, 4);
+              return (
+                <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: v.value >= 0 ? T.green : T.capRed, marginBottom: 4, fontFamily: Fn }}>{v.value >= 0 ? "+" : ""}{v.value.toFixed(1)}%</div>
+                  <div style={{ width: "100%", maxWidth: 48, height: h, borderRadius: "6px 6px 0 0", background: v.value >= 0 ? growthMetrics[selGrowth].color : T.capRed, opacity: 0.85, transition: "height 0.5s ease" }} />
+                  <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn, marginTop: 6 }}>{v.year.replace("FY","")}</div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+      {sTitle("Key growth observations")}
+      <div style={{ display: "grid", gap: 10 }}>
+        <Expandable title="Revenue acceleration from 1.8% to 5.7%" T={T}>{prose("Revenue growth is forecast to nearly triple from 1.8% in FY2025 to 5.7% by FY2029, reflecting the ramp-up of new renewable capacity and expanding network tariff income as the RAB grows. This acceleration is unusual for a utility — most European peers show decelerating or flat revenue trajectories.")}</Expandable>
+        <Expandable title="Earnings compounding: 6–8% adjusted EPS growth sustained" T={T}>{prose("Adjusted EPS growth is forecast at 6–8% annually through FY2028, before moderating to 4% in FY2029. The compound effect over the full period implies roughly 35% cumulative EPS growth — translating directly into P/E compression on a static share price or share price appreciation on a static multiple.")}</Expandable>
+        <Expandable title="Dividend growth tracking earnings: ~6% CAGR" T={T}>{prose("DPS growth is forecast at roughly 6% annually from FY2026 through FY2029, keeping the payout ratio broadly stable while the dividend yield rises from 3.3% to over 4% on current prices. Iberdrola has increased its dividend every year since 2001 — a 25-year streak.")}</Expandable>
+      </div>
+    </div>
+  );
+
+  const [sortCol, setSortCol] = useState("evEbitdaFY1");
+  const [sortDir, setSortDir] = useState("asc");
+  const sortedPeers = [...peerValuation].filter(p => p.mktCap).sort((a, b) => {
+    const av = a[sortCol], bv = b[sortCol];
+    if (av == null) return 1; if (bv == null) return -1;
+    return sortDir === "asc" ? av - bv : bv - av;
+  });
+  const toggleSort = (col) => { if (sortCol === col) setSortDir(d => d === "asc" ? "desc" : "asc"); else { setSortCol(col); setSortDir("asc"); } };
+
+  const multiplesTab = (
+    <div>
+      {prose("Iberdrola's forward multiples compress steadily as earnings growth compounds — from 13.0× EV/EBITDA in FY2026 to 11.7× by FY2028, and from 20.6× P/E to 17.9×. The dividend yield rises from 3.3% to 4.0% over the same period, offering a rare combination of growth and income in the European utility space.")}
+      {sTitle("Forward multiple compression")}
+      <Card T={T} style={{ padding: 24, marginBottom: 28 }}>
+        {["EV/EBITDA", "P/E (Adj)", "Div. Yield %"].map(metric => {
+          const row = forwardMultiples.find(f => f.metric === metric);
+          if (!row) return null;
+          const isDY = metric === "Div. Yield %";
+          const vals = [row.fy26, row.fy27, row.fy28].filter(v => v != null);
+          const mx = Math.max(...vals) * 1.15;
+          return (
+            <div key={metric} style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 10 }}>{metric}</div>
+              <div style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
+                {[{ label: "FY2026E", v: row.fy26 }, { label: "FY2027E", v: row.fy27 }, { label: "FY2028E", v: row.fy28 }].map((d, i) => (
+                  <div key={i} style={{ flex: 1, textAlign: "center" }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: isDY ? T.green : T.deepBlue, fontFamily: Fn, marginBottom: 6 }}>{d.v != null ? (isDY ? d.v.toFixed(1) + "%" : d.v.toFixed(1) + "×") : "—"}</div>
+                    <div style={{ height: d.v != null ? Math.max((d.v / mx) * 60, 6) : 4, background: isDY ? T.green : T.deepBlue, borderRadius: 4, opacity: 0.15 + (i * 0.25), transition: "height 0.5s" }} />
+                    <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 6 }}>{d.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </Card>
+      {sTitle("Full forward multiples table")}
+      <Card T={T} style={{ padding: 0, overflow: "hidden" }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: Fn, fontSize: 12 }}>
+            <thead><tr style={{ borderBottom: "2px solid " + T.border }}>
+              {["Metric", "L4Q Act", "N4Q Est", "FY2026E", "FY2027E", "FY2028E"].map(h => <th key={h} style={{ padding: "10px 14px", textAlign: h === "Metric" ? "left" : "right", fontWeight: 600, color: T.text, fontSize: 11 }}>{h}</th>)}
+            </tr></thead>
+            <tbody>{forwardMultiples.map((fm, i) => (
+              <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                <td style={{ padding: "10px 14px", fontWeight: 500, color: T.text }}>{fm.metric}</td>
+                {[fm.l4q, fm.n4q, fm.fy26, fm.fy27, fm.fy28].map((v, vi) => (
+                  <td key={vi} style={{ padding: "10px 14px", textAlign: "right", color: v != null ? T.textSec : T.textTer, fontWeight: 500 }}>{v != null ? (fm.metric.includes("Yield") ? v.toFixed(2) + "%" : v.toFixed(2)) : "—"}</td>
+                ))}
+              </tr>
+            ))}</tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+
+  const peerCols = [
+    { key: "mktCap", label: "Mkt Cap (€B)", fmt: v => v?.toFixed(1) },
+    { key: "ev", label: "EV (€B)", fmt: v => v?.toFixed(1) },
+    { key: "evEbitdaFY1", label: "EV/EBITDA FY1", fmt: v => v?.toFixed(1) + "×" },
+    { key: "evEbitdaFY2", label: "EV/EBITDA FY2", fmt: v => v?.toFixed(1) + "×" },
+    { key: "peFY1", label: "P/E FY1", fmt: v => v?.toFixed(1) + "×" },
+    { key: "peFY2", label: "P/E FY2", fmt: v => v?.toFixed(1) + "×" },
+    { key: "divYield", label: "Div Yld %", fmt: v => v?.toFixed(1) + "%" },
+  ];
+
+  const peerTab = (
+    <div>
+      {prose("Iberdrola trades at a significant premium to European utility peers on EV/EBITDA (13.0× vs 11.9× median) and P/E (20.6× vs 19.0× median). This premium is justified by faster earnings growth, higher proportion of regulated earnings, and stronger ESG credentials — but investors should monitor whether the premium is compressing or expanding. Click column headers to sort.")}
+      {sTitle("Peer valuation comparison — sortable")}
+      <Card T={T} style={{ padding: 0, overflow: "hidden", marginBottom: 28 }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: Fn, fontSize: 11.5 }}>
+            <thead><tr style={{ borderBottom: "2px solid " + T.border }}>
+              <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 600, color: T.text, fontSize: 11 }}>Name</th>
+              {peerCols.map(c => (
+                <th key={c.key} onClick={() => toggleSort(c.key)} style={{ padding: "10px 14px", textAlign: "right", fontWeight: 600, color: sortCol === c.key ? T.deepBlue : T.text, fontSize: 11, cursor: "pointer", whiteSpace: "nowrap", userSelect: "none" }}>
+                  {c.label} {sortCol === c.key ? (sortDir === "asc" ? "↑" : "↓") : ""}
+                </th>
+              ))}
+            </tr></thead>
+            <tbody>
+              <tr style={{ borderBottom: "2px solid " + T.border, background: T.pillBg }}>
+                <td style={{ padding: "8px 14px", fontWeight: 600, color: T.textTer, fontStyle: "italic" }}>Median</td>
+                {peerCols.map(c => <td key={c.key} style={{ padding: "8px 14px", textAlign: "right", color: T.textTer, fontWeight: 500 }}>{peerMedian[c.key] != null ? c.fmt(peerMedian[c.key]) : "—"}</td>)}
+              </tr>
+              {sortedPeers.map((p, i) => (
+                <tr key={i} style={{ borderBottom: "1px solid " + T.border, background: p.highlight ? (T.text === "#0F172A" ? "rgba(29,78,216,0.03)" : "rgba(96,165,250,0.04)") : "transparent" }}>
+                  <td style={{ padding: "10px 14px", fontWeight: p.highlight ? 700 : 500, color: p.highlight ? T.deepBlue : T.text }}>{p.name}</td>
+                  {peerCols.map(c => {
+                    const v = p[c.key];
+                    const med = peerMedian[c.key];
+                    const isAbove = v != null && med != null && v > med;
+                    const prem = c.key === "divYield" ? !isAbove : isAbove;
+                    return <td key={c.key} style={{ padding: "10px 14px", textAlign: "right", fontWeight: p.highlight ? 600 : 400, color: v != null ? (p.highlight ? T.deepBlue : T.textSec) : T.textTer }}>{v != null ? c.fmt(v) : "—"}</td>;
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+      {sTitle("Premium / discount to median")}
+      <Card T={T} style={{ padding: 24 }}>
+        {[{ label: "EV/EBITDA FY1", ibe: 13.01, med: 11.85 }, { label: "P/E FY1", ibe: 20.57, med: 19.03 }, { label: "Div Yield", ibe: 3.27, med: 3.99 }].map((d, i) => {
+          const prem = ((d.ibe / d.med - 1) * 100);
+          return (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: i < 2 ? 16 : 0 }}>
+              <div style={{ width: 110, fontSize: 12, fontWeight: 500, color: T.text, fontFamily: Fn }}>{d.label}</div>
+              <div style={{ flex: 1, height: 8, borderRadius: 4, background: T.pillBg, position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: T.textTer }} />
+                <div style={{
+                  position: "absolute", top: 0, bottom: 0, borderRadius: 4,
+                  left: prem >= 0 ? "50%" : `${50 + prem * 2}%`,
+                  width: `${Math.min(Math.abs(prem) * 2, 48)}%`,
+                  background: prem >= 0 ? T.orange : T.green,
+                  transition: "all 0.5s"
+                }} />
+              </div>
+              <div style={{ width: 70, fontSize: 12, fontWeight: 700, color: prem >= 0 ? T.orange : T.green, fontFamily: Fn, textAlign: "right" }}>
+                {prem >= 0 ? "+" : ""}{prem.toFixed(0)}%
+              </div>
+            </div>
+          );
+        })}
+        <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 12, textAlign: "center" }}>← discount to median | premium to median →</div>
+      </Card>
+    </div>
+  );
+
+  const profitabilityTab = (
+    <div>
+      {prose("Iberdrola's profitability profile is competitive within the utility peer group: a 35% EBITDA margin, 12.2% ROE, and 43% net income growth in FY2025 place it above median on most metrics. The anomaly is NextEra's exceptionally high margins — driven by its US tax credit structure — which distort direct comparisons.")}
+      {sTitle("Profitability scorecard vs peers")}
+      <Card T={T} style={{ padding: 0, overflow: "hidden", marginBottom: 28 }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: Fn, fontSize: 12 }}>
+            <thead><tr style={{ borderBottom: "2px solid " + T.border }}>
+              {["Metric", "Iberdrola", "NextEra", "Enel", "Median"].map(h => <th key={h} style={{ padding: "10px 14px", textAlign: h === "Metric" ? "left" : "right", fontWeight: 600, color: T.text, fontSize: 11 }}>{h}</th>)}
+            </tr></thead>
+            <tbody>{profitabilityComp.map((p, i) => (
+              <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                <td style={{ padding: "10px 14px", fontWeight: 500, color: T.text }}>{p.metric}</td>
+                <td style={{ padding: "10px 14px", textAlign: "right", fontWeight: 700, color: T.deepBlue }}>{p.ibe.toFixed(1)}{p.unit}</td>
+                <td style={{ padding: "10px 14px", textAlign: "right", color: T.textSec }}>{p.nee.toFixed(1)}{p.unit}</td>
+                <td style={{ padding: "10px 14px", textAlign: "right", color: T.textSec }}>{p.enel.toFixed(1)}{p.unit}</td>
+                <td style={{ padding: "10px 14px", textAlign: "right", color: T.textTer, fontStyle: "italic" }}>{p.median.toFixed(1)}{p.unit}</td>
+              </tr>
+            ))}</tbody>
+          </table>
+        </div>
+      </Card>
+      {sTitle("Iberdrola vs median — visual comparison")}
+      <Card T={T} style={{ padding: 24 }}>
+        {profitabilityComp.filter(p => ["EBITDA Margin", "Net Profit Margin", "ROE", "ROIC", "Capex/Sales"].includes(p.metric)).map((p, i) => {
+          const mx = Math.max(p.ibe, p.median, 1);
+          return (
+            <div key={i} style={{ marginBottom: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                <span style={{ fontSize: 12, color: T.text, fontFamily: Fn }}>{p.metric}</span>
+              </div>
+              <div style={{ display: "flex", gap: 6 }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ height: 8, borderRadius: 4, background: T.pillBg, overflow: "hidden" }}><div style={{ height: "100%", borderRadius: 4, background: T.deepBlue, width: `${(p.ibe / (mx * 1.3)) * 100}%`, transition: "width 0.8s" }} /></div>
+                  <div style={{ fontSize: 10, color: T.deepBlue, fontWeight: 600, fontFamily: Fn, marginTop: 2 }}>IBE {p.ibe.toFixed(1)}{p.unit}</div>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ height: 8, borderRadius: 4, background: T.pillBg, overflow: "hidden" }}><div style={{ height: "100%", borderRadius: 4, background: T.textTer, width: `${(p.median / (mx * 1.3)) * 100}%`, transition: "width 0.8s" }} /></div>
+                  <div style={{ fontSize: 10, color: T.textTer, fontWeight: 500, fontFamily: Fn, marginTop: 2 }}>Median {p.median.toFixed(1)}{p.unit}</div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </Card>
+    </div>
+  );
+
+  const leverageTab = (
+    <div>
+      {prose("Iberdrola's balance sheet is leveraged but disciplined for a utility — Net Debt/EBITDA of 4.2× is in line with the peer median, and EBITDA/Interest coverage of 5.8× is the strongest in the peer group. The BBB+/Baa1 credit rating reflects a balance sheet stretched by the €58 billion investment plan but backstopped by the predictability of regulated network returns.")}
+      {sTitle("Leverage comparison vs peers")}
+      <Card T={T} style={{ padding: 0, overflow: "hidden", marginBottom: 28 }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: Fn, fontSize: 12 }}>
+            <thead><tr style={{ borderBottom: "2px solid " + T.border }}>
+              {["Metric", "Iberdrola", "NextEra", "Enel", "EDP", "Median"].map(h => <th key={h} style={{ padding: "10px 14px", textAlign: h === "Metric" ? "left" : "right", fontWeight: 600, color: T.text, fontSize: 11 }}>{h}</th>)}
+            </tr></thead>
+            <tbody>{leverageComp.map((l, i) => (
+              <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                <td style={{ padding: "10px 14px", fontWeight: 500, color: T.text }}>{l.metric}</td>
+                <td style={{ padding: "10px 14px", textAlign: "right", fontWeight: 700, color: T.deepBlue }}>{l.ibe.toFixed(2)}{l.unit}</td>
+                <td style={{ padding: "10px 14px", textAlign: "right", color: T.textSec }}>{l.nee.toFixed(2)}{l.unit}</td>
+                <td style={{ padding: "10px 14px", textAlign: "right", color: T.textSec }}>{l.enel.toFixed(2)}{l.unit}</td>
+                <td style={{ padding: "10px 14px", textAlign: "right", color: T.textSec }}>{l.edp.toFixed(2)}{l.unit}</td>
+                <td style={{ padding: "10px 14px", textAlign: "right", color: T.textTer, fontStyle: "italic" }}>{l.median.toFixed(2)}{l.unit}</td>
+              </tr>
+            ))}</tbody>
+          </table>
+        </div>
+      </Card>
+      {sTitle("Interest coverage — Iberdrola leads peers")}
+      <Card T={T} style={{ padding: 24 }}>
+        {[{ name: "Iberdrola", v: 5.78, color: T.deepBlue }, { name: "Enel", v: 4.77, color: T.textSec }, { name: "EDP", v: 3.85, color: T.textSec }, { name: "NextEra", v: 3.27, color: T.textSec }].map((d, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+            <span style={{ width: 80, fontSize: 12, fontWeight: d.name === "Iberdrola" ? 700 : 400, color: d.color, fontFamily: Fn }}>{d.name}</span>
+            <div style={{ flex: 1, height: 12, borderRadius: 6, background: T.pillBg, overflow: "hidden" }}>
+              <div style={{ height: "100%", borderRadius: 6, background: d.color, width: `${(d.v / 7) * 100}%`, opacity: d.name === "Iberdrola" ? 1 : 0.5, transition: "width 0.8s" }} />
+            </div>
+            <span style={{ width: 40, fontSize: 13, fontWeight: 700, color: d.color, fontFamily: Fn, textAlign: "right" }}>{d.v.toFixed(1)}×</span>
+          </div>
+        ))}
+        <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 8 }}>EBITDA / Interest Expense — higher is stronger</div>
+      </Card>
+    </div>
+  );
+
+  const [capHov, setCapHov] = useState(null);
+  const capData = capacityEvolution;
+  const capacityTab = (
+    <div>
+      {prose("Iberdrola's generation fleet is growing steadily across all renewable technologies while nuclear remains flat and will begin declining post-2028. The most dramatic growth is in offshore wind (tripling from 1.3 GW in 2022 to 4.2 GW by 2028E) and solar PV (more than doubling). Hover over the chart to explore.")}
+      {sTitle("Installed capacity evolution by technology (MW)")}
+      <Card T={T} style={{ padding: 24, marginBottom: 28 }}>
+        <div style={{ position: "relative", height: 260 }}>
+          {/* stacked bar chart */}
+          <div style={{ display: "flex", alignItems: "flex-end", height: 220, gap: 6, paddingBottom: 30 }}>
+            {capData.years.map((yr, yi) => {
+              const total = capData.series.reduce((s, ser) => s + ser.values[yi], 0);
+              const maxTotal = Math.max(...capData.years.map((_, i) => capData.series.reduce((s, ser) => s + ser.values[i], 0)));
+              const barH = (total / maxTotal) * 190;
+              return (
+                <div key={yr} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}
+                  onMouseEnter={() => setCapHov(yi)} onMouseLeave={() => setCapHov(null)}>
+                  <div style={{ width: "100%", maxWidth: 52, display: "flex", flexDirection: "column-reverse", height: barH, borderRadius: "6px 6px 0 0", overflow: "hidden", transition: "opacity 0.2s", opacity: capHov !== null && capHov !== yi ? 0.4 : 1 }}>
+                    {capData.series.map((ser, si) => {
+                      const segH = (ser.values[yi] / total) * barH;
+                      return <div key={si} style={{ width: "100%", height: segH, background: ser.color, transition: "height 0.5s" }} />;
+                    })}
+                  </div>
+                  <div style={{ fontSize: 10, color: capHov === yi ? T.text : T.textTer, fontWeight: capHov === yi ? 700 : 400, fontFamily: Fn, marginTop: 6 }}>{yr}</div>
+                  {capHov === yi && <div style={{ fontSize: 10, fontWeight: 700, color: T.text, fontFamily: Fn }}>{(total / 1000).toFixed(1)}k</div>}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 8 }}>
+          {capData.series.map((ser, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 3, background: ser.color }} />
+              <span style={{ fontSize: 11, color: T.textSec, fontFamily: Fn }}>{ser.name}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+      {capHov !== null && (
+        <Card T={T} style={{ padding: 20, marginBottom: 28 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 10 }}>{capData.years[capHov]} breakdown</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))", gap: 10 }}>
+            {capData.series.map((ser, si) => (
+              <div key={si} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 8, height: 8, borderRadius: 4, background: ser.color }} />
+                <div><div style={{ fontSize: 14, fontWeight: 700, color: ser.color, fontFamily: Fn }}>{(ser.values[capHov] / 1000).toFixed(1)} GW</div><div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>{ser.name}</div></div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+      {sTitle("Peer comparison — wind capacity (MW, 2025)")}
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        {peerCapacity.wind.map((p, i) => (
+          <div key={i} style={{ marginBottom: 14 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+              <span style={{ fontSize: 12, fontWeight: 500, color: T.text, fontFamily: Fn }}>{p.name}</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: p.color, fontFamily: Fn }}>{((p.onshore + p.offshore) / 1000).toFixed(1)} GW</span>
+            </div>
+            <div style={{ display: "flex", height: 10, borderRadius: 5, overflow: "hidden", background: T.pillBg }}>
+              <div style={{ height: "100%", background: p.color, width: `${(p.onshore / 25000) * 100}%`, opacity: 0.7, transition: "width 0.8s" }} />
+              <div style={{ height: "100%", background: p.color, width: `${(p.offshore / 25000) * 100}%`, opacity: 1, transition: "width 0.8s" }} />
+            </div>
+            <div style={{ display: "flex", gap: 12, marginTop: 3 }}>
+              <span style={{ fontSize: 9, color: T.textTer, fontFamily: Fn }}>Onshore: {(p.onshore / 1000).toFixed(1)} GW</span>
+              <span style={{ fontSize: 9, color: T.textTer, fontFamily: Fn }}>Offshore: {(p.offshore / 1000).toFixed(1)} GW</span>
+            </div>
+          </div>
+        ))}
+      </Card>
+      {sTitle("Peer comparison — solar capacity (MW, 2025)")}
+      <Card T={T} style={{ padding: 24 }}>
+        {peerCapacity.solar.map((p, i) => (
+          <div key={i} style={{ marginBottom: 12 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+              <span style={{ fontSize: 12, fontWeight: 500, color: T.text, fontFamily: Fn }}>{p.name}</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: p.color, fontFamily: Fn }}>{(p.value / 1000).toFixed(1)} GW</span>
+            </div>
+            <div style={{ height: 10, borderRadius: 5, background: T.pillBg, overflow: "hidden" }}>
+              <div style={{ height: "100%", borderRadius: 5, background: p.color, width: `${(p.value / 10000) * 100}%`, transition: "width 0.8s" }} />
+            </div>
+          </div>
+        ))}
+      </Card>
+    </div>
+  );
+
+  const finContent = { "Growth": growthTab, "Multiples": multiplesTab, "Peer Valuation": peerTab, "Profitability": profitabilityTab, "Leverage": leverageTab, "Capacity": capacityTab };
+
+  return (<div>{header}{section==="primer"?(<><Tabs tabs={primerTabs} active={tab} onChange={setTab} T={T}/>{primerContent[tab]}</>):section==="forces"?(<><Tabs tabs={forcesTabs} active={fTab} onChange={setFTab} T={T}/>{forcesContent[fTab]}</>):(<><Tabs tabs={finTabs} active={vTab} onChange={setVTab} T={T}/>{finContent[vTab]}</>)}</div>);
 }
