@@ -1,11 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { Fn, Fh } from "../theme";
 import { Card, Pill } from "../components/shared";
+import { useMobile } from "../hooks/useMobile";
 import {
   heroStats, thesisCards, thesisSections, chartData,
   primerDescription, milestones, segmentData,
   genMixPreCalpine, genMixPostCalpine, geoExposure,
   revenueStreams, nuclearFleet, calpineHighlights,
+  valSummary, valSnapshot, valPhases, valSOTP, valBullBear,
+  valConsensus, valLeverage, valFramework, valGating,
 } from "../data/research-ceg";
 
 /* ═══════════════════════════════════════════
@@ -182,7 +185,9 @@ function Tabs({ tabs, active, onChange, T }) {
    ═══════════════════════════════════════════ */
 export default function ResearchCEG({ T }) {
   const [tab, setTab] = useState("Primer");
-  const allTabs = ["Primer", "Structural Forces"];
+  const allTabs = ["Primer", "Structural Forces", "Valuation"];
+  const mob = useMobile();
+  const [valSection, setValSection] = useState(null);
 
   const colorMap = { orange: T.orange, capRed: T.capRed, deepBlue: T.deepBlue, green: T.green, purple: T.purple };
   const bgMap = { orange: "rgba(234,88,12,0.08)", capRed: T.redBg, deepBlue: "rgba(29,78,216,0.08)", green: T.greenBg, purple: "rgba(67,56,202,0.08)" };
@@ -513,8 +518,428 @@ export default function ResearchCEG({ T }) {
     </div>
   );
 
+  /* ─── VALUATION TAB ─── */
+  const valSectionNav = [
+    { id: "val-thesis", label: "Premium Thesis" },
+    { id: "val-phases", label: "Re-Rating Phases" },
+    { id: "val-sotp", label: "Sum-of-Parts" },
+    { id: "val-bull-bear", label: "Bull vs Bear" },
+    { id: "val-consensus", label: "Consensus" },
+    { id: "val-calpine", label: "Calpine Impact" },
+    { id: "val-balance", label: "Balance Sheet" },
+    { id: "val-framework", label: "Framework" },
+    { id: "val-gating", label: "Gating Factors" },
+  ];
+
+  const scrollToVal = id => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const valuationTab = (
+    <div>
+      {/* Section chip nav */}
+      <div style={{
+        display: "flex", gap: 6, marginBottom: 28, flexWrap: "wrap",
+        overflow: "auto", WebkitOverflowScrolling: "touch",
+      }}>
+        {valSectionNav.map(s => (
+          <button key={s.id} onClick={() => scrollToVal(s.id)} style={{
+            background: T.pillBg, border: "1px solid " + T.border,
+            borderRadius: 20, padding: "5px 14px",
+            fontFamily: Fn, fontSize: 11, color: T.textSec,
+            cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
+            transition: "all 0.15s",
+          }}
+            onMouseEnter={e => { e.currentTarget.style.background = T.capRed; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "transparent"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = T.pillBg; e.currentTarget.style.color = T.textSec; e.currentTarget.style.borderColor = T.border; }}>
+            {s.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── 1. PREMIUM THESIS ── */}
+      <div id="val-thesis" style={{ scrollMarginTop: 80, marginBottom: 48 }}>
+        <Card T={T} style={{ padding: mob ? "24px 20px" : "32px 36px", borderLeft: `4px solid ${T.capRed}` }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+            <div style={{ fontSize: 10, fontFamily: Fn, color: T.capRed, letterSpacing: "0.15em", fontWeight: 700 }}>VALUATION OVERVIEW</div>
+            <Pill T={T} color={T.orange} bg="rgba(234,88,12,0.08)">Premium justified, execution risk rising</Pill>
+          </div>
+          <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, margin: 0, maxWidth: 760 }}>{valSummary}</p>
+
+          {/* Snapshot metrics */}
+          <div style={{
+            display: "grid", gridTemplateColumns: mob ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
+            gap: 12, marginTop: 24, paddingTop: 20, borderTop: "1px solid " + T.border,
+          }}>
+            {[
+              { l: "Current Price", v: valSnapshot.price, color: T.text },
+              { l: "Forward P/E", v: valSnapshot.fwdPE, color: T.capRed },
+              { l: "Peer Median P/E", v: valSnapshot.peerPE, color: T.textTer },
+              { l: "Premium to Peers", v: valSnapshot.premium, color: T.orange },
+              { l: "EV/EBITDA", v: valSnapshot.evEbitda, color: T.deepBlue },
+              { l: "Peak Price", v: valSnapshot.peakPrice, color: T.green },
+              { l: "From Peak", v: valSnapshot.drawdown, color: T.capRed },
+              { l: "Consensus Target", v: valSnapshot.consensus, color: T.green },
+            ].map((m, i) => (
+              <div key={i} style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 20, fontWeight: 300, color: m.color, fontFamily: Fn, lineHeight: 1.2 }}>{m.v}</div>
+                <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", marginTop: 4 }}>{m.l}</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      {/* ── 2. RE-RATING PHASES ── */}
+      <div id="val-phases" style={{ scrollMarginTop: 80, borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>MULTIPLE EVOLUTION</div>
+        <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Four inflection points from $50 to $413</h2>
+        <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 28, maxWidth: 720 }}>
+          CEG spun off from Exelon at roughly $50-56 per share in February 2022, initially trading as a conventional merchant power generator. The re-rating unfolded across four distinct phases, each with a clear catalyst.
+        </p>
+
+        {/* Visual timeline */}
+        <div style={{ position: "relative", marginBottom: 32 }}>
+          {/* Horizontal progress bar */}
+          <div style={{ display: "flex", gap: 0, marginBottom: 8 }}>
+            {valPhases.map((p, i) => {
+              const c = { deepBlue: T.deepBlue, green: T.green, orange: T.orange, capRed: T.capRed }[p.color];
+              return (
+                <div key={i} style={{ flex: 1, height: 6, background: c, borderRadius: i === 0 ? "3px 0 0 3px" : i === 3 ? "0 3px 3px 0" : 0, opacity: 0.8 }} />
+              );
+            })}
+          </div>
+          {/* Phase labels under bar */}
+          <div style={{ display: "flex", gap: 0 }}>
+            {valPhases.map((p, i) => {
+              const c = { deepBlue: T.deepBlue, green: T.green, orange: T.orange, capRed: T.capRed }[p.color];
+              return (
+                <div key={i} style={{ flex: 1, textAlign: "center", paddingTop: 4 }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: c, fontFamily: Fn }}>{p.priceRange}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Phase cards */}
+        <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(2, 1fr)", gap: 14 }}>
+          {valPhases.map((p, i) => {
+            const c = { deepBlue: T.deepBlue, green: T.green, orange: T.orange, capRed: T.capRed }[p.color];
+            const bg = { deepBlue: "rgba(29,78,216,0.08)", green: T.greenBg, orange: "rgba(234,88,12,0.08)", capRed: T.redBg }[p.color];
+            return (
+              <Card key={i} T={T} style={{ padding: "20px 24px", borderTop: `3px solid ${c}` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: "50%", background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: c, fontFamily: Fn }}>{p.phase}</div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn }}>{p.label}</div>
+                    <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>{p.period}</div>
+                  </div>
+                </div>
+                <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 12px" }}>{p.desc}</p>
+                <div style={{ display: "flex", gap: 16 }}>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 300, color: c, fontFamily: Fn }}>{p.evEbitda}</div>
+                    <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn }}>EV/EBITDA</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 300, color: c, fontFamily: Fn }}>{p.fwdPE}</div>
+                    <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn }}>Fwd P/E</div>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── 3. SUM OF THE PARTS ── */}
+      <div id="val-sotp" style={{ scrollMarginTop: 80, borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>MORGAN STANLEY SOTP (MARCH 2026)</div>
+        <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>$385 price target built from four value layers</h2>
+        <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 24, maxWidth: 720 }}>
+          The sum-of-the-parts framework separates the existing asset base from optionality. The implicit message: the market is paying for potential, and CEG has the fleet to deliver it.
+        </p>
+
+        {/* Visual stacked bar */}
+        <Card T={T} style={{ padding: "24px", marginBottom: 20 }}>
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ display: "flex", height: 40, borderRadius: 6, overflow: "hidden" }}>
+              {valSOTP.map((s, i) => (
+                <div key={i} style={{ width: (s.value / 387) * 100 + "%", background: s.color, display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.2s" }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "#fff", fontFamily: Fn }}>${s.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: mob ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 16 }}>
+            {valSOTP.map((s, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                <div style={{ width: 12, height: 12, borderRadius: 3, background: s.color, flexShrink: 0, marginTop: 2 }} />
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn }}>{s.category}</div>
+                  <div style={{ fontSize: 18, fontWeight: 300, color: s.color, fontFamily: Fn }}>${s.value}/sh</div>
+                  <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>{s.pct}% of target</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 16, paddingTop: 12, borderTop: "1px solid " + T.border, display: "flex", alignItems: "baseline", gap: 8 }}>
+            <span style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>Total price target:</span>
+            <span style={{ fontSize: 22, fontWeight: 300, color: T.text, fontFamily: Fn }}>$385</span>
+          </div>
+        </Card>
+      </div>
+
+      {/* ── 4. BULL vs BEAR ── */}
+      <div id="val-bull-bear" style={{ scrollMarginTop: 80, borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>BULL / BEAR ANALYSIS</div>
+        <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 24 }}>Where bulls and bears draw the line</h2>
+
+        <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 20 }}>
+          {/* Bull side */}
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: T.green }} />
+              <span style={{ fontSize: 13, fontWeight: 600, color: T.green, fontFamily: Fn, letterSpacing: "0.04em" }}>BULL CASE</span>
+            </div>
+            {valBullBear.bull.map((b, i) => (
+              <Expandable key={i} T={T} title={b.point} content={b.detail} color="green" />
+            ))}
+          </div>
+
+          {/* Bear side */}
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: T.capRed }} />
+              <span style={{ fontSize: 13, fontWeight: 600, color: T.capRed, fontFamily: Fn, letterSpacing: "0.04em" }}>BEAR CASE</span>
+            </div>
+            {valBullBear.bear.map((b, i) => (
+              <Expandable key={i} T={T} title={b.point} content={b.detail} color="capRed" />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── 5. CONSENSUS ── */}
+      <div id="val-consensus" style={{ scrollMarginTop: 80, borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>SELL-SIDE CONSENSUS</div>
+        <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>12 Buy, 3-4 Hold, zero Sells</h2>
+        <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 24, maxWidth: 720 }}>
+          Median target of ~$383-400 implies 35-45% upside. Nearly all brokers cut targets in March-April 2026 following the guidance miss, but none downgraded.
+        </p>
+
+        {/* Visual bar chart of targets */}
+        <Card T={T} style={{ padding: "20px 24px", marginBottom: 20 }}>
+          {valConsensus.sort((a, b) => b.target - a.target).map((c, i) => {
+            const maxTarget = 462;
+            const pct = (c.target / maxTarget) * 100;
+            const isBuy = c.rating.includes("Buy");
+            return (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                <div style={{ width: 100, flexShrink: 0, textAlign: "right" }}>
+                  <span style={{ fontSize: 12, fontWeight: 500, color: T.text, fontFamily: Fn }}>{c.broker}</span>
+                </div>
+                <div style={{ flex: 1, height: 22, background: T.pillBg, borderRadius: 4, overflow: "hidden", position: "relative" }}>
+                  <div style={{ height: "100%", width: pct + "%", background: isBuy ? T.green : T.orange, borderRadius: 4, opacity: 0.75, transition: "width 0.8s ease" }} />
+                  {/* Current price marker */}
+                  <div style={{ position: "absolute", left: (280 / maxTarget * 100) + "%", top: 0, bottom: 0, width: 2, background: T.text, opacity: 0.3 }} />
+                </div>
+                <div style={{ width: 48, flexShrink: 0, textAlign: "right" }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: isBuy ? T.green : T.orange, fontFamily: Fn, fontFeatureSettings: '"tnum"' }}>${c.target}</span>
+                </div>
+                <Pill T={T} color={isBuy ? T.green : T.orange} bg={isBuy ? T.greenBg : "rgba(234,88,12,0.08)"}>{c.rating}</Pill>
+              </div>
+            );
+          })}
+          <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid " + T.border, display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 100 }} />
+            <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>Thin line = current price (~$280)</div>
+          </div>
+        </Card>
+      </div>
+
+      {/* ── 6. CALPINE IMPACT ── */}
+      <div id="val-calpine" style={{ scrollMarginTop: 80, borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>CALPINE IMPACT ON VALUATION</div>
+        <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Reshapes the story for better and worse</h2>
+        <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 24, maxWidth: 720 }}>
+          The $26.6 billion acquisition closed January 7, 2026. At 7.9x EV/EBITDA, priced below what Calpine would have commanded in a standalone IPO. Management projects {">"}20% first-year EPS accretion with {">"}{" "}$2B in annual incremental free cash flow.
+        </p>
+
+        <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 14 }}>
+          {/* Positive */}
+          <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.green}` }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: T.green, fontFamily: Fn, letterSpacing: "0.06em", marginBottom: 14, textTransform: "uppercase" }}>Strategic positives</div>
+            {[
+              { l: "Scale", v: "55 GW across 22 states, largest private fleet in the US" },
+              { l: "One-stop shop", v: "Nuclear baseload + dispatchable gas for data center customers" },
+              { l: "Market access", v: "Expanded into high-growth ERCOT and CAISO markets" },
+              { l: "Geothermal", v: "The Geysers: world's largest complex (725 MW)" },
+              { l: "Retail depth", v: "62 TWh of retail load, 2.5M customers" },
+            ].map((r, i) => (
+              <div key={i} style={{ display: "flex", gap: 10, marginBottom: 10, paddingBottom: 10, borderBottom: i < 4 ? "1px solid " + T.border : "none" }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn, minWidth: 80, flexShrink: 0 }}>{r.l}</span>
+                <span style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>{r.v}</span>
+              </div>
+            ))}
+          </Card>
+
+          {/* Concerns */}
+          <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.capRed}` }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: T.capRed, fontFamily: Fn, letterSpacing: "0.06em", marginBottom: 14, textTransform: "uppercase" }}>Legitimate concerns</div>
+            {[
+              { l: "Narrative dilution", v: "Nuclear drops from ~68% to ~40% of capacity, complicating pure-play thesis" },
+              { l: "Leverage jump", v: "Pro forma ~2.5-3.0x Net Debt/EBITDA (from ~1.0x)" },
+              { l: "DOJ precedent", v: "First electricity merger consent decree in 14 years. 4.4 GW PJM gas divested" },
+              { l: "Lock-up overhang", v: "50M seller shares begin releasing June 2026" },
+              { l: "Integration risk", v: "2,500 employees, 79 facilities across nuclear and gas operations" },
+            ].map((r, i) => (
+              <div key={i} style={{ display: "flex", gap: 10, marginBottom: 10, paddingBottom: 10, borderBottom: i < 4 ? "1px solid " + T.border : "none" }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn, minWidth: 80, flexShrink: 0 }}>{r.l}</span>
+                <span style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>{r.v}</span>
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+
+      {/* ── 7. BALANCE SHEET COMPARISON ── */}
+      <div id="val-balance" style={{ scrollMarginTop: 80, borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>LEVERAGE COMPARISON</div>
+        <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Balance sheet strength underpins the premium</h2>
+        <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 24, maxWidth: 720 }}>
+          Pre-deal ~1.0x Net Debt/EBITDA was the strongest in the IPP sector by a wide margin. The advantage narrows temporarily post-Calpine but management targets returning to pre-acquisition levels by 2027.
+        </p>
+
+        <Card T={T} style={{ padding: "24px", marginBottom: 20 }}>
+          {valLeverage.map((l, i) => {
+            const maxLev = 8.0;
+            const pct = (l.leverage / maxLev) * 100;
+            return (
+              <div key={i} style={{ marginBottom: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                  <span style={{ fontSize: 12, color: l.name.includes("CEG") ? T.text : T.textTer, fontWeight: l.name.includes("CEG") ? 600 : 400, fontFamily: Fn }}>{l.name}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>{l.rating}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: l.color, fontFamily: Fn, fontFeatureSettings: '"tnum"', minWidth: 36, textAlign: "right" }}>{l.leverage}x</span>
+                  </div>
+                </div>
+                <div style={{ height: 8, background: T.pillBg, borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: pct + "%", background: l.color, borderRadius: 4, opacity: 0.8, transition: "width 0.8s ease" }} />
+                </div>
+              </div>
+            );
+          })}
+        </Card>
+
+        {/* Capital deployment */}
+        <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.deepBlue}` }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 12 }}>$13.6B capital deployment plan</div>
+          <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
+            {[
+              { label: "Calpine debt paydown", value: "$3.4B", color: T.capRed },
+              { label: "Share buybacks", value: "$5.0B", color: T.green },
+              { label: "LS Power divestiture", value: "$5.0B", color: T.deepBlue },
+            ].map((c, i) => (
+              <div key={i} style={{ background: T.bg, borderRadius: T.radiusSm, padding: "14px", border: "1px solid " + T.border }}>
+                <div style={{ fontSize: 20, fontWeight: 300, color: c.color, fontFamily: Fn }}>{c.value}</div>
+                <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 4 }}>{c.label}</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      {/* ── 8. VALUATION FRAMEWORK ── */}
+      <div id="val-framework" style={{ scrollMarginTop: 80, borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>VALUATION FRAMEWORK</div>
+        <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Utility, IPP, or something else entirely?</h2>
+        <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 24, maxWidth: 720 }}>
+          CEG is evolving into a hybrid: long-duration contracted cash flows with creditworthy counterparties (like a regulated utility), plus significant growth optionality from uncontracted capacity that can be repriced higher (like a growth company). The correct framework is probably nuclear infrastructure.
+        </p>
+
+        <Card T={T} style={{ padding: "4px 16px", overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+            <thead>
+              <tr style={{ borderBottom: "2px solid " + T.border }}>
+                {["Framework", "EV/EBITDA", "Fwd P/E", "Characteristics"].map(h => (
+                  <th key={h} style={{ textAlign: "left", padding: "10px 12px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {valFramework.map((f, i) => (
+                <tr key={i} style={{ borderBottom: "1px solid " + T.border, background: f.framework === "CEG today" ? (T.redBg || "rgba(196,30,58,0.06)") : "transparent" }}>
+                  <td style={{ padding: "10px 12px", fontWeight: 600, color: f.color }}>
+                    {f.framework}
+                  </td>
+                  <td style={{ padding: "10px 12px", color: T.text, fontWeight: 600, fontFeatureSettings: '"tnum"' }}>{f.evEbitda}</td>
+                  <td style={{ padding: "10px 12px", color: T.text, fontWeight: 600, fontFeatureSettings: '"tnum"' }}>{f.fwdPE}</td>
+                  <td style={{ padding: "10px 12px", color: T.textSec, fontSize: 11, lineHeight: 1.6 }}>{f.characteristics}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+
+        {/* Key insight */}
+        <div style={{ borderLeft: `3px solid ${T.capRed}`, padding: "16px 24px", marginTop: 20, background: T.redBg || "rgba(196,30,58,0.06)", borderRadius: "0 8px 8px 0" }}>
+          <p style={{ fontSize: 14, color: T.text, fontFamily: Fn, lineHeight: 1.7, fontWeight: 500, fontStyle: "italic", margin: 0 }}>
+            Each new hyperscaler PPA effectively converts merchant optionality into contracted duration, pulling the appropriate multiple higher. If CEG converts even half of its 147 TWh uncontracted nuclear capacity into long-term PPAs at $60+/MWh, the earnings trajectory would justify multiples well above current levels.
+          </p>
+        </div>
+      </div>
+
+      {/* ── 9. GATING FACTORS ── */}
+      <div id="val-gating" style={{ scrollMarginTop: 80, borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+        <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 8, fontWeight: 600 }}>KEY GATING FACTORS</div>
+        <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, marginBottom: 8 }}>Three factors determine whether the premium holds</h2>
+        <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, marginBottom: 24, maxWidth: 720 }}>
+          The market has moved from pricing CEG on potential to demanding proof of execution. At ~25x forward earnings, the margin of safety has narrowed considerably from a year ago.
+        </p>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
+          {valGating.map((g, i) => {
+            const dirColor = g.direction === "positive" ? T.green : g.direction === "negative" ? T.capRed : T.orange;
+            const dirBg = g.direction === "positive" ? T.greenBg : g.direction === "negative" ? T.redBg : "rgba(234,88,12,0.08)";
+            return (
+              <Card key={i} T={T} style={{ padding: "18px 20px", display: "flex", gap: 16, alignItems: "flex-start" }}>
+                <div style={{ flexShrink: 0, textAlign: "center", minWidth: 80 }}>
+                  <Pill T={T} color={dirColor} bg={dirBg}>{g.impact} impact</Pill>
+                  <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 4 }}>{g.timeframe}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 4 }}>{g.factor}</div>
+                  <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>{g.detail}</p>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Conclusion */}
+        <Card T={T} style={{ padding: "24px 28px", marginTop: 24, borderLeft: `4px solid ${T.orange}` }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 12 }}>Conclusion</div>
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, marginBottom: 12, margin: "0 0 12px" }}>
+            CEG's valuation premium reflects a genuine structural advantage {"\u2014"} irreplaceable nuclear assets meeting unprecedented AI-driven demand {"\u2014"} rather than mere momentum. The 34% correction from peak has partially de-risked the entry point, and the consensus ~$390 target implies substantial upside if execution proceeds.
+          </p>
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, margin: 0 }}>
+            The most overlooked insight may be the sheer scale of uncontracted optionality: 147 TWh of nuclear capacity seeking long-term homes in a market where hyperscalers are spending hundreds of billions on AI infrastructure that demands precisely the power CEG produces.
+          </p>
+        </Card>
+      </div>
+
+      {/* Footer */}
+      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, maxWidth: 700, paddingBottom: 20 }}>
+        Valuation analysis for informational purposes only. Does not constitute investment advice. Data sourced from Bloomberg, Morgan Stanley, UBS, company filings, and sell-side research. All figures reflect publicly available data as of April 2026.
+      </div>
+    </div>
+  );
+
   /* ─── TAB CONTENT MAP ─── */
-  const tabContent = { "Primer": primerTab, "Structural Forces": structuralForcesTab };
+  const tabContent = { "Primer": primerTab, "Structural Forces": structuralForcesTab, "Valuation": valuationTab };
 
   return (
     <div>

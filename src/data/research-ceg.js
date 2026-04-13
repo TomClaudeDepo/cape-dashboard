@@ -304,6 +304,105 @@ export const nuclearFleet = [
   { station: "South Texas Project", state: "TX", units: 2, mw: "~1,100", type: "PWR", license: "2047-2048", iso: "ERCOT", ownership: "44%" },
 ];
 
+/* ═══════════════════════════════════════════════════════════════
+   VALUATION TAB — Nuclear premium analysis
+   ═══════════════════════════════════════════════════════════════ */
+
+export const valSummary = "Constellation Energy trades at a 50\u201370% forward P/E premium to IPP peers, and the premium is largely justified \u2014 but faces growing execution risk. CEG commands ~24\u201328x forward earnings versus a peer median of ~16x because it owns the only large-scale, non-replicable fleet of carbon-free baseload generation in the U.S. \u2014 22 GW of nuclear capacity that hyperscalers desperately need but cannot build. The stock has corrected ~34% from its October 2025 peak of $413, as TMI restart delays to 2031, a below-consensus 2026 guidance, and questions about Calpine diluting the nuclear narrative have shifted sentiment from 'price the potential' to 'show me the execution.'";
+
+export const valSnapshot = {
+  price: "~$280",
+  fwdPE: "~25x",
+  evEbitda: "~19\u201322x",
+  peerPE: "~16x",
+  premium: "50\u201370%",
+  peakPrice: "$413",
+  drawdown: "-34%",
+  consensus: "$383\u2013400",
+};
+
+export const valPhases = [
+  { phase: "1", period: "2022\u2013early 2024", label: "IRA + Power Price Recovery",
+    priceRange: "$50 \u2192 $140", evEbitda: "8\u201310x", fwdPE: "~12\u201315x",
+    color: "deepBlue",
+    desc: "Post-spin, traded as a conventional merchant generator. The Inflation Reduction Act nuclear PTCs established an earnings floor. Power prices recovered post-COVID. Already commanding a 35% premium to IPP peers." },
+  { phase: "2", period: "Mar\u2013Sep 2024", label: "Nuclear-as-AI-Infrastructure",
+    priceRange: "$140 \u2192 $255", evEbitda: "10x \u2192 15x+", fwdPE: "~15\u201322x",
+    color: "green",
+    desc: "Amazon-Talen deal in March catalysed sector-wide re-rating. CEG announced 20-year Microsoft PPA on 20 September \u2014 stock surged 22% in a single session, adding ~$25B in market cap." },
+  { phase: "3", period: "Late 2024\u2013Oct 2025", label: "Peak Euphoria",
+    priceRange: "$255 \u2192 $413", evEbitda: "17.5\u201320x", fwdPE: "~30\u201335x",
+    color: "orange",
+    desc: "Calpine acquisition drove stock up 15\u201325%. Meta deal, $1B+ GSA federal contract, and institutional flows pushed to all-time high. Forward P/E exceeded 35x." },
+  { phase: "4", period: "Late 2025\u2013present", label: "Correction & Execution Scrutiny",
+    priceRange: "$413 \u2192 ~$280", evEbitda: "~19\u201322x", fwdPE: "~24\u201328x",
+    color: "capRed",
+    desc: "Three catalysts drove a 34% drawdown: TMI restart delayed to 2031, 2026 EPS guidance ($11\u201312) missed consensus ($12.11), and no new hyperscaler deals at March 2026 investor day." },
+];
+
+export const valSOTP = [
+  { category: "Existing assets", value: 255, color: "#1D4ED8", pct: 66 },
+  { category: "Data center contracting", value: 70, color: "#16A34A", pct: 18 },
+  { category: "Higher power prices", value: 40, color: "#EA580C", pct: 10 },
+  { category: "Clean energy credits", value: 22, color: "#7C3AED", pct: 6 },
+];
+
+export const valBullBear = {
+  bull: [
+    { point: "Uncontracted optionality", detail: "147 million MWh of uncontracted nuclear capacity available for 2030 exceeds all other competitive-market nuclear operators combined. Each incremental hyperscaler PPA at $60+/MWh is directly accretive." },
+    { point: "Earnings growth trajectory", detail: "Management targets >20% base EPS CAGR 2026\u20132029 before buyback benefits. UBS estimates $19\u201320 EPS by 2029 with full FCF deployment." },
+    { point: "PTC earnings floor", detail: "The IRA Section 45U nuclear PTC creates a $40\u201344.75/MWh price floor through 2032, protecting downside even in a power price crash." },
+    { point: "$5B buyback authorization", detail: "Provides valuation support and signals management confidence. $13.6B in total deployable capital through 2029." },
+    { point: "Only 24/7 carbon-free at scale", detail: "Nuclear's position as the only technology delivering round-the-clock carbon-free power becomes more valuable, not less, as AI electricity demand compounds." },
+  ],
+  bear: [
+    { point: "TMI restart delayed to 2031", detail: "PJM informed CEG that the Crane Clean Energy Center may not connect until 2031 \u2014 four years late. Defers a marquee revenue stream and raises questions about restart viability." },
+    { point: "Calpine dilutes nuclear narrative", detail: "Nuclear's share of total capacity drops from ~68% to ~40%. Pro forma leverage triples from ~1.0x to ~2.5\u20133.0x Net Debt/EBITDA. 50M locked-up shares release June 2026." },
+    { point: "Below-consensus guidance", detail: "2026 EPS guidance of $11.00\u2013$12.00 missed the $12.11 consensus. 2029 implied range ($16.29\u2013$18.31) also below buyside expectations." },
+    { point: "Regulatory uncertainty", detail: "PJM/FERC large-load interconnection rules remain unresolved. Filing expected April 2026 with a ruling ~60 days later." },
+    { point: "AI demand deceleration risk", detail: "At ~25x forward earnings, the stock prices in substantial AI demand growth. Any hyperscaler capex pullback could trigger further multiple compression." },
+  ],
+};
+
+export const valConsensus = [
+  { broker: "Wells Fargo", rating: "Buy", target: 404 },
+  { broker: "TD Cowen", rating: "Buy", target: 440 },
+  { broker: "Melius Research", rating: "Buy", target: 462 },
+  { broker: "Morgan Stanley", rating: "Buy", target: 385 },
+  { broker: "UBS", rating: "Buy", target: 390 },
+  { broker: "Citi", rating: "Hold", target: 348 },
+  { broker: "Mizuho", rating: "Hold", target: 300 },
+];
+
+export const valLeverage = [
+  { name: "CEG (pre-Calpine)", leverage: 1.0, rating: "Baa1/BBB+", color: "#16A34A" },
+  { name: "CEG (post-Calpine)", leverage: 2.75, rating: "Baa1/BBB+ affirmed", color: "#EA580C" },
+  { name: "CEG (target 2027)", leverage: 1.5, rating: "Target return", color: "#1D4ED8" },
+  { name: "Vistra", leverage: 3.9, rating: "BBB-", color: "#64748B" },
+  { name: "NRG", leverage: 4.0, rating: "BB+", color: "#64748B" },
+  { name: "Talen", leverage: 7.0, rating: "BB-", color: "#64748B" },
+];
+
+export const valFramework = [
+  { framework: "Traditional IPP", evEbitda: "6\u201310x", fwdPE: "8\u201314x", characteristics: "Volatile, commodity-linked earnings with 1\u20133 year hedge visibility", color: "#64748B" },
+  { framework: "Regulated utility", evEbitda: "12\u201315x", fwdPE: "15\u201320x", characteristics: "Rate-based, inflation-linked returns with full regulatory visibility", color: "#1D4ED8" },
+  { framework: "Nuclear infrastructure", evEbitda: "15\u201320x", fwdPE: "20\u201328x", characteristics: "Long-duration contracted cash flows with creditworthy counterparties + growth optionality", color: "#16A34A" },
+  { framework: "CEG today", evEbitda: "19\u201322x", fwdPE: "24\u201328x", characteristics: "Upper end of nuclear infra range. 75% of clean output uncontracted \u2014 each new PPA pulls appropriate multiple higher", color: "#C41E3A" },
+];
+
+export const valGating = [
+  { factor: "Hyperscaler contract pace", timeframe: "Ongoing", impact: "High", direction: "positive",
+    detail: "The single most important near-term catalyst. Each deal converts merchant optionality into contracted duration, validating the premium." },
+  { factor: "FERC/PJM large-load rules", timeframe: "Apr\u2013Jun 2026", impact: "High", direction: "mixed",
+    detail: "Filing expected April 2026, ruling ~60 days later. Favorable outcome unlocks direct nuclear-to-DC contracting at scale." },
+  { factor: "Calpine integration", timeframe: "Through 2027", impact: "Medium", direction: "mixed",
+    detail: "2,500 employees, 79 facilities. $3.4B debt reduction target. >95% of Calpine corporate debt already retired or exchanged." },
+  { factor: "TMI restart progress", timeframe: "Target 2031", impact: "Medium", direction: "negative",
+    detail: "835 MW delayed from 2027 to 2031 due to transmission delays. $1.6B investment backed by $1B DOE loan guarantee." },
+  { factor: "Share lock-up expiry", timeframe: "Jun 2026", impact: "Medium", direction: "negative",
+    detail: "50 million Calpine seller shares begin releasing. Potential technical selling pressure." },
+];
+
 export const calpineHighlights = [
   { icon: "\u26A1", title: "~27 GW natural gas", color: "orange",
     text: "79 facilities of predominantly advanced combined-cycle gas turbines across North America. Post-divestiture of 4.4 GW PJM assets to LS Power, the gas fleet adds critical dispatchable capacity to complement nuclear baseload." },
