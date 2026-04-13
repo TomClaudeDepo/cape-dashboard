@@ -8,9 +8,19 @@ import ResearchGold from "./ResearchGold";
 import ResearchNEE from "./ResearchNEE";
 import ResearchNXT from "./ResearchNXT";
 import ResearchIBE from "./ResearchIBE";
+import ResearchSolar from "./ResearchSolar";
 import ResearchThemes from "./ResearchThemes";
 
 const reports = [
+  {
+    id: "solar", ticker: "SOLAR", name: "Global Solar Energy", sector: "Renewables / Energy",
+    tagline: "From insurgent to dominant: a 2,900 GW industry at a critical inflection point",
+    date: "April 2026", type: "Industry Research", color: "orange",
+    stats: [
+      { l: "Capacity", v: "2,900 GW" }, { l: "Growth", v: "655 GW/yr" },
+      { l: "Share", v: "8.8%" }, { l: "Investment", v: "$450B+" },
+    ],
+  },
   {
     id: "cni", ticker: "CNI", name: "Canadian National Railway", sector: "Freight Rail / Industrials",
     tagline: "North American freight rail: structural forces shaping CN's positioning",
@@ -103,6 +113,7 @@ const reportComponents = {
   ibe: ResearchIBE,
   nee: ResearchNEE,
   nxt: ResearchNXT,
+  solar: ResearchSolar,
   themes10: ResearchThemes,
 };
 
