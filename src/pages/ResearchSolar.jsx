@@ -13,6 +13,8 @@ import {
   companyProfiles, marginComparisonData, companyParagraphs,
   keyDebates,
   moatSegments, topPicks, catalysts, keyCharts, conclusionParagraphs,
+  qarpIntro, qarpRankedTable, qarpScorecard, qarpPassRates, solarExposure,
+  fslrDeepDive, utilityDeepDives, qarpRiskOverlay, qarpConclusionParagraphs,
 } from "../data/research-solar";
 
 /* ─── Colour helpers ─── */
@@ -575,7 +577,8 @@ export default function ResearchSolar({ T }) {
     { id: "regional", num: "07", label: "Regional" },
     { id: "companies", num: "08", label: "Companies" },
     { id: "debates", num: "09", label: "Key Debates" },
-    { id: "conclusion", num: "10", label: "Conclusion" },
+    { id: "qarp", num: "10", label: "QARP Screen" },
+    { id: "conclusion", num: "11", label: "Conclusion" },
   ];
 
   const scrollTo = id => {
@@ -1032,10 +1035,224 @@ export default function ResearchSolar({ T }) {
       {/* ═══════════════════════════════════════════════════════════
          SECTION 10: CONCLUSION
          ═══════════════════════════════════════════════════════════ */}
+      {/* ═══════════════════════════════════════════════════════════
+         SECTION 10: QARP SCREEN
+         ═══════════════════════════════════════════════════════════ */}
+      <Section id="qarp">
+        <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 6, fontWeight: 600 }}>10 · QARP SCREEN</div>
+            <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>{qarpIntro.headline}</h2>
+            <p style={{ fontSize: 13, color: T.textSec, marginTop: 10, fontFamily: Fn, lineHeight: 1.7, maxWidth: 740 }}>{qarpIntro.subtitle}</p>
+          </div>
+
+          {/* Universe context */}
+          <Card T={T} style={{ padding: "20px 24px", marginBottom: 20, borderLeft: `3px solid ${T.capRed}` }}>
+            <div style={{ fontSize: 10, fontWeight: 600, color: T.capRed, fontFamily: Fn, letterSpacing: "0.1em", marginBottom: 8 }}>QUALIFYING UNIVERSE</div>
+            <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0, maxWidth: 740 }}>{qarpIntro.context}</p>
+          </Card>
+
+          {/* Solar exposure bars */}
+          <Card T={T} style={{ padding: "24px 28px", marginBottom: 20 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 4 }}>Solar exposure as % of total capacity (diversified names)</div>
+            <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 16 }}>All are growing solar faster than other generation types</div>
+            <div style={{ display: "grid", gap: 10 }}>
+              {solarExposure.map((d, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ fontSize: 12, fontFamily: Fn, fontWeight: 600, color: solar, width: 52, textAlign: "right" }}>{d.ticker}</span>
+                  <div style={{ flex: 1, height: 22, background: T.pillBg, borderRadius: 6, overflow: "hidden", position: "relative" }}>
+                    <div style={{ height: "100%", borderRadius: 6, background: solar, opacity: 0.55, width: `${d.pct * 2.5}%`, transition: "width 0.8s" }} />
+                    <span style={{ position: "absolute", left: `${d.pct * 2.5 + 1}%`, top: "50%", transform: "translateY(-50%)", fontSize: 10, color: T.textSec, fontFamily: Fn, whiteSpace: "nowrap" }}>{d.gw}</span>
+                  </div>
+                  <span style={{ fontSize: 12, fontFamily: Fn, fontWeight: 700, color: solar, width: 36 }}>{d.pct}%</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Ranked QARP table */}
+          <Card T={T} style={{ padding: "24px 28px", marginBottom: 20 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 16 }}>Ranked QARP table — strongest to weakest profile</div>
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: Fn, fontSize: 11, minWidth: 900 }}>
+                <thead>
+                  <tr>
+                    {["#", "Ticker", "Type", "ROIC", "ND/EBITDA", "Fwd P/E", "EV/EBITDA", "FCF Yld", "Thesis", "Key Risk"].map((h, i) => (
+                      <th key={i} style={{
+                        textAlign: i >= 8 ? "left" : i === 0 ? "center" : "right",
+                        padding: "10px 8px", borderBottom: "2px solid " + T.border,
+                        fontSize: 9, fontWeight: 600, color: T.textTer, letterSpacing: "0.05em", textTransform: "uppercase",
+                        whiteSpace: "nowrap",
+                      }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {qarpRankedTable.map((r, ri) => {
+                    const c = colorMap[r.color] || T.text;
+                    return (
+                      <tr key={ri} style={{ borderBottom: "1px solid " + T.border }}>
+                        <td style={{ padding: "12px 8px", textAlign: "center", fontSize: 16, fontWeight: 300, color: c }}>{r.rank}</td>
+                        <td style={{ padding: "12px 8px", textAlign: "right" }}>
+                          <span style={{ fontWeight: 700, color: c }}>{r.ticker}</span>
+                          <div style={{ fontSize: 9, color: T.textTer, marginTop: 2 }}>{r.name}</div>
+                        </td>
+                        <td style={{ padding: "12px 8px", textAlign: "right", fontSize: 10, color: T.textTer }}>{r.type}</td>
+                        <td style={{ padding: "12px 8px", textAlign: "right", fontWeight: 600, color: parseFloat(r.roic) >= 10 ? T.green : T.textSec }}>{r.roic}</td>
+                        <td style={{ padding: "12px 8px", textAlign: "right", fontWeight: 500, color: r.ndEbitda === "Net cash" ? T.green : parseFloat(r.ndEbitda) > 2.5 ? T.capRed : T.textSec }}>{r.ndEbitda}</td>
+                        <td style={{ padding: "12px 8px", textAlign: "right", fontWeight: 600, color: parseFloat(r.fwdPE) <= 15 ? T.green : parseFloat(r.fwdPE) >= 22 ? T.capRed : T.textSec }}>{r.fwdPE}</td>
+                        <td style={{ padding: "12px 8px", textAlign: "right", fontWeight: 500, color: parseFloat(r.evEbitda) <= 10 ? T.green : parseFloat(r.evEbitda) >= 15 ? T.capRed : T.textSec }}>{r.evEbitda}</td>
+                        <td style={{ padding: "12px 8px", textAlign: "right", fontWeight: 600, color: parseFloat(r.fcfYield) >= 5 ? T.green : r.fcfYield === "Negative" ? T.capRed : T.textSec }}>{r.fcfYield}</td>
+                        <td style={{ padding: "12px 8px", textAlign: "left", fontSize: 10, color: T.textSec, maxWidth: 180, lineHeight: 1.4 }}>{r.thesis}</td>
+                        <td style={{ padding: "12px 8px", textAlign: "left", fontSize: 10, color: T.capRed, maxWidth: 160, lineHeight: 1.4 }}>{r.risk}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
+          {/* QARP Scorecard Grid */}
+          <Expandable title="Full QARP scorecard — quality and price screens" defaultOpen T={T}>
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: Fn, fontSize: 11, minWidth: 800 }}>
+                <thead>
+                  <tr>
+                    {["Criterion", "FSLR", "ENEL", "ENGI", "RWE", "NXT", "IBE", "NEE"].map((h, i) => (
+                      <th key={i} style={{
+                        textAlign: i === 0 ? "left" : "center", padding: "10px 6px",
+                        borderBottom: "2px solid " + T.border, fontSize: 10, fontWeight: 600,
+                        color: T.textTer, letterSpacing: "0.04em",
+                      }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {qarpScorecard.map((row, ri) => (
+                    <tr key={ri} style={{ borderBottom: "1px solid " + T.border }}>
+                      <td style={{ padding: "8px 6px", fontWeight: 500, color: T.text, fontSize: 11 }}>{row.criterion}</td>
+                      {["FSLR", "ENEL", "ENGI", "RWE", "NXT", "IBE", "NEE"].map((tk) => {
+                        const cell = row[tk];
+                        const bg = cell.pass === true ? T.greenBg : cell.pass === false ? T.redBg : solarBg;
+                        const icon = cell.pass === true ? "✅" : cell.pass === false ? "❌" : "⚠️";
+                        return (
+                          <td key={tk} style={{ padding: "6px 4px", textAlign: "center" }}>
+                            <div style={{ background: bg, borderRadius: 6, padding: "6px 4px", display: "inline-block", minWidth: 64 }}>
+                              <div style={{ fontSize: 10 }}>{icon}</div>
+                              <div style={{ fontSize: 9, color: T.textSec, marginTop: 2, lineHeight: 1.2 }}>{cell.val}</div>
+                            </div>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pass rate summary */}
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 16 }}>
+              {qarpPassRates.map((p, i) => (
+                <div key={i} style={{
+                  background: T.bg, border: "1px solid " + T.border, borderRadius: T.radiusSm,
+                  padding: "10px 14px", textAlign: "center", flex: "1 1 80px",
+                  borderTop: `3px solid ${colorMap[p.color]}`,
+                }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: colorMap[p.color], fontFamily: Fn }}>{p.ticker}</div>
+                  <div style={{ fontSize: 18, fontWeight: 300, color: T.text, fontFamily: Fn, margin: "4px 0" }}>{p.total}</div>
+                  <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn }}>Q: {p.quality} · P: {p.price}</div>
+                </div>
+              ))}
+            </div>
+          </Expandable>
+
+          {/* FSLR Deep Dive */}
+          <Card T={T} style={{ padding: "28px 28px", marginBottom: 20, borderLeft: `3px solid ${T.green}` }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+              <span style={{ fontSize: 18, fontWeight: 400, color: T.text, fontFamily: Fn }}>{fslrDeepDive.title}</span>
+              <Pill T={T} color={T.green} bg={T.greenBg}>RANK 1</Pill>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 20 }}>
+              {fslrDeepDive.keyMetrics.map((m, i) => (
+                <div key={i} style={{ background: T.bg, borderRadius: T.radiusSm, padding: "12px 14px", border: "1px solid " + T.border }}>
+                  <div style={{ fontSize: 16, fontWeight: 300, color: T.green, fontFamily: Fn }}>{m.value}</div>
+                  <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 4, lineHeight: 1.3 }}>{m.label}</div>
+                </div>
+              ))}
+            </div>
+            {fslrDeepDive.paragraphs.map((p, i) => (
+              <p key={i} style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, maxWidth: 740, margin: "0 0 12px" }}>{p}</p>
+            ))}
+            <div style={{ background: solarBg, borderRadius: T.radiusSm, padding: "12px 16px", marginTop: 12, border: "1px solid " + solar + "25" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: solar, fontFamily: Fn }}>⚠️ DATA FLAG</span>
+              </div>
+              <p style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6, margin: 0 }}>{fslrDeepDive.dataFlag}</p>
+            </div>
+          </Card>
+
+          {/* Utility Deep Dives */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+            {utilityDeepDives.map((ud, di) => (
+              <Card key={di} T={T} style={{ padding: "22px 22px", borderLeft: `3px solid ${colorMap[ud.color]}` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: colorMap[ud.color], fontFamily: Fn }}>{ud.ticker}</span>
+                  <span style={{ fontSize: 14, fontWeight: 400, color: T.text, fontFamily: Fn }}>{ud.name}</span>
+                  <Pill T={T} color={colorMap[ud.color]} bg={bgMap[ud.color]}>RANK {di + 2}</Pill>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
+                  {ud.metrics.map((m, mi) => (
+                    <div key={mi} style={{ background: T.bg, borderRadius: T.radiusSm, padding: "10px 12px", border: "1px solid " + T.border }}>
+                      <div style={{ fontSize: 14, fontWeight: 300, color: colorMap[ud.color], fontFamily: Fn }}>{m.value}</div>
+                      <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn, marginTop: 2, lineHeight: 1.3 }}>{m.label}</div>
+                    </div>
+                  ))}
+                </div>
+                {ud.paragraphs.map((p, pi) => (
+                  <p key={pi} style={{ fontSize: 12, color: T.textSec, lineHeight: 1.75, fontFamily: Fn, margin: "0 0 8px" }}>{p}</p>
+                ))}
+              </Card>
+            ))}
+          </div>
+
+          {/* Risk Overlay */}
+          <Card T={T} style={{ padding: "24px 28px", marginBottom: 20 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 20 }}>Risk overlay for the 3-to-5-year holding period</div>
+            <div style={{ display: "grid", gap: 16 }}>
+              {qarpRiskOverlay.map((risk, ri) => (
+                <div key={ri} style={{
+                  background: T.bg, borderRadius: T.radiusSm, padding: "18px 20px",
+                  border: "1px solid " + T.border, borderLeft: `3px solid ${colorMap[risk.color]}`,
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn }}>{risk.title}</span>
+                  </div>
+                  <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: "0 0 10px", maxWidth: 700 }}>{risk.detail}</p>
+                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                    {risk.exposure.map((e, ei) => (
+                      <Pill key={ei} T={T} color={colorMap[risk.color]} bg={bgMap[risk.color]}>{e}</Pill>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* QARP Conclusion */}
+          {qarpConclusionParagraphs.map((p, i) => (
+            <p key={i} style={{ fontSize: 13, color: T.textSec, lineHeight: 1.85, fontFamily: Fn, maxWidth: 740, marginBottom: 12 }}>{p}</p>
+          ))}
+        </div>
+      </Section>
+
+      {/* ═══════════════════════════════════════════════════════════
+         SECTION 11: INVESTMENT CONCLUSIONS
+         ═══════════════════════════════════════════════════════════ */}
       <Section id="conclusion">
         <div style={{ borderTop: "1px solid " + T.border, paddingTop: 40, marginBottom: 48 }}>
           <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 6, fontWeight: 600 }}>10 · INVESTMENT CONCLUSIONS</div>
+            <div style={{ fontSize: 10, fontFamily: Fn, color: T.textTer, letterSpacing: "0.15em", marginBottom: 6, fontWeight: 600 }}>11 · INVESTMENT CONCLUSIONS</div>
             <h2 style={{ fontFamily: Fn, fontSize: 24, fontWeight: 300, color: T.text, margin: 0, lineHeight: 1.3 }}>Where quality-oriented investors should focus</h2>
           </div>
 

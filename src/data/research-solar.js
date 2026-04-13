@@ -514,3 +514,215 @@ export const conclusionParagraphs = [
   "The companies that capture value are not those that make the cheapest commodity module, but those that control chokepoints, own differentiated technology, or hold contracted cash flows on the right side of the regulatory divide.",
   "The structural growth story -- from 9% of global electricity today toward 20%+ by the early 2030s -- remains intact and arguably understated by consensus. The investment question is not whether solar wins, but which companies capture that victory's economic surplus.",
 ];
+
+/* ═══════════════════════════════════════════════════════════════
+   QARP SCREEN — Quality at a Reasonable Price
+   ═══════════════════════════════════════════════════════════════ */
+
+export const qarpIntro = {
+  headline: "Solar QARP screen: one pure-play and six diversified names survive",
+  subtitle: "After the 2023-2025 sector de-rating -- driven by IRA retrenchment under the OBBBA, punitive AD/CVD tariffs reshaping supply chains, and polysilicon overcapacity crushing upstream margins -- virtually every pure-play solar name now trades well below $20 billion. Expanding the universe to diversified utilities and IPPs with meaningful solar exposure adds six investable candidates, but the value proposition varies sharply.",
+  context: "The $20 billion market-cap filter eliminates nearly every pure-play solar company. Enphase ($4.1B), SolarEdge ($2.5B), Sunrun ($4.4B), Canadian Solar (~$1B), JinkoSolar ($1.4B), and Daqo ($1.4B) are all an order of magnitude below the threshold. Sunnova (Chapter 11), Maxeon (judicial management), and Meyer Burger (bankrupt) have exited the investable universe entirely.",
+};
+
+export const qarpRankedTable = [
+  {
+    rank: 1, ticker: "FSLR", name: "First Solar", type: "Pure-play",
+    subSegment: "Module mfr (CdTe thin-film)",
+    roic: "20.6%", ndEbitda: "Net cash", fcfTrack: "1 of 5 yrs (capex cycle ending)",
+    fwdPE: "11.0x", evEbitda: "8.8x", fcfYield: "~5.6%",
+    thesis: "Monopoly US thin-film position, tariff-insulated, PEG 0.38, 50 GW backlog",
+    risk: "IRA Section 45X dependency (~$1.4B/yr in credits)",
+    color: "green",
+  },
+  {
+    rank: 2, ticker: "ENEL.MI", name: "Enel", type: "Diversified utility",
+    subSegment: "Utility/IPP (15% solar)",
+    roic: "7.3%", ndEbitda: "2.5x", fcfTrack: "3 of 5 yrs positive",
+    fwdPE: "14.3x", evEbitda: "9.3x", fcfYield: "6.5%",
+    thesis: "Largest EU utility by capacity, 3Sun HJT factory, global diversification, improving FCF",
+    risk: "LatAm FX risk, PEG 5.8x (low growth)",
+    color: "deepBlue",
+  },
+  {
+    rank: 3, ticker: "ENGI.PA", name: "Engie", type: "Diversified utility",
+    subSegment: "Utility/IPP (~25-35% solar)",
+    roic: "5.5%", ndEbitda: "3.1x", fcfTrack: "4 of 5 yrs positive",
+    fwdPE: "~14x", evEbitda: "7.6x", fcfYield: "~8.0%",
+    thesis: "Cheapest on EV/EBITDA, highest FCF yield, 57 GW renewables, 121 GW pipeline",
+    risk: "Belgian nuclear cash outflow, leverage above 2.5x",
+    color: "deepBlue",
+  },
+  {
+    rank: 4, ticker: "RWE.DE", name: "RWE", type: "Diversified utility",
+    subSegment: "Utility/IPP (12-14% solar)",
+    roic: "3.7%", ndEbitda: "2.1x", fcfTrack: "Negative (growth capex)",
+    fwdPE: "~22x", evEbitda: "~8.5x", fcfYield: "Negative",
+    thesis: "Best leverage, EUR1.5B buyback, EUR35B growth plan targeting 65 GW by 2031",
+    risk: "Earnings normalizing from 2022-23 peaks, negative FCF",
+    color: "orange",
+  },
+  {
+    rank: 5, ticker: "NXT", name: "Nextracker", type: "Pure-play (near-threshold)",
+    subSegment: "Tracker mfr",
+    roic: "28-48%", ndEbitda: "Net cash", fcfTrack: "3+ yrs positive",
+    fwdPE: "27x", evEbitda: "22x", fcfYield: "~3.5%",
+    thesis: "Asset-light model, 34% gross margin, dominant global tracker platform, debt-free",
+    risk: "Valuation premium fully reflects quality; $16-18B below threshold",
+    color: "orange",
+  },
+  {
+    rank: 6, ticker: "IBE.MC", name: "Iberdrola", type: "Diversified utility",
+    subSegment: "Utility/IPP (15% solar)",
+    roic: "~8%", ndEbitda: "3.0x", fcfTrack: "Thin FCF after heavy capex",
+    fwdPE: "~19x", evEbitda: "11.6x", fcfYield: "~1%",
+    thesis: "Premium networks franchise (60%+ regulated), gold-standard ESG, EUR55B network plan",
+    risk: "Overvalued vs FV (EUR15.40 vs EUR19.77); dilutive EUR5B equity raise",
+    color: "grey400",
+  },
+  {
+    rank: 7, ticker: "NEE", name: "NextEra Energy", type: "Diversified utility",
+    subSegment: "Utility/IPP (15-20% solar)",
+    roic: "3.3%", ndEbitda: "6.6x", fcfTrack: "3 of 5 yrs positive",
+    fwdPE: "22.8x", evEbitda: "16x", fcfYield: "~2%",
+    thesis: "Largest US renewable portfolio, 30 GW backlog, hyperscaler PPAs, FPL regulated franchise",
+    risk: "Fails all QARP price screens; PEG 3.17, extreme leverage",
+    color: "capRed",
+  },
+];
+
+export const qarpScorecard = [
+  { criterion: "ROIC > 10%", FSLR: { pass: true, val: "20.6%" }, ENEL: { pass: false, val: "7.3%" }, ENGI: { pass: false, val: "5.5%" }, RWE: { pass: false, val: "3.7%" }, NXT: { pass: true, val: "28-48%" }, IBE: { pass: "warn", val: "~8%" }, NEE: { pass: false, val: "3.3%" } },
+  { criterion: "Gross margin stable", FSLR: { pass: true, val: "40-44%" }, ENEL: { pass: true, val: "28-30%" }, ENGI: { pass: true, val: "~20%" }, RWE: { pass: "warn", val: "Declining" }, NXT: { pass: true, val: "34% rising" }, IBE: { pass: true, val: "30-33%" }, NEE: { pass: true, val: "62-80%" } },
+  { criterion: "ND/EBITDA < 2.5x", FSLR: { pass: true, val: "Net cash" }, ENEL: { pass: true, val: "2.5x" }, ENGI: { pass: false, val: "3.1x" }, RWE: { pass: true, val: "2.1x" }, NXT: { pass: true, val: "Net cash" }, IBE: { pass: false, val: "3.0x" }, NEE: { pass: false, val: "6.6x" } },
+  { criterion: "FCF positive 3/5 yrs", FSLR: { pass: "warn", val: "1/5 (cycle)" }, ENEL: { pass: true, val: "3/5" }, ENGI: { pass: true, val: "4/5" }, RWE: { pass: false, val: "Negative" }, NXT: { pass: true, val: "3+/5" }, IBE: { pass: "warn", val: "Thin" }, NEE: { pass: true, val: "3/5" } },
+  { criterion: "Durable moat", FSLR: { pass: true, val: "Strong" }, ENEL: { pass: true, val: "Yes" }, ENGI: { pass: true, val: "Yes" }, RWE: { pass: true, val: "Yes" }, NXT: { pass: true, val: "Strong" }, IBE: { pass: true, val: "Strong" }, NEE: { pass: true, val: "Strong" } },
+  { criterion: "No dilutive raises", FSLR: { pass: true, val: "None" }, ENEL: { pass: true, val: "None" }, ENGI: { pass: true, val: "None" }, RWE: { pass: true, val: "None" }, NXT: { pass: true, val: "None" }, IBE: { pass: false, val: "EUR5B raise" }, NEE: { pass: "warn", val: "Ongoing" } },
+  { criterion: "Fwd P/E < median", FSLR: { pass: true, val: "11x" }, ENEL: { pass: true, val: "14.3x" }, ENGI: { pass: true, val: "~14x" }, RWE: { pass: false, val: "~22x" }, NXT: { pass: false, val: "27x" }, IBE: { pass: "warn", val: "~19x" }, NEE: { pass: false, val: "22.8x" } },
+  { criterion: "EV/EBITDA < 10x", FSLR: { pass: true, val: "8.8x" }, ENEL: { pass: true, val: "9.3x" }, ENGI: { pass: true, val: "7.6x" }, RWE: { pass: true, val: "8.5x" }, NXT: { pass: false, val: "22x" }, IBE: { pass: false, val: "11.6x" }, NEE: { pass: false, val: "16x" } },
+  { criterion: "FCF yield > 5%", FSLR: { pass: true, val: "5.6%" }, ENEL: { pass: true, val: "6.5%" }, ENGI: { pass: true, val: "~8%" }, RWE: { pass: false, val: "Neg." }, NXT: { pass: false, val: "3.5%" }, IBE: { pass: false, val: "~1%" }, NEE: { pass: false, val: "~2%" } },
+  { criterion: "Upside to target", FSLR: { pass: true, val: "23-27%" }, ENEL: { pass: "warn", val: "~0%" }, ENGI: { pass: "warn", val: "~0%" }, RWE: { pass: "warn", val: "~0%" }, NXT: { pass: "warn", val: "Mixed" }, IBE: { pass: false, val: "Above FV" }, NEE: { pass: "warn", val: "~0%" } },
+];
+
+export const qarpPassRates = [
+  { ticker: "FSLR", quality: "5/6", price: "5/5", total: "10/11", color: "green" },
+  { ticker: "ENEL", quality: "4/6", price: "3/5", total: "7/11", color: "deepBlue" },
+  { ticker: "ENGI", quality: "3/6", price: "4/5", total: "7/11", color: "deepBlue" },
+  { ticker: "RWE", quality: "3/6", price: "2/5", total: "5/11", color: "orange" },
+  { ticker: "NXT", quality: "5/6", price: "0/5", total: "5/11", color: "orange" },
+  { ticker: "IBE", quality: "2/6", price: "0/5", total: "2/11", color: "capRed" },
+  { ticker: "NEE", quality: "2/6", price: "0/5", total: "2/11", color: "capRed" },
+];
+
+export const solarExposure = [
+  { ticker: "ENGI", name: "Engie", pct: 30, gw: "15-20 GW", note: "Highest solar share; 121 GW pipeline" },
+  { ticker: "NEE", name: "NextEra", pct: 17.5, gw: "~15 GW", note: "15-20% of total; 30 GW backlog" },
+  { ticker: "ENEL", name: "Enel", pct: 15, gw: "13.1 GW", note: "15% of 86 GW; 3Sun HJT factory" },
+  { ticker: "IBE", name: "Iberdrola", pct: 15, gw: "~8 GW", note: "~15% of total; growing fastest" },
+  { ticker: "RWE", name: "RWE", pct: 13, gw: "5-6 GW", note: "12-14% of 44 GW; largest US tech" },
+];
+
+export const fslrDeepDive = {
+  title: "First Solar stands alone as a pure-play QARP winner",
+  keyMetrics: [
+    { value: "$5.22B", label: "FY2025 revenue (+24% YoY)" },
+    { value: "$1.53B", label: "Net income" },
+    { value: "20.6%", label: "ROIC (from ~6% in FY2021)" },
+    { value: "40-44%", label: "Gross margin (stable since 2023)" },
+    { value: "$2.4B", label: "Net cash (5.6% D/E)" },
+    { value: "50.1 GW", label: "Backlog valued at $15B" },
+    { value: "$1.19B", label: "FY2025 FCF (positive after capex cycle)" },
+    { value: "PEG 0.38", label: "Extreme value on growth-adjusted basis" },
+  ],
+  paragraphs: [
+    "First Solar occupies a unique position in the solar industry. Its cadmium telluride thin-film technology is not subject to crystalline-silicon tariffs, giving it a structural cost advantage as AD/CVD duties on Southeast Asian c-Si modules have reached astronomical levels (up to 3,404% CVD on Cambodia, 543% on Vietnam). With >14 GW of US manufacturing capacity across Ohio, Alabama, and a new AI-enabled Louisiana facility, FSLR qualifies for IRA Section 45X advanced manufacturing credits worth approximately $0.17/watt, generating ~$1.4 billion in credits in FY2025 alone.",
+    "The valuation screens flash green across every metric. At ~$197-205, the stock trades at 11x forward earnings (consensus FY2026 EPS $18.59, though company guidance is more conservative at $12.50-$17.50), an EV/EBITDA of 8.8x, and a PEG ratio of just 0.38. The consensus analyst target of ~$243-251 implies 20-27% upside. FCF turned sharply positive in FY2025 at $1.19 billion as the multi-year factory buildout cycle wound down.",
+    "The critical risk is IRA dependency. Section 45X credits represent roughly the same magnitude as operating income. The OBBBA signed July 4, 2025, phases out new solar project eligibility starting July 2026, but 45X manufacturing credits are preserved through 2028 with phase-down beginning 2029. A further legislative attack on 45X would be material. However, FSLR's 50.1 GW backlog valued at $15 billion, contracted through 2030, provides substantial revenue visibility regardless.",
+  ],
+  dataFlag: "FY2026 company guidance ($12.50-$17.50 EPS) is significantly below Wall Street consensus ($18.59), reflecting tariff uncertainty management has baked in. Verify with Q1 2026 earnings call (expected May 2026).",
+};
+
+export const utilityDeepDives = [
+  {
+    ticker: "ENEL.MI", name: "Enel", color: "deepBlue",
+    metrics: [
+      { value: "13.1 GW", label: "Solar capacity" },
+      { value: "EUR7.0B", label: "Ordinary net income (+6%)" },
+      { value: "EUR5.9B", label: "FCF (6.5% yield)" },
+      { value: "EUR43B", label: "2025-2027 capex plan" },
+    ],
+    paragraphs: [
+      "Enel presents the most balanced QARP profile among diversified utilities. Its 13.1 GW of solar capacity across Italy, Iberia, the Americas, and its 3Sun heterojunction gigafactory in Sicily (ramping toward 3 GW capacity) provide genuine solar exposure. At a forward P/E of 14.3x and EV/EBITDA of 9.3x, the stock trades below sector medians. Net debt/EBITDA sits right at 2.5x, exactly at the quality threshold. The EUR43 billion capex plan allocates EUR12 billion to renewables and EUR26 billion to networks, with an increasing regulated earnings share providing visibility.",
+    ],
+  },
+  {
+    ticker: "ENGI.PA", name: "Engie", color: "deepBlue",
+    metrics: [
+      { value: "15-20 GW", label: "Solar capacity (est.)" },
+      { value: "EUR13.6B", label: "CFFO (FY2025)" },
+      { value: "~8%", label: "FCF yield (highest in screen)" },
+      { value: "5.1%", label: "Dividend yield (67% payout)" },
+    ],
+    paragraphs: [
+      "Engie screens as the cheapest name in the group on enterprise value metrics. At an EV/EBITDA of 7.6x and an estimated FCF yield of approximately 8%, it offers the highest cash return. However, leverage at 3.1x net debt/EBITDA breaches the 2.5x quality threshold, partly inflated by a EUR5.7 billion cash outflow for the Belgian nuclear deal. ROIC at 5.5% is the lowest quality score in the screen. Engie's solar exposure is among the highest for a diversified utility -- it holds an estimated 15-20 GW of solar within its 57.2 GW renewable portfolio, with solar representing the largest segment in its 121 GW development pipeline.",
+    ],
+  },
+  {
+    ticker: "RWE.DE", name: "RWE", color: "orange",
+    metrics: [
+      { value: "2.1x", label: "ND/EBITDA (best-in-class)" },
+      { value: "EUR1.5B", label: "Buyback program" },
+      { value: "EUR35B", label: "2026-2031 growth plan" },
+      { value: "65 GW", label: "Target from 44 GW today" },
+    ],
+    paragraphs: [
+      "RWE merits inclusion for its conservative 2.1x leverage ratio (best-in-class), a EUR1.5 billion share buyback completing June 2026, and its ambitious EUR35 billion growth plan targeting 65 GW by 2031. Solar is the largest single technology within RWE's US investment allocation (~5 GW of 9 GW planned US additions). The challenge is a deteriorating near-term earnings profile. Adjusted EBITDA declined 11% to EUR5.1 billion in FY2025, and adjusted net income fell 22% to EUR1.8 billion as the Supply & Trading and Flexible Generation segments normalized from 2022-23 energy-crisis windfalls.",
+    ],
+  },
+  {
+    ticker: "NXT", name: "Nextracker", color: "orange",
+    metrics: [
+      { value: "28-48%", label: "ROIC (highest in screen)" },
+      { value: "34%", label: "Gross margin (from 23% 3yr ago)" },
+      { value: "$622M", label: "FCF on zero debt" },
+      { value: "18%", label: "Revenue growth YoY" },
+    ],
+    paragraphs: [
+      "Nextracker operates the most capital-efficient business in this screen. Its asset-light tracker platform generates exceptional returns. Revenue growth of 18% YoY to $3.0 billion, combined with the structural tailwind from global solar deployment, makes the quality case obvious. The problem is price. At a forward P/E of approximately 27x and an EV/EBITDA of 22x, Nextracker trades at a significant premium. The PEG ratio of 1.8-2.1 exceeds the 1.5x threshold. For a QARP investor, Nextracker is a 'quality but not reasonable price' name -- one to add on a meaningful pullback, not at current levels.",
+    ],
+  },
+];
+
+export const qarpRiskOverlay = [
+  {
+    title: "IRA and OBBBA: the single largest variable",
+    detail: "The OBBBA terminated the residential solar credit (Section 25D) effective December 31, 2025, and phases out utility-scale credits (Sections 45Y/48E) for projects beginning construction after July 4, 2026. The manufacturing credit (Section 45X) is preserved through 2028 with phase-down starting 2029. First Solar is most exposed; NextEra and RWE carry meaningful US project pipeline risk. The 'use-it-or-lose-it' rush creates a near-term demand surge followed by a potential cliff.",
+    exposure: ["FSLR (highest)", "NEE", "RWE"],
+    color: "capRed",
+  },
+  {
+    title: "Tariffs reshaping global solar trade flows",
+    detail: "Final AD/CVD orders collapsed Southeast Asian module imports from 3.8 GW/month to 1.1 GW/month. A new petition targeting Indonesia, Laos, and India threatens to close remaining supply routes. A Section 232 investigation on polysilicon derivatives signals potential blanket measures. For US-manufactured companies like First Solar, this is a competitive tailwind. For project developers, it means higher module procurement costs.",
+    exposure: ["NEE (headwind)", "RWE (headwind)", "FSLR (tailwind)"],
+    color: "orange",
+  },
+  {
+    title: "Module ASP trajectory favors a structural bottom",
+    detail: "Polysilicon spot prices at ~$5.24/kg remain below production costs. Chinese inventories of 570,000-600,000 MT represent an overhang. However, China's elimination of the 9% VAT export rebate (April 2026), silver's cost pressure (16-17% of module costs for TOPCon/HJT), and the IEA's assessment that one-third of global PV manufacturing capacity faces bankruptcy risk create upward price pressure.",
+    exposure: ["All manufacturers", "FSLR (relative beneficiary)"],
+    color: "orange",
+  },
+  {
+    title: "Interest rates remain elevated but improving",
+    detail: "The Fed holds at 3.50-3.75% (down 175 bps from peak), with one cut projected for H2 2026. The ECB sits at 2.00%, more favorable for European project economics. A potential Fed chair transition (Kevin Warsh expected to succeed Powell in May 2026) introduces policy uncertainty. For leveraged names (NextEra at 6.6x, Engie at 3.1x), refinancing costs remain a drag.",
+    exposure: ["NEE (6.6x)", "ENGI (3.1x)", "IBE (3.0x)"],
+    color: "deepBlue",
+  },
+];
+
+export const qarpConclusionParagraphs = [
+  "This QARP screen produces a strikingly narrow actionable universe. First Solar is the clear top pick, combining the only ROIC above cost of capital, a net cash balance sheet, sub-11x forward earnings, and a durable tariff-insulated moat -- though the IRA Section 45X credit dependency demands monitoring as a binary risk factor.",
+  "Among diversified utilities, Enel offers the best all-around QARP balance (reasonable leverage, 6.5% FCF yield, global diversification, the 3Sun manufacturing optionality), while Engie screens as the deepest value on EV/EBITDA and FCF yield but carries above-threshold leverage. RWE appeals on balance sheet discipline and its aggressive buyback, but declining near-term earnings and negative FCF weaken the case.",
+  "Nextracker is arguably the highest-quality business in the entire sector but is priced for perfection. Iberdrola and NextEra are premium franchises trading at premium valuations -- suitable for quality portfolios but not for a QARP mandate at current multiples.",
+  "The most differentiated insight from this screen: the solar sector's investable universe at institutional scale has effectively collapsed to one pure-play name and a handful of diversified utilities where solar is a growth driver but not the core business. For a PM seeking concentrated solar beta, First Solar is effectively the only game in town above $20 billion. This scarcity itself is a signal: when the cycle turns, the surviving quality names with manufacturing moats will reprice sharply.",
+];
