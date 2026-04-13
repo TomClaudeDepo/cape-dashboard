@@ -3,6 +3,9 @@ import { Fn, Fh } from "../theme";
 import { Card, Pill } from "../components/shared";
 import {
   heroStats, thesisCards, thesisSections, chartData,
+  primerDescription, milestones, segmentData,
+  genMixPreCalpine, genMixPostCalpine, geoExposure,
+  revenueStreams, nuclearFleet, calpineHighlights,
 } from "../data/research-ceg";
 
 /* ═══════════════════════════════════════════
@@ -68,6 +71,66 @@ function HBarChart({ items, T, title, subtitle }) {
 }
 
 /* ═══════════════════════════════════════════
+   INTERACTIVE PIE CHART
+   ═══════════════════════════════════════════ */
+function PieChart({ data, size = 200, T, label }) {
+  const [hov, setHov] = useState(null);
+  const r = size / 2 - 8;
+  const cx = size / 2, cy = size / 2;
+  let cumAngle = -90;
+  const slices = data.map((d, i) => {
+    const angle = (d.share / 100) * 360;
+    const startAngle = cumAngle;
+    cumAngle += angle;
+    const endAngle = cumAngle;
+    const sr = (Math.PI / 180) * startAngle;
+    const er = (Math.PI / 180) * endAngle;
+    const large = angle > 180 ? 1 : 0;
+    const x1 = cx + r * Math.cos(sr), y1 = cy + r * Math.sin(sr);
+    const x2 = cx + r * Math.cos(er), y2 = cy + r * Math.sin(er);
+    const mid = (Math.PI / 180) * ((startAngle + endAngle) / 2);
+    const pull = hov === i ? 6 : 0;
+    const dx = pull * Math.cos(mid), dy = pull * Math.sin(mid);
+    const path = angle >= 359.99
+      ? `M ${cx + dx} ${cy - r + dy} A ${r} ${r} 0 1 1 ${cx + dx - 0.01} ${cy - r + dy} Z`
+      : `M ${cx + dx} ${cy + dy} L ${x1 + dx} ${y1 + dy} A ${r} ${r} 0 ${large} 1 ${x2 + dx} ${y2 + dy} Z`;
+    return { ...d, path, i, midAngle: mid };
+  });
+  return (
+    <div>
+      {label && <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 12 }}>{label}</div>}
+      <div style={{ display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ flexShrink: 0 }}>
+          {slices.map(s => (
+            <path key={s.i} d={s.path} fill={s.color} stroke={T.card} strokeWidth="2"
+              opacity={hov !== null && hov !== s.i ? 0.4 : 1}
+              style={{ transition: "all 0.2s", cursor: "pointer" }}
+              onMouseEnter={() => setHov(s.i)} onMouseLeave={() => setHov(null)} />
+          ))}
+          {hov !== null && (
+            <g>
+              <text x={cx} y={cy - 6} textAnchor="middle" fontSize="20" fontWeight="700" fill={T.text} fontFamily={Fn}>{data[hov].share}%</text>
+              <text x={cx} y={cy + 12} textAnchor="middle" fontSize="10" fill={T.textSec} fontFamily={Fn}>{data[hov].name}</text>
+            </g>
+          )}
+        </svg>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {data.map((d, i) => (
+            <div key={i} onMouseEnter={() => setHov(i)} onMouseLeave={() => setHov(null)}
+              style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", padding: "4px 8px", borderRadius: 6, background: hov === i ? T.pillBg : "transparent", transition: "background 0.15s" }}>
+              <div style={{ width: 10, height: 10, borderRadius: 3, background: d.color, flexShrink: 0 }} />
+              <span style={{ fontSize: 12, color: hov === i ? T.text : T.textSec, fontFamily: Fn, fontWeight: hov === i ? 600 : 400, transition: "all 0.15s" }}>
+                {d.name} {"\u2014"} {d.share}%
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════
    EXPANDABLE
    ═══════════════════════════════════════════ */
 function Expandable({ title, tag, content, color, T }) {
@@ -118,8 +181,8 @@ function Tabs({ tabs, active, onChange, T }) {
    MAIN COMPONENT
    ═══════════════════════════════════════════ */
 export default function ResearchCEG({ T }) {
-  const [tab, setTab] = useState("Structural Forces");
-  const allTabs = ["Structural Forces"];
+  const [tab, setTab] = useState("Primer");
+  const allTabs = ["Primer", "Structural Forces"];
 
   const colorMap = { orange: T.orange, capRed: T.capRed, deepBlue: T.deepBlue, green: T.green, purple: T.purple };
   const bgMap = { orange: "rgba(234,88,12,0.08)", capRed: T.redBg, deepBlue: "rgba(29,78,216,0.08)", green: T.greenBg, purple: "rgba(67,56,202,0.08)" };
@@ -259,8 +322,199 @@ export default function ResearchCEG({ T }) {
     </div>
   );
 
+  /* ─── PRIMER TAB ─── */
+  const prose = (text, s = {}) => <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 16px", ...s }}>{text}</p>;
+  const sTitle = (t) => <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 16, letterSpacing: "-0.01em" }}>{t}</div>;
+
+  const primerTab = (
+    <div>
+      {/* ── What is Constellation Energy? ── */}
+      {sTitle("What is Constellation Energy?")}
+      {primerDescription.map((p, i) => <div key={i}>{prose(p)}</div>)}
+
+      {/* ── Corporate milestones ── */}
+      <div style={{ marginTop: 32, marginBottom: 40 }}>
+        {sTitle("How it got here")}
+        <div style={{ position: "relative", paddingLeft: 28 }}>
+          {/* Timeline line */}
+          <div style={{ position: "absolute", left: 7, top: 8, bottom: 8, width: 2, background: T.border, borderRadius: 1 }} />
+          {milestones.map((m, i) => (
+            <div key={i} style={{ position: "relative", marginBottom: i < milestones.length - 1 ? 20 : 0 }}>
+              {/* Dot */}
+              <div style={{ position: "absolute", left: -24, top: 6, width: 14, height: 14, borderRadius: "50%", background: T.card, border: `3px solid ${colorMap[m.color] || T.capRed}`, zIndex: 1 }} />
+              <div style={{ fontSize: 10, fontWeight: 600, color: colorMap[m.color] || T.textTer, fontFamily: Fn, letterSpacing: "0.08em", marginBottom: 4 }}>{m.date.toUpperCase()}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 4 }}>{m.title}</div>
+              <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>{m.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Reporting segments ── */}
+      <div style={{ borderTop: "1px solid " + T.border, paddingTop: 32, marginBottom: 40 }}>
+        {sTitle("Five reporting segments")}
+        {prose("Constellation reports through five geographic segments, each anchored in a specific wholesale electricity market. The Calpine acquisition will likely result in segment restructuring, but the pre-acquisition structure illuminates where value concentrates.")}
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 24 }}>
+          <div>
+            <PieChart T={T} label="Revenue by segment (FY2024)" data={segmentData.map(s => ({ name: s.name, share: s.pct, color: s.color }))} size={200} />
+          </div>
+          <div>
+            <PieChart T={T} label="Post-Calpine production by ISO" data={geoExposure} size={200} />
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
+          {segmentData.map((seg, i) => (
+            <Card key={i} T={T} style={{ padding: "18px 20px", borderLeft: `4px solid ${seg.color}` }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn }}>{seg.name}</span>
+                  <Pill T={T} color={seg.color} bg={seg.color + "14"}>{seg.iso}</Pill>
+                </div>
+                <span style={{ fontSize: 13, fontWeight: 600, color: T.textTer, fontFamily: Fn }}>{seg.revenue}</span>
+              </div>
+              <div style={{ fontSize: 11, color: colorMap[Object.keys(colorMap).find(k => colorMap[k] === seg.color)] || T.textTer, fontFamily: Fn, marginBottom: 6, fontWeight: 500 }}>
+                {seg.key}
+              </div>
+              <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>{seg.desc}</p>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Generation mix ── */}
+      <div style={{ borderTop: "1px solid " + T.border, paddingTop: 32, marginBottom: 40 }}>
+        {sTitle("How the generation mix is changing")}
+        {prose("The Calpine acquisition fundamentally reshapes Constellation's generation profile. By capacity, the fleet shifts from nuclear-dominant to diversified. By energy output, nuclear still dominates given its 94.7% capacity factor versus 40-50% for gas combined-cycle.")}
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, marginTop: 8 }}>
+          <Card T={T} style={{ padding: "20px 24px" }}>
+            <PieChart T={T} label="Pre-Calpine (by energy, FY2024)" data={genMixPreCalpine} size={180} />
+            <p style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, lineHeight: 1.6, marginTop: 12, margin: "12px 0 0" }}>
+              208,434 GWh total generation. Nuclear contributed 181,711 GWh {"\u2014"} 87% of owned output.
+            </p>
+          </Card>
+          <Card T={T} style={{ padding: "20px 24px" }}>
+            <PieChart T={T} label="Post-Calpine (by capacity)" data={genMixPostCalpine} size={180} />
+            <p style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, lineHeight: 1.6, marginTop: 12, margin: "12px 0 0" }}>
+              ~55 GW combined fleet. Natural gas now the majority by capacity but nuclear still dominates energy output.
+            </p>
+          </Card>
+        </div>
+      </div>
+
+      {/* ── Revenue model ── */}
+      <div style={{ borderTop: "1px solid " + T.border, paddingTop: 32, marginBottom: 40 }}>
+        {sTitle("Four interlocking revenue streams")}
+        {prose("Constellation's revenue engine operates through four channels that create a layered risk management framework. Each stream serves a different function: electricity sales generate the core business, PTCs provide a floor, capacity payments are surging, and hyperscaler PPAs are converting merchant exposure into long-term contracted revenue.")}
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 14 }}>
+          {revenueStreams.map((rs, i) => (
+            <Card key={i} T={T} style={{ padding: "20px", borderTop: `3px solid ${T[rs.color] || T.capRed}` }}>
+              <div style={{ fontSize: 22, marginBottom: 8 }}>{rs.icon}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8 }}>{rs.title}</div>
+              <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, marginBottom: 10, margin: "0 0 10px" }}>{rs.desc}</p>
+              <div style={{ padding: "10px 14px", background: T.bg, borderRadius: T.radiusSm, borderLeft: `2px solid ${T[rs.color] || T.capRed}` }}>
+                <p style={{ fontSize: 11.5, color: T.textTer, fontFamily: Fn, lineHeight: 1.65, margin: 0, fontStyle: "italic" }}>{rs.detail}</p>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Nuclear fleet ── */}
+      <div style={{ borderTop: "1px solid " + T.border, paddingTop: 32, marginBottom: 40 }}>
+        {sTitle("The nuclear fleet: 14 stations, 25 reactors")}
+        {prose("This is the irreplaceable asset base. New nuclear construction costs $10,000-15,000 per kilowatt (Vogtle Units 3 and 4 cost roughly $35 billion). Replicating Constellation's fleet would be a multi-hundred-billion-dollar, multi-decade undertaking. The fleet produced 182,690 GWh in 2025 at a 94.7% capacity factor, approximately 4 percentage points above the US industry average.")}
+
+        <Card T={T} style={{ padding: "4px 16px", overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+            <thead>
+              <tr style={{ borderBottom: "2px solid " + T.border }}>
+                {["Station", "State", "Units", "Net MW", "Type", "ISO", "License expiry"].map(h => (
+                  <th key={h} style={{ textAlign: "left", padding: "10px 10px", fontSize: 9, color: T.textTer, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {nuclearFleet.map((f, i) => (
+                <tr key={i} style={{ borderBottom: "1px solid " + T.border, background: f.note ? T.greenBg : "transparent" }}>
+                  <td style={{ padding: "9px 10px", fontWeight: 500, color: T.text }}>
+                    {f.station}
+                    {f.ownership && <span style={{ fontSize: 10, color: T.textTer, marginLeft: 6 }}>({f.ownership})</span>}
+                  </td>
+                  <td style={{ padding: "9px 10px", color: T.textSec }}>{f.state}</td>
+                  <td style={{ padding: "9px 10px", color: T.textSec, fontFeatureSettings: '"tnum"' }}>{f.units}</td>
+                  <td style={{ padding: "9px 10px", color: T.textSec, fontFeatureSettings: '"tnum"' }}>{f.mw}</td>
+                  <td style={{ padding: "9px 10px", color: T.textSec }}>{f.type}</td>
+                  <td style={{ padding: "9px 10px" }}><Pill T={T}>{f.iso}</Pill></td>
+                  <td style={{ padding: "9px 10px", color: T.textSec, fontFeatureSettings: '"tnum"' }}>
+                    {f.license}
+                    {f.note && <Pill T={T} color={T.green} bg={T.greenBg} style={{ marginLeft: 8 }}>{f.note}</Pill>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      </div>
+
+      {/* ── Calpine transformation ── */}
+      <div style={{ borderTop: "1px solid " + T.border, paddingTop: 32, marginBottom: 40 }}>
+        {sTitle("The Calpine transformation")}
+        {prose("Closed on January 7, 2026, the $26.6 billion Calpine acquisition is the most transformational deal in Constellation's short history as an independent company. It doubled the fleet from roughly 28 GW to 55 GW, added critical dispatchable natural gas capacity to complement nuclear baseload, diversified geographic exposure into ERCOT and California, and brought The Geysers, the world's largest geothermal complex.")}
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 20 }}>
+          {calpineHighlights.map((ch, i) => (
+            <Card key={i} T={T} style={{ padding: "20px", borderTop: `3px solid ${T[ch.color] || T.capRed}` }}>
+              <div style={{ fontSize: 22, marginBottom: 8 }}>{ch.icon}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{ch.title}</div>
+              <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>{ch.text}</p>
+            </Card>
+          ))}
+        </div>
+
+        {/* Before/after comparison */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <Card T={T} style={{ padding: "18px 20px", borderLeft: `3px solid ${T.textTer}` }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", marginBottom: 12, textTransform: "uppercase" }}>Before Calpine</div>
+            {[
+              { l: "Capacity", v: "~28 GW" }, { l: "Generation", v: "Nuclear-dominant (87%)" },
+              { l: "Markets", v: "PJM, NYISO, MISO" }, { l: "Retail customers", v: "~1M" },
+              { l: "Employees", v: "~14,264" },
+            ].map((r, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: i < 4 ? "1px solid " + T.border : "none" }}>
+                <span style={{ fontSize: 12, color: T.textTer, fontFamily: Fn }}>{r.l}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: T.textSec, fontFamily: Fn }}>{r.v}</span>
+              </div>
+            ))}
+          </Card>
+          <Card T={T} style={{ padding: "18px 20px", borderLeft: `3px solid ${T.green}` }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: T.green, fontFamily: Fn, letterSpacing: "0.06em", marginBottom: 12, textTransform: "uppercase" }}>After Calpine</div>
+            {[
+              { l: "Capacity", v: "~55 GW" }, { l: "Generation", v: "Diversified (40% nuclear)" },
+              { l: "Markets", v: "PJM, ERCOT, CAISO, NYISO+" }, { l: "Retail customers", v: "~2.5M" },
+              { l: "Employees", v: "~16,764" },
+            ].map((r, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: i < 4 ? "1px solid " + T.border : "none" }}>
+                <span style={{ fontSize: 12, color: T.textTer, fontFamily: Fn }}>{r.l}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: T.green, fontFamily: Fn }}>{r.v}</span>
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+
+      {/* Footer note */}
+      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, maxWidth: 700, paddingBottom: 20 }}>
+        Business primer {"\u2014"} educational overview. No financials, no valuations. For informational purposes only.
+      </div>
+    </div>
+  );
+
   /* ─── TAB CONTENT MAP ─── */
-  const tabContent = { "Structural Forces": structuralForcesTab };
+  const tabContent = { "Primer": primerTab, "Structural Forces": structuralForcesTab };
 
   return (
     <div>

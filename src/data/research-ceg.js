@@ -208,3 +208,107 @@ export const chartData = {
     { label: "Solar (utility)", value: 23 },
   ],
 };
+
+/* ═══════════════════════════════════════════════════════════════
+   PRIMER TAB — Business education, no financials
+   ═══════════════════════════════════════════════════════════════ */
+
+export const primerDescription = [
+  "Constellation Energy is the largest nuclear power operator in the United States and, following its January 2026 acquisition of Calpine, the largest private-sector power producer in the world. The company owns and operates 25 nuclear reactor units at 14 sites across the eastern United States, producing roughly 23% of all American nuclear generation. Its combined fleet now totals approximately 55 gigawatts of capacity spanning nuclear, natural gas, geothermal, wind, solar, and hydroelectric generation across more than 40 states.",
+  "The company was created on February 1, 2022, through a tax-free separation from Exelon Corporation. Exelon kept its regulated utility businesses (ComEd, PECO, BGE), while Constellation inherited the competitive generation and retail operations. Headquartered at 1310 Point Street in Baltimore, Maryland, Constellation immediately joined the S&P 500 upon separation and today ranks as a Fortune 200 company with approximately 16,764 employees.",
+  "What makes Constellation unusual is the combination of two things rarely found together: irreplaceable physical assets with near-zero marginal operating costs, and accelerating structural demand from the artificial intelligence revolution. Nuclear plants cost billions to build but almost nothing to run once operational. Data centres need exactly what nuclear provides: round-the-clock, carbon-free electricity at massive scale. Constellation sits at the intersection of these forces with more supply to offer than any competitor.",
+  "CEO Joseph Dominguez leads the company alongside CFO Daniel Eggers. The stock trades on Nasdaq under the ticker CEG.",
+];
+
+export const milestones = [
+  { date: "Feb 2022", title: "Spin-off from Exelon", color: "deepBlue",
+    text: "Constellation created as an independent company through tax-free separation. Inherited Exelon's competitive generation and retail businesses. Immediately joined the S&P 500." },
+  { date: "Sep 2024", title: "Microsoft / Crane PPA", color: "green",
+    text: "Announced a 20-year power purchase agreement with Microsoft to restart Three Mile Island Unit 1, rebranded the Crane Clean Energy Center. 835 MW of carbon-free baseload requiring a $1.6 billion investment." },
+  { date: "Jan 2025", title: "Calpine acquisition announced", color: "orange",
+    text: "Agreed to acquire Calpine for $16.4 billion in equity (50 million CEG shares plus $4.5 billion cash), assuming $12.7 billion in net debt. The deal valued Calpine at 7.9x 2026 EV/EBITDA." },
+  { date: "Dec 2025", title: "DOJ clearance with divestitures", color: "purple",
+    text: "Department of Justice approved the Calpine merger after Constellation agreed to divest approximately 4.4 GW of PJM gas assets to LS Power for $5 billion." },
+  { date: "Jan 2026", title: "Calpine deal closes", color: "capRed",
+    text: "Acquisition completed on January 7, 2026. Combined entity operates approximately 55 GW across 40+ states, serves 2.5 million customers, and provides roughly 10% of America's clean energy." },
+];
+
+export const segmentData = [
+  { name: "Mid-Atlantic", revenue: "$5.5B", pct: 28.4, color: "#C41E3A", iso: "PJM",
+    key: "Calvert Cliffs, Limerick, Peach Bottom (50%), Salem (42.6%), Conowingo Dam, Muddy Run pumped storage",
+    desc: "The eastern seaboard nuclear heartland plus critical hydroelectric assets. Houses 10,387 MW of capacity serving PJM wholesale participants, commercial and industrial buyers, and government entities." },
+  { name: "Midwest", revenue: "$4.8B", pct: 24.8, color: "#1D4ED8", iso: "PJM / MISO",
+    key: "Braidwood, Byron, Dresden, LaSalle, Quad Cities (75%), Clinton (MISO)",
+    desc: "The Illinois nuclear cluster generating the most nuclear megawatt-hours of any segment. Six stations with 11,608 MW. Benefits from Illinois CEJA subsidies and the 20-year Meta PPA at Clinton." },
+  { name: "New York", revenue: "$2.1B", pct: 10.6, color: "#7C3AED", iso: "NYISO",
+    key: "Nine Mile Point (Units 1 & 2), FitzPatrick, Ginna",
+    desc: "Three stations with approximately 3,191 MW operating within NYISO. Supported by New York Zero Emission Credits. New York's Climate Act targets 100% zero-emission electricity by 2040." },
+  { name: "ERCOT", revenue: "$1.6B", pct: 8.0, color: "#EA580C", iso: "ERCOT",
+    key: "South Texas Project (44%), plus ~3,600 MW pre-Calpine gas capacity",
+    desc: "Constellation's Texas footprint. STP provides nuclear baseload, while post-Calpine the segment gains an additional 9,000+ MW of gas generation. Energy-only market with explosive data centre load growth." },
+  { name: "Other Power Regions", revenue: "$5.5B", pct: 28.4, color: "#059669", iso: "ISO-NE, SERC, WECC",
+    key: "Gas, wind, solar, hydro assets plus Everett LNG Marine Terminal and Canadian operations",
+    desc: "A geographically diverse collection of assets spanning New England, the Southeast, the West, and Canada. Post-Calpine, this includes The Geysers geothermal complex (725 MW) and significant California gas capacity." },
+];
+
+export const genMixPreCalpine = [
+  { name: "Nuclear", share: 87, color: "#16A34A" },
+  { name: "Natural gas / oil", share: 10, color: "#EA580C" },
+  { name: "Renewables / hydro", share: 3, color: "#1D4ED8" },
+];
+
+export const genMixPostCalpine = [
+  { name: "Nuclear", share: 40, color: "#16A34A" },
+  { name: "Natural gas", share: 53, color: "#EA580C" },
+  { name: "Geothermal", share: 1.3, color: "#7C3AED" },
+  { name: "Renewables / hydro", share: 5.7, color: "#1D4ED8" },
+];
+
+export const geoExposure = [
+  { name: "PJM", share: 50, color: "#C41E3A" },
+  { name: "ERCOT", share: 23, color: "#EA580C" },
+  { name: "NYISO", share: 9, color: "#7C3AED" },
+  { name: "CAISO", share: 8, color: "#059669" },
+  { name: "Other", share: 10, color: "#64748B" },
+];
+
+export const revenueStreams = [
+  { title: "Wholesale & retail electricity", icon: "\u26A1", color: "capRed",
+    desc: "The core business. Approximately 202 TWh of total load served in FY2024: 144 TWh retail and 58 TWh wholesale. The retail platform serves 2.5 million customers including three-fourths of the Fortune 100, with average contract terms of two years and customer duration of five years. Retail renewal rates run 78% for power and 88% for gas.",
+    detail: "Functions as a critical natural hedge, matching generation output with customer load obligations and reducing merchant price exposure." },
+  { title: "Nuclear production tax credits", icon: "\u2588", color: "green",
+    desc: "The Inflation Reduction Act's Section 45U PTC pays $15/MWh for nuclear generation, effective January 2024 through December 2032. The credit phases out as gross receipts rise above $25-26/MWh and fully disappears above $43.75-44.75/MWh, creating an asymmetric earnings floor.",
+    detail: "In FY2024, Constellation recognised approximately $2.1 billion in PTC benefit. The 2025 'One Big Beautiful Bill' preserved nuclear PTCs while repealing wind and solar credits." },
+  { title: "Capacity market payments", icon: "\u25B3", color: "deepBlue",
+    desc: "PJM Base Residual Auction clearing prices surged from $28.92/MW-day (2024/2025) to $333.44/MW-day (2027/2028), a roughly 10x increase over three auction cycles. With 22 GW of nuclear in PJM, this translates to an estimated $2.6 billion or more in annual capacity revenue from nuclear alone.",
+    detail: "Capacity auctions clear three years forward, providing unusual revenue visibility. Data centre demand added roughly 5,250 MW to PJM's peak load forecast for the latest auction." },
+  { title: "Long-term hyperscaler PPAs", icon: "\u25C8", color: "purple",
+    desc: "Transforming the revenue profile from merchant to contracted. The Microsoft/Crane PPA (835 MW, 20 years) underpins the TMI restart. The Meta/Clinton PPA (1,121 MW, 20 years, starting June 2027) replaces expiring Illinois ZEC subsidies. CyrusOne adds 380 MW with expansion options.",
+    detail: "Only approximately 25% of expected clean firm output is currently under long-term contract, suggesting substantial runway for additional premium-priced deals." },
+];
+
+export const nuclearFleet = [
+  { station: "Braidwood", state: "IL", units: 2, mw: "2,386", type: "PWR", license: "2046-2047", iso: "PJM" },
+  { station: "Byron", state: "IL", units: 2, mw: "2,347", type: "PWR", license: "2044-2046", iso: "PJM" },
+  { station: "LaSalle", state: "IL", units: 2, mw: "2,384", type: "BWR", license: "2042-2043", iso: "PJM" },
+  { station: "Dresden", state: "IL", units: 2, mw: "1,845", type: "BWR", license: "2049-2051", iso: "PJM", note: "80-yr SLR" },
+  { station: "Quad Cities", state: "IL", units: 2, mw: "~1,410", type: "BWR", license: "2032", iso: "PJM", ownership: "75%" },
+  { station: "Clinton", state: "IL", units: 1, mw: "1,092", type: "BWR", license: "2047", iso: "MISO", note: "Meta PPA" },
+  { station: "Limerick", state: "PA", units: 2, mw: "2,317", type: "BWR", license: "2044-2049", iso: "PJM" },
+  { station: "Peach Bottom", state: "PA", units: 2, mw: "~1,385", type: "BWR", license: "2033-2034", iso: "PJM", ownership: "50%" },
+  { station: "Calvert Cliffs", state: "MD", units: 2, mw: "1,790", type: "PWR", license: "2034-2036", iso: "PJM" },
+  { station: "Nine Mile Point", state: "NY", units: 2, mw: "~1,773", type: "BWR/PWR", license: "2029-2046", iso: "NYISO", ownership: "82-100%" },
+  { station: "FitzPatrick", state: "NY", units: 1, mw: "842", type: "BWR", license: "2034", iso: "NYISO" },
+  { station: "Ginna", state: "NY", units: 1, mw: "576", type: "PWR", license: "2029", iso: "NYISO" },
+  { station: "Salem", state: "NJ", units: 2, mw: "~973", type: "PWR", license: "2036-2040", iso: "PJM", ownership: "42.6%" },
+  { station: "South Texas Project", state: "TX", units: 2, mw: "~1,100", type: "PWR", license: "2047-2048", iso: "ERCOT", ownership: "44%" },
+];
+
+export const calpineHighlights = [
+  { icon: "\u26A1", title: "~27 GW natural gas", color: "orange",
+    text: "79 facilities of predominantly advanced combined-cycle gas turbines across North America. Post-divestiture of 4.4 GW PJM assets to LS Power, the gas fleet adds critical dispatchable capacity to complement nuclear baseload." },
+  { icon: "\u25B2", title: "725 MW geothermal", color: "green",
+    text: "The Geysers, the world's largest geothermal complex. 13 plants across 45 square miles in Northern California producing 24/7 clean baseload. Approximately 40% of all US geothermal energy." },
+  { icon: "\u21C4", title: "2.5M retail customers", color: "deepBlue",
+    text: "Combined retail platform becomes one of the largest in the US. Serves three-fourths of the Fortune 100. Average customer duration of five years with strong renewal rates." },
+];
