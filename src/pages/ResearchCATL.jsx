@@ -7,6 +7,9 @@ import {
   competitorIntro, competitors, marketSharePie,
   moatIntro, moats, overseasPlants,
 } from "../data/research-catl";
+import {
+  thematicIntro, themes, valuationNote,
+} from "../data/research-catl-thematic";
 
 /* ═══════════════════════════════════════════
    INTERACTIVE PIE CHART
@@ -135,7 +138,7 @@ function MoatCard({ moat, T }) {
 /* ════════════════════════════════════════════════════════════════ */
 export default function ResearchCATL({ T }) {
   const [tab, setTab] = useState("Business Overview");
-  const allTabs = ["Business Overview", "Business Segments", "Products", "Competitive Position", "Value Chain", "Moat Analysis"];
+  const allTabs = ["Business Overview", "Business Segments", "Products", "Competitive Position", "Value Chain", "Moat Analysis", "Thematic Map"];
 
   const prose = (text, s = {}) => <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 16px", ...s }}>{text}</p>;
   const sTitle = (t) => <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 16, letterSpacing: "-0.01em" }}>{t}</div>;
@@ -343,10 +346,177 @@ export default function ResearchCATL({ T }) {
     </div>
   );
 
+  /* ─── THEMATIC MAP TAB ─── */
+  const sortedThemes = [...themes].sort((a, b) => a.rank - b.rank);
+  const scoreBarColors = { 5: T.green, 4: T.deepBlue, 3: T.orange, 2: T.capRed, 1: T.textTer };
+  const thematicTab = (
+    <div>
+      {prose(thematicIntro)}
+
+      {/* Conviction matrix summary */}
+      <div style={{ marginBottom: 32 }}>
+        {sTitle("Theme conviction ranking")}
+        <Card T={T} style={{ padding: 0, overflow: "hidden" }}>
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: Fn, fontSize: 12 }}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid " + T.border }}>
+                  {["#", "Theme", "Size", "Prob.", "Position", "Score"].map(h => (
+                    <th key={h} style={{ padding: "12px 14px", textAlign: h === "Theme" ? "left" : "center", fontWeight: 600, color: T.textTer, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {sortedThemes.map((t, i) => (
+                  <tr key={t.id} style={{ borderBottom: "1px solid " + T.border, background: i % 2 === 0 ? "transparent" : T.rowHover }}>
+                    <td style={{ padding: "11px 14px", textAlign: "center", fontWeight: 700, color: T.textTer, fontSize: 11 }}>{t.rank}</td>
+                    <td style={{ padding: "11px 14px", fontWeight: 500, color: T.text, fontSize: 12.5, minWidth: 180 }}>{t.title}</td>
+                    <td style={{ padding: "11px 14px", textAlign: "center" }}>
+                      <span style={{ display: "inline-block", width: 24, height: 24, lineHeight: "24px", borderRadius: 6, fontSize: 11, fontWeight: 700, color: "#fff", background: scoreBarColors[t.scores.size] }}>{t.scores.size}</span>
+                    </td>
+                    <td style={{ padding: "11px 14px", textAlign: "center" }}>
+                      <span style={{ display: "inline-block", width: 24, height: 24, lineHeight: "24px", borderRadius: 6, fontSize: 11, fontWeight: 700, color: "#fff", background: scoreBarColors[t.scores.probability] }}>{t.scores.probability}</span>
+                    </td>
+                    <td style={{ padding: "11px 14px", textAlign: "center" }}>
+                      <span style={{ display: "inline-block", width: 24, height: 24, lineHeight: "24px", borderRadius: 6, fontSize: 11, fontWeight: 700, color: "#fff", background: scoreBarColors[t.scores.positioning] }}>{t.scores.positioning}</span>
+                    </td>
+                    <td style={{ padding: "11px 14px", textAlign: "center", fontWeight: 700, fontSize: 14, color: t.scores.composite >= 14 ? T.green : t.scores.composite >= 12 ? T.deepBlue : T.orange }}>{t.scores.composite}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ padding: "12px 16px", borderTop: "1px solid " + T.border, display: "flex", gap: 16, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>Size = TAM potential (5yr+)</span>
+            <span style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>Prob. = regulatory certainty + viability</span>
+            <span style={{ fontSize: 10, color: T.textTer, fontFamily: Fn }}>Position = CATL vs next-best competitor</span>
+          </div>
+        </Card>
+      </div>
+
+      {/* Individual theme cards */}
+      {sTitle("Detailed theme analysis")}
+      <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+        {themes.map((t, i) => (
+          <div key={t.id}>
+            <Expandable
+              title={`${t.rank}. ${t.title}`}
+              subtitle={t.subtitle}
+              T={T}
+            >
+              {/* Score bar */}
+              <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>
+                {[
+                  { label: "Size", val: t.scores.size },
+                  { label: "Probability", val: t.scores.probability },
+                  { label: "Positioning", val: t.scores.positioning },
+                ].map(s => (
+                  <div key={s.label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, width: 62 }}>{s.label}</span>
+                    <div style={{ display: "flex", gap: 3 }}>
+                      {[1, 2, 3, 4, 5].map(n => (
+                        <div key={n} style={{ width: 18, height: 6, borderRadius: 3, background: n <= s.val ? (T[t.color] || T.deepBlue) : T.pillBg, transition: "background 0.3s" }} />
+                      ))}
+                    </div>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: T.textSec, fontFamily: Fn }}>{s.val}/5</span>
+                  </div>
+                ))}
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: "auto" }}>
+                  <span style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn }}>Composite</span>
+                  <span style={{ fontSize: 16, fontWeight: 700, color: t.scores.composite >= 14 ? T.green : t.scores.composite >= 12 ? T.deepBlue : T.orange, fontFamily: Fn }}>{t.scores.composite}</span>
+                </div>
+              </div>
+
+              {/* Paragraphs */}
+              {t.paragraphs.map((p, pi) => (
+                <p key={pi} style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 14px" }}>{p}</p>
+              ))}
+
+              {/* Key stats grid */}
+              {t.keyStats && (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 10, margin: "18px 0" }}>
+                  {t.keyStats.map((s, si) => (
+                    <div key={si} style={{ background: T.pillBg, borderRadius: T.radiusSm, padding: "12px 14px" }}>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: T[t.color] || T.text, fontFamily: Fn }}>{s.value}</div>
+                      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 3, lineHeight: 1.4 }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Table */}
+              {t.table && (
+                <div style={{ margin: "18px 0", overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: Fn, fontSize: 11.5 }}>
+                    <thead>
+                      <tr style={{ borderBottom: "2px solid " + T.border }}>
+                        {t.table.headers.map(h => (
+                          <th key={h} style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600, color: T.textTer, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.05em", whiteSpace: "nowrap" }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {t.table.rows.map((row, ri) => (
+                        <tr key={ri} style={{ borderBottom: "1px solid " + T.border }}>
+                          {row.map((cell, ci) => (
+                            <td key={ci} style={{ padding: "9px 12px", color: ci === 0 ? T.text : T.textSec, fontWeight: ci === 0 ? 500 : 400, whiteSpace: "nowrap" }}>{cell}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Key insight callout */}
+              <div style={{ padding: "14px 18px", marginTop: 12, borderRadius: T.radiusSm, background: T.greenBg, border: "1px solid " + T.border }}>
+                <div style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.7 }}>
+                  <strong style={{ color: T.green }}>Key insight: </strong>{t.keyInsight}
+                </div>
+              </div>
+
+              {/* Risk callout */}
+              <div style={{ padding: "14px 18px", marginTop: 10, borderRadius: T.radiusSm, background: T.redBg, border: "1px solid " + T.border }}>
+                <div style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.7 }}>
+                  <strong style={{ color: T.capRed }}>Risk: </strong>{t.riskNote}
+                </div>
+              </div>
+            </Expandable>
+            <div style={{ height: 8 }} />
+          </div>
+        ))}
+      </div>
+
+      {/* What's not in the price section */}
+      <div style={{ marginTop: 32 }}>
+        {sTitle("What's not in the price")}
+        {prose(valuationNote.intro)}
+
+        <div style={{ display: "grid", gap: 12, marginBottom: 20 }}>
+          {valuationNote.underweighted.map((u, i) => (
+            <Card key={i} T={T} style={{ padding: 0, overflow: "hidden", borderLeft: `4px solid ${T.green}` }}>
+              <div style={{ padding: "18px 22px" }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8 }}>{u.title}</div>
+                <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>{u.text}</p>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        <div style={{ padding: "18px 22px", borderRadius: T.radius, background: T.redBg, border: "1px solid " + T.border }}>
+          <div style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75 }}>
+            <strong style={{ color: T.capRed }}>The bear case: </strong>{valuationNote.bearCase}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   const tabContent = {
     "Business Overview": overviewTab, "Business Segments": segmentsTab,
     "Products": productsTab, "Competitive Position": competitiveTab,
     "Value Chain": valueChainTab, "Moat Analysis": moatTab,
+    "Thematic Map": thematicTab,
   };
 
   return (
