@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Fn, Fh } from "../theme";
 import { Card, Pill, TabBar } from "../components/shared";
 import ResearchBKNG from "./ResearchBKNG";
+import ResearchCATL from "./ResearchCATL";
 import ResearchCEG from "./ResearchCEG";
 import ResearchCNI from "./ResearchCNI";
 import ResearchGold from "./ResearchGold";
@@ -12,6 +13,15 @@ import ResearchSolar from "./ResearchSolar";
 import ResearchThemes from "./ResearchThemes";
 
 const reports = [
+  {
+    id: "catl", ticker: "300750", name: "CATL", sector: "EV Batteries / Electrification",
+    tagline: "The battery colossus: 40% global market share, six chemistries, 200+ OEM customers",
+    date: "April 2026", type: "Business Primer", color: "capRed",
+    stats: [
+      { l: "Mkt Share", v: "~39%" }, { l: "Shipments", v: "661 GWh" },
+      { l: "OEMs", v: "200+" }, { l: "Capacity", v: "772 GWh" },
+    ],
+  },
   {
     id: "solar", ticker: "SOLAR", name: "Global Solar Energy", sector: "Renewables / Energy",
     tagline: "From insurgent to dominant: a 2,900 GW industry at a critical inflection point",
@@ -107,6 +117,7 @@ const backBtn = (T, setActive) => (
 
 const reportComponents = {
   bkng: ResearchBKNG,
+  catl: ResearchCATL,
   ceg: ResearchCEG,
   cni: ResearchCNI,
   gold: ResearchGold,
