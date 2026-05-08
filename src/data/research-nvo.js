@@ -412,3 +412,117 @@ export const valuationSeries = [
   { q: "Q4'25", nvoFwdPE: 14.1, llyFwdPE: 46.8 },
   { q: "Q1'26", nvoFwdPE: 11.7, llyFwdPE: 28.6 },
 ];
+
+/* ═══════════════════════════════════════════
+   PRESCRIPTIONS — US weekly TRx, Mounjaro / Zepbound / Wegovy
+   IQVIA NPA via @semodough; Novo and Lilly disclosed run-rates;
+   Leerink / Jefferies / Barclays / BMO weekly tracker for pill launch
+   ═══════════════════════════════════════════ */
+// Sparse public anchors. x = week ending date (ISO). Plotted as line series.
+export const usWeeklyTRx = [
+  { date: "2024-01-26", week: "W04'24", mounjaro: 291225, zepbound: 22335,  wegovy: null },
+  { date: "2024-03-08", week: "W10'24", mounjaro: null,   zepbound: 77590,  wegovy: null },
+  { date: "2024-05-03", week: "W18'24", mounjaro: null,   zepbound: null,   wegovy: 130000 }, // Novo Q1'24 run-rate anchor
+  { date: "2025-01-23", week: "W04'25", mounjaro: null,   zepbound: null,   wegovy: 200000 }, // Novo Q4'24 anchor
+  { date: "2025-04-11", week: "W15'25", mounjaro: 530200, zepbound: 339800, wegovy: null },
+  { date: "2025-04-18", week: "W16'25", mounjaro: 533900, zepbound: 338900, wegovy: null },
+  { date: "2025-09-05", week: "W36'25", mounjaro: 638000, zepbound: 429000, wegovy: 284000 },
+  { date: "2026-01-23", week: "W04'26", mounjaro: null,   zepbound: null,   wegovy: 230000 }, // Novo FY25 anchor (week ending 23 Jan 26)
+  { date: "2026-04-17", week: "W16'26", mounjaro: null,   zepbound: null,   wegovy: 270000 }, // Novo Q1'26 anchor (week ending 17 Apr 26)
+];
+
+/* ═══════════════════════════════════════════
+   PRESCRIPTIONS — Wegovy oral pill launch curve (US weekly TRx)
+   Launched 5 Jan 2026; first 17 weeks ramp
+   ═══════════════════════════════════════════ */
+export const wegovyPillLaunch = [
+  { week: "W01'26", weekEnd: "2026-01-09", trx: 3071,   source: "Leerink / IQVIA NPA" },
+  { week: "W02'26", weekEnd: "2026-01-16", trx: 18410,  source: "Jefferies / IQVIA NPA" },
+  { week: "W03'26", weekEnd: "2026-01-23", trx: 26109,  source: "Barclays / IQVIA NPA" },
+  { week: "W17'26", weekEnd: "2026-04-24", trx: 135000, source: "BMO press estimate" },
+];
+
+/* ═══════════════════════════════════════════
+   PRESCRIPTIONS — Wegovy US weekly Rx run-rate (Novo's own disclosure)
+   Quarterly anchors from interim reports — "as of" date in note
+   ═══════════════════════════════════════════ */
+export const wegovyRunRate = [
+  { period: "Q1'24", date: "Jan 2024",     injectable: 130000, pill: null,   note: "Q1 2024 Interim Report" },
+  { period: "Q4'24", date: "Jan 2025",     injectable: 200000, pill: null,   note: "FY 2024 Interim Report" },
+  { period: "Q3'25", date: "Q3 2025",      injectable: 270000, pill: null,   note: "9M 2025 Interim Report" },
+  { period: "Q4'25", date: "23 Jan 2026",  injectable: 230000, pill: null,   note: "FY 2025 Interim Report" },
+  { period: "Q1'26", date: "17 Apr 2026",  injectable: 270000, pill: 200000, note: "Q1 2026 Interim Report; pill launched 5 Jan 2026" },
+];
+
+/* ═══════════════════════════════════════════
+   PRESCRIPTIONS — US monthly TRx, long view
+   2022 baseline through Feb 2024; from JAMA Health Forum (Scannell 2024)
+   and JAMA Network Open (Berning 2025); IQVIA NPA PayerTrak
+   Values in thousands of scripts per month
+   ═══════════════════════════════════════════ */
+export const usMonthlyTRxLong = [
+  { month: "Jan'22", date: "2022-01", ozempic: 472,  wegovy: null, mounjaro: null, zepbound: null, saxenda: null },
+  { month: "Dec'22", date: "2022-12", ozempic: null, wegovy: 36,   mounjaro: null, zepbound: null, saxenda: null },
+  { month: "Jan'23", date: "2023-01", ozempic: null, wegovy: 158,  mounjaro: null, zepbound: null, saxenda: null },
+  { month: "May'23", date: "2023-05", ozempic: null, wegovy: 520,  mounjaro: null, zepbound: null, saxenda: null },
+  { month: "Aug'23", date: "2023-08", ozempic: 1969, wegovy: null, mounjaro: null, zepbound: null, saxenda: null },
+  { month: "Dec'23", date: "2023-12", ozempic: null, wegovy: null, mounjaro: null, zepbound: null, saxenda: null },
+  { month: "Feb'24", date: "2024-02", ozempic: 2000, wegovy: 420,  mounjaro: 1200, zepbound: 250,  saxenda: 110 },
+];
+
+/* ═══════════════════════════════════════════
+   PRESCRIPTIONS — Patients on therapy (Novo, millions)
+   From Novo annual / interim "patients reached" disclosures
+   ═══════════════════════════════════════════ */
+export const novoPatientsOnTherapy = [
+  { period: "FY'24", obesityM: 2.2, diabetesM: 43.0 },
+  { period: "FY'25", obesityM: 3.6, diabetesM: 42.0 },
+  { period: "Q1'26", obesityM: 4.1, diabetesM: 41.2 },
+];
+
+/* ═══════════════════════════════════════════
+   PRESCRIPTIONS — Global obesity GLP-1 value share by quarter
+   Computed from quarterly product net sales (Wegovy+Saxenda vs Zepbound)
+   ═══════════════════════════════════════════ */
+export const obesityValueShare = [
+  { q: "Q4'23", novo: 89.5, lilly: 10.5, source: "Computed: Wegovy ~$1130M + Saxenda ~$370M vs Zepbound $176M" },
+  { q: "Q4'24", novo: 56.0, lilly: 44.0, source: "Computed: Wegovy ~$2200M + Saxenda ~$220M vs Zepbound $1907M" },
+  { q: "Q3'25", novo: 47.7, lilly: 52.3, source: "Computed: Q3 inflection — Zepbound overtakes Wegovy globally" },
+  { q: "Q4'25", novo: 44.5, lilly: 55.5, source: "Computed: Wegovy $3303M + Saxenda $88M vs Zepbound $4261M" },
+  { q: "Q1'26", novo: 41.3, lilly: 58.7, source: "Computed: Wegovy $2858M + Saxenda $66M vs Zepbound $4160M" },
+];
+
+/* ═══════════════════════════════════════════
+   PRESCRIPTIONS — US Lilly TRx share-of-market (their own disclosure)
+   T2D: Mounjaro vs other US T2D incretin analogs
+   AOM: Zepbound vs other US branded anti-obesity
+   ═══════════════════════════════════════════ */
+export const llyTRxShareOfMarket = [
+  { q: "Q3'25", t2dMounjaro: 45, t2dNbrxMounjaro: 54, aomZepbound: 63, aomNbrxZepbound: 71 },
+  { q: "Q4'25", t2dMounjaro: null, t2dNbrxMounjaro: null, aomZepbound: 64, aomNbrxZepbound: null },
+];
+
+/* ═══════════════════════════════════════════
+   PRESCRIPTIONS — YoY sales growth by product, Q1 2026
+   ═══════════════════════════════════════════ */
+export const q1_26GrowthYoY = [
+  { product: "Mounjaro",      company: "LLY", growthPct: 125, color: "deepBlue" },
+  { product: "Zepbound",      company: "LLY", growthPct: 80,  color: "deepBlue" },
+  { product: "Wegovy inj.",   company: "NVO", growthPct: 12,  color: "capRed" },
+  { product: "Ozempic US",    company: "NVO", growthPct: -8,  color: "capRed" },
+  { product: "Trulicity",     company: "LLY", growthPct: -34, color: "purple" },
+  { product: "Victoza",       company: "NVO", growthPct: -45, color: "purple" },
+];
+
+/* ═══════════════════════════════════════════
+   PRESCRIPTIONS — Critical data gaps flagged by CI memo
+   ═══════════════════════════════════════════ */
+export const dataGaps = [
+  { gap: "Pre-2023 Novo product-by-region quarterly data", note: "Exists in Appendix 5/6 of each interim report; not retrieved this pass." },
+  { gap: "Lilly per-product country-level revenue", note: "Lilly does not disclose. Only US vs. Outside-US in 10-Q/10-K." },
+  { gap: "Weekly TRx anchors for Ozempic, Trulicity, Rybelsus, Saxenda 2024–2026", note: "Sporadic in public; institutional dashboard requires direct IQVIA NPA Weekly subscription." },
+  { gap: "NBRx by week", note: "Essentially absent in public. Closest anchors: Novo Wegovy 25k/wk NBRx (May 2024) and Lilly Q3'25 SOM percentages." },
+  { gap: "Payer mix splits", note: "Neither Novo nor Lilly discloses commercial / Medicare / Medicaid / cash splits." },
+  { gap: "Mazdutide actual sales", note: "Innovent has not yet broken out Xinermei. Only Morningstar projection (~$84m FY2025)." },
+  { gap: "Wegovy pill revenue split", note: "Novo has not yet disaggregated pill from Wegovy franchise total in Q1 2026." },
+];

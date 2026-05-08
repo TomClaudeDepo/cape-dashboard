@@ -10,6 +10,9 @@ import {
   catalysts, efficacyData, indicationReadouts, adjacentThreats,
   capexNVO, capexLLY, pricingPolicy, geoPenetration,
   tamForecasts, financialQuality, valuationSeries,
+  usWeeklyTRx, wegovyPillLaunch, wegovyRunRate, usMonthlyTRxLong,
+  novoPatientsOnTherapy, obesityValueShare, llyTRxShareOfMarket,
+  q1_26GrowthYoY, dataGaps,
 } from "../data/research-nvo";
 
 /* ═══════════════════════════════════════════
@@ -427,6 +430,88 @@ function TamRange({ data, T }) {
 }
 
 /* ═══════════════════════════════════════════
+   CHART: Generic multi-series line (handles sparse / null gaps)
+   ═══════════════════════════════════════════ */
+function MultiLine({ data, xKey, series, T, height = 260, yMax = null, yFormat = v => v.toLocaleString(), xLabelEvery = 1, yLabel = null }) {
+  const W = 720, H = height, pad = { t: 24, r: 110, b: 40, l: 64 };
+  const w = W - pad.l - pad.r, h = H - pad.t - pad.b;
+  const [hov, setHov] = useState(-1);
+  // Auto-scale Y unless given
+  const allVals = series.flatMap(s => data.map(d => d[s.key]).filter(v => v != null));
+  const max = yMax != null ? yMax : Math.max(...allVals) * 1.1;
+  const xAt = i => pad.l + (w / Math.max(1, data.length - 1)) * i;
+  const yAt = v => pad.t + h - (v / max) * h;
+
+  // Build path that breaks across nulls
+  const buildPath = (key) => {
+    let path = "";
+    let started = false;
+    data.forEach((d, i) => {
+      const v = d[key];
+      if (v == null) { started = false; return; }
+      path += (started ? " L " : " M ") + xAt(i) + " " + yAt(v);
+      started = true;
+    });
+    return path.trim();
+  };
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto" }} onMouseLeave={() => setHov(-1)}>
+      {/* Y gridlines */}
+      {[0, 0.25, 0.5, 0.75, 1].map((f, i) => (
+        <g key={i}>
+          <line x1={pad.l} x2={W - pad.r} y1={pad.t + h * (1 - f)} y2={pad.t + h * (1 - f)} stroke={T.border} strokeWidth="0.5" />
+          <text x={pad.l - 8} y={pad.t + h * (1 - f) + 4} fontSize="9" fill={T.textTer} fontFamily={Fn} textAnchor="end" fontFeatureSettings='"tnum"'>{yFormat(max * f)}</text>
+        </g>
+      ))}
+      {yLabel && <text x={pad.l - 52} y={pad.t + h / 2} fontSize="9" fill={T.textTer} fontFamily={Fn} textAnchor="middle" transform={`rotate(-90 ${pad.l - 52} ${pad.t + h / 2})`}>{yLabel}</text>}
+      {/* Lines */}
+      {series.map(s => (
+        <path key={s.key} d={buildPath(s.key)} fill="none" stroke={s.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      ))}
+      {/* Points + hover regions */}
+      {data.map((d, i) => (
+        <g key={i} onMouseEnter={() => setHov(i)} style={{ cursor: "pointer" }}>
+          <rect x={xAt(i) - (w / Math.max(1, data.length) / 2)} y={pad.t} width={w / Math.max(1, data.length)} height={h} fill="transparent" />
+          {series.map(s => d[s.key] != null && (
+            <circle key={s.key} cx={xAt(i)} cy={yAt(d[s.key])} r={hov === i ? 5 : 3} fill={s.color} stroke={T.card} strokeWidth={hov === i ? 1.5 : 0} />
+          ))}
+          {i % xLabelEvery === 0 && <text x={xAt(i)} y={H - 14} fontSize="9" fill={T.textTer} fontFamily={Fn} textAnchor="middle">{d[xKey]}</text>}
+        </g>
+      ))}
+      {/* Hover tooltip */}
+      {hov >= 0 && (() => {
+        const visible = series.filter(s => data[hov][s.key] != null);
+        const tipW = 130, tipH = 20 + visible.length * 16;
+        const tipX = xAt(hov) + 8 + tipW > W - 6 ? xAt(hov) - tipW - 8 : xAt(hov) + 8;
+        return (
+          <g>
+            <line x1={xAt(hov)} x2={xAt(hov)} y1={pad.t} y2={pad.t + h} stroke={T.textTer} strokeWidth="0.5" strokeDasharray="3,3" />
+            <rect x={tipX} y={pad.t} width={tipW} height={tipH} rx={6} fill={T.card} stroke={T.border} />
+            <text x={tipX + 8} y={pad.t + 14} fontSize="10" fill={T.text} fontFamily={Fn} fontWeight="600">{data[hov][xKey]}</text>
+            {visible.map((s, j) => (
+              <g key={s.key}>
+                <circle cx={tipX + 12} cy={pad.t + 28 + j * 16} r={3.5} fill={s.color} />
+                <text x={tipX + 20} y={pad.t + 31 + j * 16} fontSize="9" fill={T.textSec} fontFamily={Fn}>{s.label} {yFormat(data[hov][s.key])}</text>
+              </g>
+            ))}
+          </g>
+        );
+      })()}
+      {/* Legend */}
+      <g>
+        {series.map((s, i) => (
+          <g key={s.key}>
+            <line x1={W - pad.r + 8} x2={W - pad.r + 22} y1={pad.t + 8 + i * 16} y2={pad.t + 8 + i * 16} stroke={s.color} strokeWidth="2" />
+            <text x={W - pad.r + 28} y={pad.t + 11 + i * 16} fontSize="10" fill={T.textSec} fontFamily={Fn}>{s.label}</text>
+          </g>
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+/* ═══════════════════════════════════════════
    TABS
    ═══════════════════════════════════════════ */
 function Tabs({ tabs, active, onChange, T }) {
@@ -449,7 +534,7 @@ function Tabs({ tabs, active, onChange, T }) {
    ═══════════════════════════════════════════ */
 export default function ResearchNVO({ T }) {
   const [tab, setTab] = useState("Thesis");
-  const allTabs = ["Thesis", "Competition", "Patent Cliff", "Pipeline", "Operations & Financials"];
+  const allTabs = ["Thesis", "Prescriptions", "Competition", "Patent Cliff", "Pipeline", "Operations & Financials"];
   const mob = useMobile();
 
   const colorMap = { orange: T.orange, capRed: T.capRed, deepBlue: T.deepBlue, green: T.green, purple: T.purple };
@@ -536,6 +621,266 @@ export default function ResearchNVO({ T }) {
         <p style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, margin: "10px 0 0" }}>
           <span style={{ fontWeight: 600, color: T.textSec }}>Glossary:</span> AOM anti-obesity medication; T2D type 2 diabetes; CKD chronic kidney disease; MASH metabolic-dysfunction associated steatohepatitis; HFpEF heart failure with preserved ejection fraction; OSA obstructive sleep apnea; CV cardiovascular; TRx total prescription volume; CER constant exchange rate; LoE loss of exclusivity; PDUFA Prescription Drug User Fee Act target action date; NDA New Drug Application; PTE patent term extension; SPC supplementary protection certificate; PI preliminary injunction; DTC direct-to-consumer; PBM pharmacy benefit manager; MFN Most-Favored-Nation; IRA Inflation Reduction Act; CMS Centers for Medicare and Medicaid Services; TPE treatment policy estimand; CVOT cardiovascular outcomes trial; QARP quality at a reasonable price.
         </p>
+      </Card>
+    </div>
+  );
+
+  /* ─── PRESCRIPTIONS TAB ─── */
+  const trxColors = {
+    mounjaro: T.deepBlue,
+    zepbound: T.green,
+    wegovy: T.capRed,
+    ozempic: T.orange,
+    saxenda: T.purple,
+    rybelsus: T.green300 || T.green,
+    victoza: T.textSec,
+  };
+
+  const prescriptionsTab = (
+    <div>
+      {/* Headline */}
+      <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8, letterSpacing: "-0.01em" }}>
+        US weekly TRx — the headline series
+      </div>
+      <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 760 }}>
+        Public anchors for US weekly TRx are sparse — IQVIA NPA is a paid feed and only periodic sell-side excerpts are visible. The chart below stitches together what is in the public domain (BMO, Jefferies, Leerink, JPM, Barclays via @semodough on X) plus Novo's own quarterly run-rate disclosures. The shape is consistent across every available data point: Mounjaro is the largest single weekly script generator in the class by mid-2025, Zepbound is the second largest, and Wegovy injectable is third. Combined Lilly tirzepatide weekly TRx is roughly 3.8x Wegovy alone by W36 2025.
+      </p>
+      <Card T={T} style={{ padding: "20px 24px", marginBottom: 24 }}>
+        <MultiLine
+          data={usWeeklyTRx}
+          xKey="week"
+          yLabel="Weekly TRx"
+          yFormat={v => v >= 1000 ? (v / 1000).toFixed(0) + "k" : Math.round(v).toString()}
+          series={[
+            { key: "mounjaro", label: "Mounjaro", color: trxColors.mounjaro },
+            { key: "zepbound", label: "Zepbound", color: trxColors.zepbound },
+            { key: "wegovy",   label: "Wegovy inj.", color: trxColors.wegovy },
+          ]}
+          T={T}
+          height={300}
+        />
+        <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 8, lineHeight: 1.5 }}>
+          Sources: BMO / Jefferies / JPM / Leerink / Barclays via IQVIA NPA Weekly excerpts; Novo quarterly run-rate anchors (Q1'24, Q4'24, Q3'25, Q4'25, Q1'26 interim reports). Lines break across missing weeks. Dashboard requires direct IQVIA NPA Weekly subscription for full historical fill.
+        </div>
+      </Card>
+
+      {/* Wegovy pill launch curve */}
+      <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8, letterSpacing: "-0.01em" }}>
+        Wegovy oral pill — US launch curve
+      </div>
+      <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 760 }}>
+        Approved 22 Dec 2025, launched 5 Jan 2026 at $149–$299 NovoCare cash-pay. The launch ramp has been steeper than any GLP-1 launch on record — 3,071 scripts in week one, 18,410 in week two, 26,109 in week three, and tracking to roughly 135,000 weekly scripts by week 17. The trajectory implies the pill is acquiring patients on top of, not just substituting from, the injectable franchise. This is the cleanest near-term Novo offset to the Lilly share momentum, but it competes head-to-head with orforglipron (Foundayo) launched 6 Apr 2026 — a Lilly oral with materially better Phase 3 weight-loss data (12.4% at 36mg / 72wks).
+      </p>
+      <Card T={T} style={{ padding: "20px 24px", marginBottom: 24 }}>
+        <MultiLine
+          data={wegovyPillLaunch}
+          xKey="week"
+          yLabel="Weekly TRx"
+          yFormat={v => v >= 1000 ? (v / 1000).toFixed(0) + "k" : Math.round(v).toString()}
+          series={[
+            { key: "trx", label: "Wegovy pill US TRx", color: T.capRed },
+          ]}
+          T={T}
+          height={240}
+        />
+      </Card>
+
+      {/* Wegovy run-rate (Novo disclosed) */}
+      <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8, letterSpacing: "-0.01em" }}>
+        Wegovy US weekly Rx run-rate — Novo's own disclosure
+      </div>
+      <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 760 }}>
+        Novo discloses an "as of" weekly Wegovy run-rate at every interim report. The shape is informative for two reasons. First, the dip from 270k in Q3 2025 to 230k in late January 2026 reflects the post-CVS Caremark 1 Jul 2025 Wegovy-exclusive boost partially unwinding, alongside seasonal Q1 friction (deductible resets, prior auths). Second, the recovery to 270k in mid-April 2026 plus a fresh 200k weekly run-rate from the new pill takes Wegovy total to roughly 470k weekly scripts — its highest combined figure ever. The pill is additive, but the question for the model is what fraction is genuinely new patients versus injectable cannibalization. CVS Caremark exclusivity is a one-time benefit; ESI and OptumRx did not follow.
+      </p>
+      <Card T={T} style={{ padding: "20px 24px", marginBottom: 24 }}>
+        <MultiLine
+          data={wegovyRunRate}
+          xKey="period"
+          yLabel="Weekly Rx run-rate"
+          yFormat={v => v >= 1000 ? (v / 1000).toFixed(0) + "k" : Math.round(v).toString()}
+          series={[
+            { key: "injectable", label: "Wegovy injectable", color: T.capRed },
+            { key: "pill",       label: "Wegovy pill",       color: T.orange },
+          ]}
+          T={T}
+          height={260}
+        />
+      </Card>
+
+      {/* Quarterly product net sales — long view */}
+      <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8, letterSpacing: "-0.01em" }}>
+        Quarterly product net sales — Novo vs Lilly franchise build, Q1 2022 to Q1 2026
+      </div>
+      <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 760 }}>
+        Reading this chart, three things matter. First, the Mounjaro line — vertical, no plateau, no quarter of negative growth. Second, Ozempic — flat to declining since Q3 2024, with US -8% YoY in Q1 2026 reflecting 10–15% annual price erosion (CFO commentary). Third, Zepbound — launched Q4 2023, now larger than Wegovy injectable globally as of Q3 2025. Trulicity (dulaglutide) is in terminal decline ahead of LoE 2027. Victoza is essentially zero. The picture is a class shifting from semaglutide to tirzepatide on flow, with Novo's installed semaglutide base providing a long-tail revenue cushion that nevertheless cannot compound.
+      </p>
+      <Card T={T} style={{ padding: "20px 24px", marginBottom: 24 }}>
+        <MultiLine
+          data={quarterlyRevenue}
+          xKey="q"
+          yLabel="USD millions"
+          yFormat={v => v >= 1000 ? "$" + (v / 1000).toFixed(1) + "bn" : "$" + Math.round(v) + "m"}
+          xLabelEvery={2}
+          series={[
+            { key: "mounjaro", label: "Mounjaro",  color: trxColors.mounjaro },
+            { key: "zepbound", label: "Zepbound",  color: trxColors.zepbound },
+            { key: "ozempic",  label: "Ozempic",   color: trxColors.ozempic },
+            { key: "wegovy",   label: "Wegovy",    color: trxColors.wegovy },
+            { key: "rybelsus", label: "Rybelsus",  color: trxColors.rybelsus },
+            { key: "victoza",  label: "Victoza",   color: trxColors.victoza },
+          ]}
+          T={T}
+          height={320}
+        />
+      </Card>
+
+      {/* US monthly TRx long view */}
+      <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8, letterSpacing: "-0.01em" }}>
+        US monthly TRx — long view, peak Ozempic vs the Lilly ramp
+      </div>
+      <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 760 }}>
+        Public monthly TRx anchors from JAMA Health Forum (Scannell 2024) and JAMA Network Open (Berning 2025) via IQVIA NPA PayerTrak. By February 2024 — the latest comprehensive cross-class snapshot in the academic literature — the US class was running roughly 4.0M monthly scripts (Ozempic 2.0M, Mounjaro 1.2M, Wegovy 0.42M, Zepbound 0.25M, Saxenda 0.11M). Combined Lilly tirzepatide 1.45M was already 60% of Ozempic alone. The class has since grown to roughly 9M monthly TRx (IQVIA, late 2025) and an estimated 11M unique US patients on therapy (Q2 2025).
+      </p>
+      <Card T={T} style={{ padding: "20px 24px", marginBottom: 24 }}>
+        <MultiLine
+          data={usMonthlyTRxLong}
+          xKey="month"
+          yLabel="Thousands of scripts"
+          yFormat={v => Math.round(v) + "k"}
+          series={[
+            { key: "ozempic",  label: "Ozempic",  color: trxColors.ozempic },
+            { key: "wegovy",   label: "Wegovy",   color: trxColors.wegovy },
+            { key: "mounjaro", label: "Mounjaro", color: trxColors.mounjaro },
+            { key: "zepbound", label: "Zepbound", color: trxColors.zepbound },
+            { key: "saxenda",  label: "Saxenda",  color: trxColors.saxenda },
+          ]}
+          T={T}
+          height={260}
+        />
+      </Card>
+
+      {/* Patients on therapy */}
+      <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8, letterSpacing: "-0.01em" }}>
+        Novo patients on therapy — obesity vs diabetes
+      </div>
+      <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 760 }}>
+        Novo's obesity patient count has nearly doubled in five quarters (2.2M → 4.1M), while the diabetes installed base has compressed slightly (43.0M → 41.2M) as patients migrate to tirzepatide. Net franchise volume is growing but the mix is shifting toward a margin-dilutive segment given DTC cash-pay channel ramp ($349 NovoCare Wegovy, MFN Medicare $245). This is the headline tension in the FY26 model — volume up, realized price down.
+      </p>
+      <Card T={T} style={{ padding: "20px 24px", marginBottom: 24 }}>
+        <MultiLine
+          data={novoPatientsOnTherapy}
+          xKey="period"
+          yLabel="Patients (millions)"
+          yFormat={v => v.toFixed(1) + "M"}
+          yMax={50}
+          series={[
+            { key: "diabetesM", label: "Diabetes",  color: T.deepBlue },
+            { key: "obesityM",  label: "Obesity",   color: T.capRed },
+          ]}
+          T={T}
+          height={240}
+        />
+      </Card>
+
+      {/* Obesity value share crossover */}
+      <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8, letterSpacing: "-0.01em" }}>
+        Global obesity GLP-1 value share — the crossover happened in Q3 2025
+      </div>
+      <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 760 }}>
+        Computed from quarterly product net sales: Wegovy plus Saxenda versus Zepbound (Zepbound OUS launch is essentially negligible — $26m in Q1 2026, so this is effectively a US-driven calculation extended globally). Novo went from ~89.5% Q4 2023 to 41.3% Q1 2026 in five quarters. Zepbound overtook Wegovy in Q3 2025 and has now opened a 17-point gap. In the US specifically, Lilly's own Q3 2025 deck shows Zepbound at 63% TRx share / 71% NBRx share of branded anti-obesity — meaning the gradient is steepening, not stabilizing. The CVS Caremark exclusive (Wegovy preferred from 1 Jul 2025) produced a one-time pop but has not reversed the directional trend.
+      </p>
+      <Card T={T} style={{ padding: "20px 24px", marginBottom: 24 }}>
+        <MultiLine
+          data={obesityValueShare}
+          xKey="q"
+          yLabel="Value share %"
+          yFormat={v => v.toFixed(0) + "%"}
+          yMax={100}
+          series={[
+            { key: "novo",  label: "NVO (Wegovy + Saxenda)", color: T.capRed },
+            { key: "lilly", label: "LLY (Zepbound)",         color: T.deepBlue },
+          ]}
+          T={T}
+          height={260}
+        />
+      </Card>
+
+      {/* Q1 2026 growth bar */}
+      <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8, letterSpacing: "-0.01em" }}>
+        Q1 2026 YoY sales growth by product
+      </div>
+      <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 760 }}>
+        The fan-out of growth rates in a single quarter is striking. Mounjaro at +125% YoY is roughly 10x the growth rate of Wegovy injectable, while US Ozempic is in outright decline. The DPP-4 / older-generation incretins (Trulicity, Victoza) are in steep secular decline ahead of LoE. The picture is consistent with the "class is growing but Novo is not capturing the marginal patient" thesis — and the marginal patient is where future earnings live.
+      </p>
+      <Card T={T} style={{ padding: "20px 24px", marginBottom: 24 }}>
+        {q1_26GrowthYoY.map((g, i) => {
+          const max = Math.max(...q1_26GrowthYoY.map(x => Math.abs(x.growthPct)));
+          const colorMap = { capRed: T.capRed, deepBlue: T.deepBlue, purple: T.purple, orange: T.orange };
+          const color = colorMap[g.color] || T.text;
+          const pct = Math.abs(g.growthPct) / max * 100;
+          return (
+            <div key={i} style={{ marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+                <span style={{ fontSize: 12, color: T.textSec, fontFamily: Fn }}>{g.product} <span style={{ color: T.textTer, fontSize: 10 }}>({g.company})</span></span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: g.growthPct >= 0 ? T.green : T.capRed, fontFamily: Fn, fontFeatureSettings: '"tnum"' }}>{g.growthPct >= 0 ? "+" : ""}{g.growthPct}%</span>
+              </div>
+              <div style={{ height: 6, background: T.pillBg, borderRadius: 3, overflow: "hidden", display: "flex", flexDirection: g.growthPct >= 0 ? "row" : "row-reverse" }}>
+                <div style={{ height: "100%", borderRadius: 3, background: color, width: pct + "%", transition: "width 0.8s ease" }} />
+              </div>
+            </div>
+          );
+        })}
+        <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 8, lineHeight: 1.5 }}>
+          Source: Lilly Q1 2026 earnings; Novo Q1 2026 Interim Report. Mounjaro / Zepbound growth is reported sales (includes price); Ozempic US is adjusted (ex-340B reversal). Trulicity / Victoza in secular decline ahead of LoE.
+        </div>
+      </Card>
+
+      {/* Lilly TRx SOM */}
+      <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8, letterSpacing: "-0.01em" }}>
+        Lilly's own US share-of-market disclosure
+      </div>
+      <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 760 }}>
+        From Lilly Q3 and Q4 2025 investor presentations. NBRx (new-to-brand) is the leading indicator — Lilly was already 71% of new obesity starts in Q3 2025. By definition this means Wegovy NBRx is collapsing. A 71% NBRx share with 63% TRx share signals the gap is widening every week as new patients keep flowing in 7:3 to Lilly while older Wegovy patients persist on therapy. The US T2D battle is similarly tilted: 45% Mounjaro TRx / 54% Mounjaro NBRx — meaning T2D will follow obesity into a Lilly-led market within roughly four quarters.
+      </p>
+      <Card T={T} style={{ padding: "20px 24px", marginBottom: 24 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: Fn }}>
+          <thead>
+            <tr style={{ borderBottom: "1px solid " + T.border }}>
+              <th style={{ padding: "8px 12px 8px 0", textAlign: "left", color: T.textTer, fontWeight: 500, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.04em" }}>Quarter</th>
+              <th style={{ padding: "8px 12px", textAlign: "right", color: T.textTer, fontWeight: 500, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.04em" }}>Mounjaro T2D TRx</th>
+              <th style={{ padding: "8px 12px", textAlign: "right", color: T.textTer, fontWeight: 500, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.04em" }}>Mounjaro T2D NBRx</th>
+              <th style={{ padding: "8px 12px", textAlign: "right", color: T.textTer, fontWeight: 500, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.04em" }}>Zepbound AOM TRx</th>
+              <th style={{ padding: "8px 12px", textAlign: "right", color: T.textTer, fontWeight: 500, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.04em" }}>Zepbound AOM NBRx</th>
+            </tr>
+          </thead>
+          <tbody>
+            {llyTRxShareOfMarket.map((r, i) => (
+              <tr key={i} style={{ borderBottom: "1px solid " + T.border }}>
+                <td style={{ padding: "10px 12px 10px 0", color: T.textSec, fontWeight: 600 }}>{r.q}</td>
+                <td style={{ padding: "10px 12px", textAlign: "right", color: T.text, fontFeatureSettings: '"tnum"' }}>{r.t2dMounjaro != null ? r.t2dMounjaro + "%" : "—"}</td>
+                <td style={{ padding: "10px 12px", textAlign: "right", color: T.text, fontFeatureSettings: '"tnum"' }}>{r.t2dNbrxMounjaro != null ? r.t2dNbrxMounjaro + "%" : "—"}</td>
+                <td style={{ padding: "10px 12px", textAlign: "right", color: T.text, fontFeatureSettings: '"tnum"' }}>{r.aomZepbound != null ? r.aomZepbound + "%" : "—"}</td>
+                <td style={{ padding: "10px 12px", textAlign: "right", color: T.text, fontFeatureSettings: '"tnum"' }}>{r.aomNbrxZepbound != null ? r.aomNbrxZepbound + "%" : "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+
+      {/* Data gaps */}
+      <div style={{ fontSize: 15, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8, letterSpacing: "-0.01em" }}>
+        Critical data gaps flagged for follow-up
+      </div>
+      <p style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 760 }}>
+        The seven gaps below are the limit of what is reliably knowable without paid feeds. Filling them in is a question of subscriptions (IQVIA NPA Weekly, Bloomberg pharma feed) plus disciplined pulling of Novo Appendix 5/6 quarterlies for pre-2023 region splits.
+      </p>
+      <Card T={T} style={{ padding: "20px 24px", marginBottom: 28 }}>
+        {dataGaps.map((g, i) => (
+          <div key={i} style={{ paddingBottom: 12, marginBottom: 12, borderBottom: i < dataGaps.length - 1 ? "1px solid " + T.border : "none" }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 3 }}>{g.gap}</div>
+            <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, lineHeight: 1.5 }}>{g.note}</div>
+          </div>
+        ))}
       </Card>
     </div>
   );
@@ -958,6 +1303,7 @@ export default function ResearchNVO({ T }) {
       {header}
       <Tabs tabs={allTabs} active={tab} onChange={setTab} T={T} />
       {tab === "Thesis" && thesisTab}
+      {tab === "Prescriptions" && prescriptionsTab}
       {tab === "Competition" && competitionTab}
       {tab === "Patent Cliff" && patentTab}
       {tab === "Pipeline" && pipelineTab}
