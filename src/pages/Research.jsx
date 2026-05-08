@@ -7,12 +7,22 @@ import ResearchCEG from "./ResearchCEG";
 import ResearchCNI from "./ResearchCNI";
 import ResearchGold from "./ResearchGold";
 import ResearchNEE from "./ResearchNEE";
+import ResearchNVO from "./ResearchNVO";
 import ResearchNXT from "./ResearchNXT";
 import ResearchIBE from "./ResearchIBE";
 import ResearchSolar from "./ResearchSolar";
 import ResearchThemes from "./ResearchThemes";
 
 const reports = [
+  {
+    id: "nvo", ticker: "NVO", name: "Novo Nordisk", sector: "Pharma / Incretin",
+    tagline: "Lilly overtook on revenue, generics overtook on geography. What's left in the bull case",
+    date: "May 2026", type: "Competitive Landscape", color: "capRed",
+    stats: [
+      { l: "Fwd P/E", v: "11.7x" }, { l: "US TRx Share", v: "39.4%" },
+      { l: "US CER Q1'26", v: "-11%" }, { l: "FY25 Revenue", v: "$46.7bn" },
+    ],
+  },
   {
     id: "catl", ticker: "300750", name: "CATL", sector: "EV Batteries / Electrification",
     tagline: "The battery colossus: 40% global market share, six chemistries, 200+ OEM customers",
@@ -123,6 +133,7 @@ const reportComponents = {
   gold: ResearchGold,
   ibe: ResearchIBE,
   nee: ResearchNEE,
+  nvo: ResearchNVO,
   nxt: ResearchNXT,
   solar: ResearchSolar,
   themes10: ResearchThemes,
