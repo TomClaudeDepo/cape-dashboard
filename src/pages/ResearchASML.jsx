@@ -7,6 +7,9 @@ import {
   productComparison, highNaNote, monopolyClose,
   competitorIntro, competitorStats, coverageSegments, coveragePlayers,
   competitors, otherChallenges, moatBottomLine,
+  demandIntro, demandRouting, directCustomers,
+  thesisConfirms, thesisBreaks, macroStats, macroNote,
+  demandRisks, demandBottomLine,
 } from "../data/research-asml";
 import { StepCard } from "../components/asml/StepCard";
 import SectionHeader from "../components/asml/SectionHeader";
@@ -683,11 +686,308 @@ function CompetitorCard({ competitor: c, T, index }) {
   );
 }
 
+/* ════════════════════════════════════════════════════════════════
+   AI DEMAND MAP — VISUAL COMPONENTS
+   ════════════════════════════════════════════════════════════════ */
+
+/* Pick a colour for a routing destination */
+const routeColor = (T, key) => {
+  if (key === "euv") return T.green;
+  if (key === "duv") return T.orange;
+  return T.capRed;
+};
+
+/* Resolve the tone colour for the thesis-breaks cards */
+const toneColor = (T, tone) => {
+  if (tone === "amber") return T.orange;
+  if (tone === "red") return T.capRed;
+  return T.green;
+};
+
+/* ─── DEMAND ROUTING DIAGRAM ─────────────────────────────────────
+   Horizontal flow: AI Capex Wave → 5 demand streams → destinations
+   Each stream is colour-coded by routing outcome and the curve
+   thickness scales with strength to ASML's revenue.            */
+function DemandRoutingDiagram({ T, rows }) {
+  const W = 920;
+  const rowH = 92;
+  const padTop = 60;
+  const padBottom = 30;
+  const H = padTop + rows.length * rowH + padBottom;
+
+  const sourceX = 40;
+  const sourceW = 150;
+  const destX = 670;
+  const destW = 220;
+  const hubX = 240;
+  const hubW = 8;
+
+  const hubY = padTop + (rows.length * rowH) / 2;
+  const hubH = rows.length * rowH - 20;
+
+  return (
+    <Card T={T} style={{ padding: "26px 20px 18px", marginBottom: 28, overflowX: "auto" }}>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", minWidth: 700, display: "block" }} xmlns="http://www.w3.org/2000/svg">
+        {/* Legend strip */}
+        <g transform={`translate(${W - 360}, 12)`}>
+          {[
+            { c: T.green, l: "Routes to EUV at ASML" },
+            { c: T.orange, l: "Routes to DUV at ASML" },
+            { c: T.capRed, l: "Not ASML" },
+          ].map((it, i) => (
+            <g key={i} transform={`translate(${i * 120}, 0)`}>
+              <circle cx={6} cy={6} r={4} fill={it.c} />
+              <text x={16} y={9} fontSize={9} fill={T.textSec} fontFamily={Fn} fontWeight={500}>{it.l}</text>
+            </g>
+          ))}
+        </g>
+
+        {/* Source node — AI capex wave */}
+        <g>
+          <rect x={sourceX} y={hubY - hubH / 2} width={sourceW} height={hubH} rx={10} ry={10}
+            fill={T.card} stroke={T.deepBlue} strokeWidth={1.5} />
+          <text x={sourceX + sourceW / 2} y={hubY - 10} textAnchor="middle" fontSize={13} fontWeight={700} fill={T.text} fontFamily={Fn}>AI Capex</text>
+          <text x={sourceX + sourceW / 2} y={hubY + 8} textAnchor="middle" fontSize={13} fontWeight={700} fill={T.text} fontFamily={Fn}>Wave</text>
+          <text x={sourceX + sourceW / 2} y={hubY + 30} textAnchor="middle" fontSize={10} fill={T.textTer} fontFamily={Fn} fontStyle="italic">2024 → 2027+</text>
+        </g>
+
+        {/* Hub bar — visually anchors the split */}
+        <rect x={hubX} y={hubY - hubH / 2} width={hubW} height={hubH} rx={4} ry={4} fill={T.deepBlue} opacity={0.18} />
+
+        {/* Flow paths + labels */}
+        {rows.map((r, i) => {
+          const yMid = padTop + i * rowH + rowH / 2;
+          const c = routeColor(T, r.routeKey);
+          // Connector from source to hub
+          const srcPath = `M ${sourceX + sourceW} ${hubY} C ${(sourceX + sourceW + hubX) / 2} ${hubY}, ${(sourceX + sourceW + hubX) / 2} ${yMid}, ${hubX} ${yMid}`;
+          // Connector from hub to destination
+          const dstPath = `M ${hubX + hubW} ${yMid} C ${(hubX + destX) / 2} ${yMid}, ${(hubX + destX) / 2} ${yMid}, ${destX} ${yMid}`;
+          const thickness = 2 + (r.strength / 100) * 4;
+
+          return (
+            <g key={r.id} style={{ animation: `asml_fadeUp 0.45s ease-out both`, animationDelay: `${i * 90 + 80}ms` }}>
+              {/* Path: source → hub */}
+              <path d={srcPath} stroke={T.deepBlue} strokeWidth={thickness} fill="none" opacity={0.35}
+                strokeDasharray="1000" strokeDashoffset="1000" style={{ animation: `asml_drawIn 0.9s ${i * 90 + 120}ms ease-out forwards` }} />
+              {/* Path: hub → destination */}
+              <path d={dstPath} stroke={c} strokeWidth={thickness} fill="none" opacity={0.7}
+                strokeDasharray="1000" strokeDashoffset="1000" style={{ animation: `asml_drawIn 0.9s ${i * 90 + 300}ms ease-out forwards` }} />
+
+              {/* Demand category label (mid of flow on hub side) */}
+              <g transform={`translate(${hubX + hubW + 14}, ${yMid - 26})`}>
+                <text x={0} y={0} fontSize={12.5} fontWeight={600} fill={T.text} fontFamily={Fn}>{r.label}</text>
+                <text x={0} y={14} fontSize={10.5} fill={T.textTer} fontFamily={Fn}>{r.sub}</text>
+              </g>
+
+              {/* Destination pill */}
+              <g transform={`translate(${destX}, ${yMid - 22})`}>
+                <rect x={0} y={0} width={destW} height={44} rx={8} ry={8}
+                  fill={c} fillOpacity={0.10}
+                  stroke={c} strokeOpacity={0.45} strokeWidth={1} />
+                <circle cx={14} cy={22} r={5} fill={c} />
+                <text x={26} y={19} fontSize={12} fontWeight={700} fill={T.text} fontFamily={Fn}>{r.routes}</text>
+                <text x={26} y={34} fontSize={9.5} fill={T.textTer} fontFamily={Fn} fontStyle="italic">{r.badge}</text>
+              </g>
+            </g>
+          );
+        })}
+      </svg>
+
+      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 6, lineHeight: 1.6, paddingLeft: 6 }}>
+        Line thickness scales with the relative weight each demand stream contributes to ASML's revenue. The strongest two legs, advanced logic and leading-edge DRAM, are the ones that justify the premium multiple.
+      </div>
+    </Card>
+  );
+}
+
+/* ─── DEMAND DETAIL TABLE ────────────────────────────────────────
+   Below the flow diagram, a denser breakdown row by row.        */
+function DemandDetailRows({ T, rows }) {
+  return (
+    <Card T={T} style={{ padding: 0, marginBottom: 28 }}>
+      {rows.map((r, i) => {
+        const c = routeColor(T, r.routeKey);
+        return (
+          <div key={r.id} style={{
+            display: "grid",
+            gridTemplateColumns: "1.4fr 1.4fr 1.6fr 1fr",
+            gap: 18,
+            padding: "18px 22px",
+            borderBottom: i < rows.length - 1 ? "1px solid " + T.border : "none",
+            alignItems: "start",
+            animation: "asml_fadeUp 0.45s ease-out both",
+            animationDelay: `${i * 70}ms`,
+          }}>
+            <div>
+              <div style={{ fontSize: 12.5, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 3 }}>{r.label}</div>
+              <div style={{ fontSize: 10.5, color: T.textTer, fontFamily: Fn, lineHeight: 1.5 }}>{r.sub}</div>
+            </div>
+            <div>
+              <div style={{ fontSize: 9.5, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 4 }}>Examples</div>
+              <div style={{ fontSize: 11.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.55 }}>{r.examples}</div>
+            </div>
+            <div>
+              <div style={{ fontSize: 9.5, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 4 }}>Fabbed at</div>
+              <div style={{ fontSize: 11.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.55 }}>{r.via}</div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <Pill T={T} color={c} bg={toRgba(c, 0.12)}>{r.routes}</Pill>
+              <div style={{ fontSize: 10.5, color: T.textTer, fontFamily: Fn, lineHeight: 1.55 }}>{r.note}</div>
+            </div>
+          </div>
+        );
+      })}
+    </Card>
+  );
+}
+
+/* ─── DIRECT CUSTOMERS GRID ─────────────────────────────────────
+   The names that actually book revenue at ASML. Coloured dots
+   indicate relative weight in the order book.                  */
+function DirectCustomersGrid({ T, customers }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12, marginBottom: 28 }}>
+      {customers.map((c, i) => {
+        const color = T[c.color] || T.text;
+        return (
+          <Card key={c.name} T={T} style={{
+            padding: "16px 18px",
+            borderLeft: `3px solid ${color}`,
+            animation: "asml_fadeUp 0.45s ease-out both",
+            animationDelay: `${i * 60}ms`,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+              <span style={{ fontSize: 13.5, fontWeight: 700, color: T.text, fontFamily: Fn }}>{c.name}</span>
+              <Pill T={T} color={color} bg={toRgba(color, 0.10)}>{c.weight}</Pill>
+            </div>
+            <div style={{ fontSize: 11.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>{c.note}</div>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── TWO-COLUMN: WHAT CONFIRMS vs WHAT BREAKS ──────────────────
+   The crux of the analysis — set side by side so the reader
+   reads them together, not as separate sections.              */
+function ConfirmBreakSplit({ T, confirms, breaks }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18, marginBottom: 28 }}>
+      {/* Confirms column */}
+      <div>
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 12,
+          padding: "5px 10px", borderRadius: 16,
+          background: toRgba(T.green, 0.10),
+          border: `1px solid ${toRgba(T.green, 0.25)}`,
+        }}>
+          <span style={{ width: 7, height: 7, borderRadius: "50%", background: T.green }} />
+          <span style={{ fontSize: 10.5, fontWeight: 700, color: T.green, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase" }}>Where the thesis works</span>
+        </div>
+        {confirms.map((it, i) => (
+          <Card key={i} T={T} style={{
+            padding: "16px 18px", marginBottom: 12,
+            borderLeft: `3px solid ${T.green}`,
+            animation: "asml_fadeUp 0.45s ease-out both",
+            animationDelay: `${i * 80}ms`,
+          }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{it.label}</div>
+            <div style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7 }}>{it.body}</div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Breaks column */}
+      <div>
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 12,
+          padding: "5px 10px", borderRadius: 16,
+          background: toRgba(T.capRed, 0.08),
+          border: `1px solid ${toRgba(T.capRed, 0.22)}`,
+        }}>
+          <span style={{ width: 7, height: 7, borderRadius: "50%", background: T.capRed }} />
+          <span style={{ fontSize: 10.5, fontWeight: 700, color: T.capRed, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase" }}>Where it breaks or weakens</span>
+        </div>
+        {breaks.map((it, i) => {
+          const c = toneColor(T, it.tone);
+          return (
+            <Card key={i} T={T} style={{
+              padding: "16px 18px", marginBottom: 12,
+              borderLeft: `3px solid ${c}`,
+              animation: "asml_fadeUp 0.45s ease-out both",
+              animationDelay: `${i * 80}ms`,
+            }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{it.label}</div>
+              <div style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7 }}>{it.body}</div>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ─── MACRO STATS ROW ──────────────────────────────────────────
+   Four animated stat tiles: backlog, lead time, sold-out memory,
+   and the China mix decline.                                  */
+function MacroStatsRow({ T, stats }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12, marginBottom: 18 }}>
+      {stats.map((s, i) => {
+        const c = T[s.color] || T.text;
+        return (
+          <Card key={i} T={T} style={{
+            padding: "16px 18px",
+            background: T.card,
+            borderTop: `3px solid ${c}`,
+            animation: "asml_fadeUp 0.45s ease-out both",
+            animationDelay: `${i * 80}ms`,
+          }}>
+            <div style={{ fontSize: 22, fontWeight: 700, color: c, fontFamily: Fn, letterSpacing: "-0.01em", lineHeight: 1.1 }}>{s.value}</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T.text, fontFamily: Fn, marginTop: 6 }}>{s.label}</div>
+            <div style={{ fontSize: 10.5, color: T.textTer, fontFamily: Fn, marginTop: 3, lineHeight: 1.5 }}>{s.sub}</div>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── RISKS GRID ───────────────────────────────────────────────
+   Three risk cards. Each has a coloured ribbon and a number.  */
+function RisksGrid({ T, risks }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14, marginBottom: 28 }}>
+      {risks.map((r, i) => {
+        const c = T[r.color] || T.capRed;
+        return (
+          <Card key={i} T={T} style={{
+            padding: "18px 20px",
+            position: "relative",
+            borderTop: `3px solid ${c}`,
+            animation: "asml_fadeUp 0.45s ease-out both",
+            animationDelay: `${i * 90}ms`,
+          }}>
+            <div style={{
+              fontSize: 28, fontWeight: 800, color: toRgba(c, 0.18), fontFamily: Fh, fontStyle: "italic",
+              position: "absolute", top: 10, right: 16, lineHeight: 1,
+            }}>0{i + 1}</div>
+            <div style={{ fontSize: 9.5, fontWeight: 700, color: c, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>Risk {i + 1}</div>
+            <div style={{ fontSize: 13.5, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 8, paddingRight: 32 }}>{r.label}</div>
+            <div style={{ fontSize: 11.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.65 }}>{r.body}</div>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ════════════════════════════════════════════════════════════════ */
 export default function ResearchASML({ T }) {
   useKeyframes();
   const [tab, setTab] = useState("EUV Technology");
-  const allTabs = ["EUV Technology", "Competitors"];
+  const allTabs = ["EUV Technology", "AI Demand Map", "Competitors"];
 
   /* ─── HEADER ─── */
   const header = (
@@ -1012,8 +1312,65 @@ export default function ResearchASML({ T }) {
     </>
   );
 
+  /* ─── AI DEMAND MAP TAB ─── */
+  const demandTab = (
+    <>
+      <p style={{ fontSize: 15, color: T.text, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 24px", fontStyle: "italic" }}>{demandIntro}</p>
+
+      {/* Hero routing diagram */}
+      <SectionHeader T={T} eyebrow="THE ROUTING MAP"
+        title="Where AI demand actually ends up"
+        subtitle="Five streams of AI-driven semiconductor capex, and the tool category each one routes to. The two top rows are the structural story; the bottom three explain why 'all bottlenecks → ASML' is too broad."
+        colorKey="deepBlue" />
+      <DemandRoutingDiagram T={T} rows={demandRouting} />
+
+      {/* Demand detail rows */}
+      <DemandDetailRows T={T} rows={demandRouting} />
+
+      {/* What confirms vs what breaks */}
+      <SectionHeader T={T} eyebrow="THE PRECISE THESIS"
+        title="What works, what breaks"
+        subtitle="The clean version of the bull case sits in the left column. The right column is the part most macro-level pitches gloss over."
+        colorKey="capRed" />
+      <ConfirmBreakSplit T={T} confirms={thesisConfirms} breaks={thesisBreaks} />
+
+      {/* Direct customers */}
+      <SectionHeader T={T} eyebrow="WHO ACTUALLY ORDERS THE TOOLS"
+        title="The seven names that book ASML revenue"
+        subtitle="The fabless drivers (NVIDIA, AMD, Apple, Broadcom, Google, Meta, Microsoft, Amazon) do not buy from ASML. They are why the names below keep ordering EUV."
+        colorKey="purple" />
+      <DirectCustomersGrid T={T} customers={directCustomers} />
+
+      {/* Macro setup */}
+      <SectionHeader T={T} eyebrow="MACRO BACKDROP"
+        title="An unusually tight setup"
+        subtitle="Visibility, lead times, and a memory book sold out for the year. The improving China mix is a quiet positive on margins."
+        colorKey="green" />
+      <MacroStatsRow T={T} stats={macroStats} />
+      <Card T={T} style={{ padding: "18px 22px", marginBottom: 28 }}>
+        <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: 0 }}>{macroNote}</p>
+      </Card>
+
+      {/* Risks */}
+      <SectionHeader T={T} eyebrow="WHAT WOULD BREAK IT"
+        title="Three risks worth tracking"
+        subtitle="Not 'is demand real' — the harder questions are below."
+        colorKey="orange" />
+      <RisksGrid T={T} risks={demandRisks} />
+
+      {/* Bottom line */}
+      <SectionHeader T={T} eyebrow="NET"
+        title="The premium has a structural reason"
+        subtitle="The precise version of the thesis, stripped of macro shorthand."
+        colorKey="green" />
+      <Card T={T} style={{ padding: "22px 26px", borderLeft: `4px solid ${T.green}`, marginBottom: 28 }}>
+        <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, margin: 0 }}>{demandBottomLine}</p>
+      </Card>
+    </>
+  );
+
   /* ─── TAB CONTENT MAP ─── */
-  const tabContent = { "EUV Technology": primerTab, "Competitors": competitorsTab };
+  const tabContent = { "EUV Technology": primerTab, "AI Demand Map": demandTab, "Competitors": competitorsTab };
 
   return (
     <div>

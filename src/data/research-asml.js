@@ -277,3 +277,157 @@ export const otherChallenges = [
 ];
 
 export const moatBottomLine = "The advanced logic monopoly is intact through at least 2028-2030. Nanoimprint takes some memory share but is a different tool category. Chinese LDP-EUV will eventually serve domestic fabs and remove a chunk of SMIC's structural disadvantage, but it does not address export markets, includes no High-NA capability, and faces real metrology, mask, and photoresist gaps beyond the light source. ASML operates as a system integrator on a Western IP ecosystem, particularly Zeiss optics, with decades of accumulated expertise. The integration moat is the harder part to replicate, not the physics. The real risk to ASML is geopolitical: losing access to the Chinese market entirely as Beijing's bifurcated stack matures, not losing High-NA share to a credible global challenger.";
+
+/* ════════════════════════════════════════════════════════════════
+   AI DEMAND MAP — does every AI bottleneck route to ASML?
+   Synthesis of where the thesis works cleanly, where it weakens,
+   and the macro backdrop. Built to stress-test the simple framing.
+   ════════════════════════════════════════════════════════════════ */
+
+export const demandIntro = "Investors often shorthand the AI capex thesis as 'all bottlenecks route to ASML.' Directionally true. Precision matters because not every constraint hits lithography, and among those that do, the split between Extreme Ultraviolet (EUV) and Deep Ultraviolet (DUV) materially changes the revenue and margin profile.";
+
+/* The hero routing map.
+   Each row is one slice of AI-driven semiconductor demand and the
+   actual tool category it routes to. Strength is 0 to 100 and is
+   used to scale the visual flow weight. */
+export const demandRouting = [
+  {
+    id: "logic",
+    label: "Advanced Logic",
+    sub: "CPU, GPU, AI accelerators",
+    examples: "Blackwell · MI400 · M-series · TPU · Trainium · MTIA · Maia",
+    via: "TSMC N3 / N2 / A16 · Samsung SF2 · Intel 18A",
+    routes: "EUV at ASML",
+    routeKey: "euv",
+    note: "Every leading-edge AI chip fabs here. 2nm adds layers and High-NA EUV ramps from this generation.",
+    strength: 100,
+    badge: "Strongest leg",
+  },
+  {
+    id: "hbm",
+    label: "Leading-edge DRAM",
+    sub: "High-Bandwidth Memory (HBM) in particular",
+    examples: "HBM3E · HBM4 stacks for AI accelerators",
+    via: "SK Hynix · Samsung Memory · Micron",
+    routes: "EUV at ASML",
+    routeKey: "euv",
+    note: "1a, 1b, 1c nm DRAM dies have shifted to EUV. SK Hynix reportedly ~$8bn on EUV; Samsung ~20 EUV units booked for P5.",
+    strength: 80,
+    badge: "Strongest leg",
+  },
+  {
+    id: "analog",
+    label: "Analog & Power Semis",
+    sub: "Capacity additions, not shrinks",
+    examples: "Texas Instruments · Analog Devices · Infineon · NXP · STMicro · Onsemi · Microchip",
+    via: "28nm and above, often 90 to 180nm",
+    routes: "DUV at ASML",
+    routeKey: "duv",
+    note: "Still ASML revenue. Lower average selling price (ASP) and below EUV margins. Counts, but doesn't move the AI thesis.",
+    strength: 45,
+    badge: "Weaker leg",
+  },
+  {
+    id: "nand",
+    label: "NAND Flash",
+    sub: "Scales by stacking, not shrinking",
+    examples: "Kioxia · SanDisk · YMTC · Solidigm",
+    via: "300+ layer 3D NAND",
+    routes: "Etch & Deposition",
+    routeKey: "other",
+    note: "Capacity expansion routes to Applied Materials, Lam Research, Tokyo Electron, far more than ASML.",
+    strength: 25,
+    badge: "Not ASML",
+  },
+  {
+    id: "packaging",
+    label: "Advanced Packaging (CoWoS)",
+    sub: "The actual bottleneck on Blackwell today",
+    examples: "Chip-on-Wafer-on-Substrate at TSMC",
+    via: "Bonders · ABF substrates",
+    routes: "Bonders & Substrate Suppliers",
+    routeKey: "other",
+    note: "Gated by Unimicron, Ibiden, Shinko and bonder vendors. ASML touches packaging only at the margin.",
+    strength: 20,
+    badge: "Not ASML",
+  },
+];
+
+/* The customers who actually book ASML revenue. Coloured dots
+   give a quick visual rank by relative importance. */
+export const directCustomers = [
+  { name: "TSMC", weight: "Largest", note: "Arizona Fab 21 phases 2 and 3, Kumamoto Japan, Dresden, plus Taiwan N2 and A16 ramp.", color: "deepBlue" },
+  { name: "Samsung Foundry", weight: "Large", note: "SF2 ramp and the Pyeongtaek P5 fab.", color: "purple" },
+  { name: "Intel Foundry", weight: "Large", note: "18A ramp and 14A. Lead customer for High-NA EUV.", color: "capRed" },
+  { name: "SK Hynix", weight: "Large", note: "HBM leader and leading-edge DRAM. The most aggressive EUV memory buyer.", color: "green" },
+  { name: "Samsung Memory", weight: "Large", note: "HBM3E and HBM4, plus standard DRAM at advanced nodes.", color: "orange" },
+  { name: "Micron", weight: "Mid", note: "Idaho and New York fabs. Slowest of the three to EUV but now committed.", color: "moss" },
+  { name: "Rapidus", weight: "Small", note: "Japan 2nm aspiration. Small in absolute terms but a real EUV buyer.", color: "textSec" },
+];
+
+/* Where the precise thesis confirms. */
+export const thesisConfirms = [
+  {
+    label: "Advanced logic for AI",
+    body: "The fabless drivers, NVIDIA, AMD, Apple, Broadcom, Google, Meta, Microsoft, Amazon, do not buy from ASML directly. They are the reason TSMC, Samsung and Intel Foundry keep ordering EUV. ASML's Chief Technology Officer flagged on Q1 that advanced-logic customers are building capacity for several nodes while ramping 2nm to address AI products.",
+  },
+  {
+    label: "Leading-edge DRAM and HBM",
+    body: "AI-driven HBM expansion at SK Hynix and Micron is one of the explicit long-term revenue drivers ASML calls out. SK Hynix reportedly committed roughly $8bn on EUV equipment. Samsung's P5 EUV book is being closely watched. Micron is the laggard but is now in.",
+  },
+];
+
+/* Where the thesis breaks or weakens. */
+export const thesisBreaks = [
+  {
+    label: "Analog and power semis do not buy EUV",
+    body: "Texas Instruments, Analog Devices, Infineon, NXP, STMicro, Onsemi, Microchip mostly run 28nm and above. Their capex drives DUV, often not even high-end immersion DUV. Still ASML revenue, but lower ASP and below EUV margins. When you hear 'analog bottleneck', think Applied Materials, Lam, KLA, and ASML's DUV book, not the EUV story.",
+    tone: "amber",
+  },
+  {
+    label: "NAND flash mostly does not need EUV",
+    body: "NAND scales by adding layers, now 300-plus in 3D NAND, not by shrinking lithography pitch. Capacity expansion at Kioxia, SanDisk, YMTC, Solidigm routes to etch and deposition (Applied Materials, Lam, Tokyo Electron) far more than to ASML.",
+    tone: "red",
+  },
+  {
+    label: "The CoWoS bottleneck is not ASML",
+    body: "Advanced packaging is the headline constraint on Blackwell shipments today. Chip-on-Wafer-on-Substrate (CoWoS-L) capacity at TSMC is gated by bonders, substrate suppliers (Unimicron, Ibiden, Shinko) and ABF substrates, not by lithography. ASML touches packaging only at the margin.",
+    tone: "red",
+  },
+  {
+    label: "The China DUV tailwind is mostly over",
+    body: "China fell to 19% of Q1 2026 system sales from 36% in Q4 2025. The lost DUV revenue is being replaced by higher-margin EUV from TSMC, Samsung, SK Hynix and Intel, so mix is improving even as China declines.",
+    tone: "amber",
+  },
+];
+
+/* The macro setup. */
+export const macroStats = [
+  { value: "€38.8bn", label: "Backlog", sub: "~12 months of visibility", color: "deepBlue" },
+  { value: "18–24mo", label: "Order lead time", sub: "Revenue through 2027 largely locked", color: "purple" },
+  { value: "Sold out", label: "Memory customers 2026", sub: "Constraints last beyond 2026", color: "green" },
+  { value: "19%", label: "China Q1 2026 mix", sub: "Down from 36% in Q4 2025", color: "orange" },
+];
+
+export const macroNote = "ASML's Chief Technology Officer flagged that memory customers are sold out for 2026 with supply constraints beyond 2026, and that both memory and logic customers are accelerating capacity ramps in 2026 and beyond, supported by long-term commitments from their downstream customers. The €38.8bn backlog provides roughly 12 months of visibility. Order lead times of 18 to 24 months mean revenue through 2027 is already largely locked.";
+
+/* Risks to the long thesis. */
+export const demandRisks = [
+  {
+    label: "AI capex normalisation",
+    body: "The cleanest pushback is not 'is demand real', it is what happens when AI capex normalises. A sharp pause in global AI capex would slow new EUV bookings even though existing backlog still ships. Orders today translate to revenue in 2027 and beyond, so the question is whether hyperscaler return on investment (ROI) on the 2024 to 2026 capex wave shows up before Sam Altman, Jensen Huang and the buying committee need to re-up.",
+    color: "capRed",
+  },
+  {
+    label: "Intel Foundry execution",
+    body: "Intel is a meaningful EUV customer. If 18A does not win external customers, some of that capex slips. The order book is real, the conversion is conditional on external wins.",
+    color: "orange",
+  },
+  {
+    label: "High-NA EUV adoption pace",
+    body: "If customers stretch low-NA further via multi-patterning, the High-NA ramp slows the topline mix shift. Pulls forward less of the per-tool ASP step-up.",
+    color: "purple",
+  },
+];
+
+export const demandBottomLine = "The framing 'all bottlenecks route to ASML' is too broad. The more precise version is: leading-edge logic capacity for AI accelerators, plus advanced DRAM for HBM, both route through EUV, and ASML is the sole supplier. That is the structural reason the stock trades at a premium to the rest of wafer fab equipment (WFE), and why the rest of the deck, analog, NAND, packaging, is best modelled separately.";
