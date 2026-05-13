@@ -164,3 +164,116 @@ export const highNaNote = "High-NA is what enables sub-2nm logic without multi-p
    MONOPOLY CLOSE
    ═══════════════════════════════════════════ */
 export const monopolyClose = "Every component is at the bleeding edge: the CO₂ laser comes from Trumpf, the Mo/Si optics come from Zeiss SMT (which ASML co-owns), the precision stages from ASML itself. The integration risk alone is so high that no second supplier has emerged in over twenty years of effort. Each tool ships in roughly forty freight containers, weighs around 180 tons, and takes months to install and qualify on-site. Annual capacity is roughly fifty to sixty Low-NA tools and five to ten High-NA tools.";
+
+/* ═══════════════════════════════════════════
+   COMPETITORS — Threat landscape
+   ═══════════════════════════════════════════ */
+export const competitorIntro = "The monopoly is real but not unchallenged. Four categories of competitor exist, each with a distinct threat profile. None are positioned to displace ASML at the leading edge in the next five years, and most are not really trying to.";
+
+export const competitorStats = [
+  { value: "0", label: "Credible challengers at the leading edge today", color: "deepBlue" },
+  { value: "~250W", label: "Source power required for commercial EUV. Chinese LDP prototypes sit at 50-100W", color: "capRed" },
+  { value: "2028", label: "Earliest realistic date for a Chinese commercial-grade EUV tool on fab floors", color: "orange" },
+  { value: "Memory only", label: "Where Canon's nanoimprint is genuinely competitive. Logic remains untouchable for it", color: "purple" },
+];
+
+/* Coverage matrix: each player's effective reach across market segments.
+   Segments: Memory (NAND/DRAM), Mature logic (≥14nm), Advanced logic (7-3nm), Cutting edge (≤2nm)
+   Coverage value: 0 = none, 0.3 = niche, 0.6 = meaningful, 1.0 = dominant
+   Notes are per-segment short labels. */
+export const coverageSegments = [
+  { id: "memory",   label: "Memory",         sub: "NAND / DRAM" },
+  { id: "mature",   label: "Mature logic",   sub: "≥14nm" },
+  { id: "advanced", label: "Advanced logic", sub: "7nm – 3nm" },
+  { id: "edge",     label: "Cutting edge",   sub: "≤2nm" },
+];
+
+export const coveragePlayers = [
+  { name: "ASML",                   color: "green",    coverage: [0.7, 1.0, 1.0, 1.0], notes: ["Some share",  "Strong",         "Dominant",        "Effective monopoly"] },
+  { name: "Canon NIL",              color: "deepBlue", coverage: [1.0, 0.3, 0.0, 0.0], notes: ["Active, Kioxia", "Limited",      "Not viable",       "Not viable"] },
+  { name: "Chinese LDP-EUV",        color: "capRed",   coverage: [0.0, 0.6, 0.7, 0.0], notes: ["Not the target", "2028+ China",  "~2029 China",      "No High-NA path"] },
+  { name: "SSMB-EUV",               color: "purple",   coverage: [0.0, 0.0, 0.2, 0.2], notes: ["Not the target", "Not the target", "R&D, 2035+",     "R&D, 2035+"] },
+  { name: "E-beam / DUV / Prinano", color: "orange",   coverage: [0.5, 0.3, 0.0, 0.0], notes: ["Niche",       "DUV stopgap",     "Yields collapse",  "No path"] },
+];
+
+export const competitors = [
+  {
+    id: "C1",
+    name: "Canon Nanoimprint Lithography",
+    short: "Canon NIL",
+    badge: "Closest commercially shipping alternative",
+    color: "deepBlue",
+    tool: "FPA-1200NZ2C",
+    firstShipped: "Shipping since late 2024",
+    approach: "Stamp-and-print. A patterned mask is pressed onto resist-coated wafers, transferring the pattern mechanically. No 13.5nm light source needed, which removes the single biggest cost driver in EUV.",
+    angle: "Roughly an order of magnitude cheaper per tool than EUV at $150M+. Canon claims up to 90% lower energy consumption since there is no source plasma to power. Lead customer is Kioxia. Canon itself does not position the tool as a direct EUV competitor.",
+    targets: "Resolution down to 14nm. Logic chips comparable to current AMD, Intel, and Nvidia processors are achievable in principle, but the throughput economics do not support it.",
+    breaks: [
+      "Throughput. Each NIL cell processes one wafer at a time on a 1.3 second imprint cycle, fundamentally below EUV scanners running at 200+ wafers per hour.",
+      "Defect control. Any defect on the stamp mask replicates onto every wafer. There is no statistical averaging across exposures.",
+      "Pattern complexity. Slower and less suitable for the irregular features of processors and SoCs. Works for NAND flash where the patterns repeat.",
+    ],
+    horizon: "Shipping today for memory. Never a threat at the cutting edge of logic.",
+    horizonShort: "Today / memory only",
+    threatToASML: "Low. Different tool category. Takes a slice of memory share that EUV was unlikely to win on cost grounds anyway.",
+  },
+  {
+    id: "C2",
+    name: "Chinese LDP-based EUV",
+    short: "Huawei / SiCarrier / SMIC",
+    badge: "Closest direct technical replication",
+    color: "capRed",
+    tool: "LDP prototype, Shenzhen",
+    firstShipped: "Prototype validated late 2025",
+    approach: "Laser-induced discharge plasma rather than ASML's laser-produced plasma. Tin is evaporated between electrodes and ionised via high-voltage discharge to emit at 13.5nm. Theoretically simpler architecture than ASML's CO2-laser-vaporised-tin path.",
+    angle: "Whole-of-nation effort coordinated by Huawei and Shenzhen SiCarrier. Geopolitically motivated rather than commercially motivated. The tool is not intended for export. The aim is to cap SMIC's downside, not to take ASML's TAM.",
+    targets: "Initial reports suggest the prototype is the foundation for a commercial-grade tool expected to reach fab floors by 2028. The stated goal is to remove the need for expensive DUV multi-patterning by around 2029.",
+    breaks: [
+      "Source power. Prototypes generate 50-100W. Commercial EUV needs 250W or more.",
+      "Optics. Zeiss still holds a significant lead in precision multilayer mirrors. Replicating sub-nanometre figure tolerances at scale is a decade-plus problem in its own right.",
+      "Masks and photoresists. Real bottlenecks remain beyond the light source.",
+      "No High-NA. The Chinese path is Low-NA only. No domestic line of sight to 0.55 NA anamorphic optics.",
+      "Track record. CSIS notes that prior Chinese 5nm claims have repeatedly been disproven. SMIC's existing 7nm capability was built on stockpiled ASML DUV machines rather than indigenous breakthroughs.",
+    ],
+    horizon: "Domestic Chinese fabs by 2028 at the earliest. Not exported. No High-NA roadmap.",
+    horizonShort: "2028+ / China only",
+    threatToASML: "Indirect. Reduces SMIC's structural disadvantage inside China but does not contest export markets. The real risk to ASML is losing access to the Chinese market entirely as Beijing's bifurcated stack matures, not losing share to a credible global challenger.",
+  },
+  {
+    id: "C3",
+    name: "SSMB-EUV",
+    short: "Tsinghua / SIOM",
+    badge: "The wild card",
+    color: "purple",
+    tool: "Pre-prototype research programme",
+    firstShipped: "National research initiative",
+    approach: "Steady-state microbunching EUV. A centralised synchrotron-like accelerator generates EUV light that could in principle feed multiple lithography tools simultaneously.",
+    angle: "If it works at scale, it would invert the current architecture. Instead of one source per tool, one accelerator powers many. A scaling advantage that single-source EUV cannot match.",
+    targets: "Still pre-prototype for production use. Led by the Shanghai Institute of Optics and Fine Mechanics with Tsinghua University.",
+    breaks: [
+      "Not demonstrated at production scale.",
+      "Capital and physical footprint of a synchrotron-class source is non-trivial. The economics depend entirely on multi-tool throughput materialising.",
+      "Mask, optics, and photoresist gaps remain whether the source is LPP, LDP, or SSMB.",
+    ],
+    horizon: "10+ years if it works at all.",
+    horizonShort: "2035+ / theoretical",
+    threatToASML: "Low this decade. Worth tracking as a structural threat to the EUV business model if it ever matures, since the per-tool light source is currently one of ASML's largest moats.",
+  },
+];
+
+export const otherChallenges = [
+  {
+    name: "E-beam (China's Xizhi)",
+    description: "Draws circuits directly onto the wafer with a focused electron beam, no masks required. Maskless and flexible, but throughput collapses against scanner-based exposure. Used for mask-making and small-batch R&D, not volume production.",
+  },
+  {
+    name: "Multi-patterning DUV",
+    description: "How SMIC currently produces 7nm. Yields collapse below 5nm and the cost curve diverges from EUV badly. A stopgap, not a destination.",
+  },
+  {
+    name: "Prinano (China NIL)",
+    description: "Domestic Chinese answer to Canon's nanoimprint. Memory-focused profile, same throughput and defect-replication issues. Same conclusion: not a leading-edge logic alternative.",
+  },
+];
+
+export const moatBottomLine = "The advanced logic monopoly is intact through at least 2028-2030. Nanoimprint takes some memory share but is a different tool category. Chinese LDP-EUV will eventually serve domestic fabs and remove a chunk of SMIC's structural disadvantage, but it does not address export markets, includes no High-NA capability, and faces real metrology, mask, and photoresist gaps beyond the light source. ASML operates as a system integrator on a Western IP ecosystem, particularly Zeiss optics, with decades of accumulated expertise. The integration moat is the harder part to replicate, not the physics. The real risk to ASML is geopolitical: losing access to the Chinese market entirely as Beijing's bifurcated stack matures, not losing High-NA share to a credible global challenger.";

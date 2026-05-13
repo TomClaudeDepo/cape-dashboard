@@ -5,6 +5,8 @@ import {
   heroStats, intro, coreProblem,
   sourceSteps, mirrorSteps, reticleSteps, projectionSteps,
   productComparison, highNaNote, monopolyClose,
+  competitorIntro, competitorStats, coverageSegments, coveragePlayers,
+  competitors, otherChallenges, moatBottomLine,
 } from "../data/research-asml";
 import { StepCard } from "../components/asml/StepCard";
 import SectionHeader from "../components/asml/SectionHeader";
@@ -522,9 +524,170 @@ function AnamorphicViz({ T }) {
   );
 }
 
+/* ═══════════════════════════════════════════
+   TABS
+   ═══════════════════════════════════════════ */
+function Tabs({ tabs, active, onChange, T }) {
+  return (
+    <div style={{ display: "flex", gap: 0, borderBottom: "1px solid " + T.border, marginBottom: 28 }}>
+      {tabs.map(t => (
+        <div key={t} onClick={() => onChange(t)} style={{
+          padding: "10px 18px", fontSize: 13, fontFamily: Fn, fontWeight: active === t ? 600 : 400,
+          color: active === t ? T.text : T.textTer, cursor: "pointer",
+          borderBottom: active === t ? "2px solid " + T.capRed : "2px solid transparent",
+          transition: "all 0.15s", letterSpacing: "-0.01em",
+        }}>{t}</div>
+      ))}
+    </div>
+  );
+}
+
+/* hex (#RRGGBB) → rgba string at given alpha 0..1. Fallback to the input if unparsable. */
+const toRgba = (hex, alpha) => {
+  if (!hex || typeof hex !== "string" || hex[0] !== "#" || hex.length !== 7) return hex;
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+/* ═══════════════════════════════════════════
+   MARKET COVERAGE MATRIX
+   ═══════════════════════════════════════════ */
+function MarketCoverageMatrix({ T }) {
+  const segs = coverageSegments;
+  const players = coveragePlayers;
+
+  return (
+    <Card T={T} style={{ padding: 20, marginBottom: 28, overflowX: "auto" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "200px repeat(4, 1fr)", gap: 0, minWidth: 720 }}>
+        {/* corner */}
+        <div style={{ padding: "8px 12px 12px", borderBottom: "1px solid " + T.border }}>
+          <div style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase" }}>Coverage</div>
+        </div>
+        {segs.map(s => (
+          <div key={s.id} style={{ padding: "8px 12px 12px", borderBottom: "1px solid " + T.border, borderLeft: "1px solid " + T.border }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn }}>{s.label}</div>
+            <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 2 }}>{s.sub}</div>
+          </div>
+        ))}
+
+        {/* rows */}
+        {players.flatMap((p, pi) => {
+          const last = pi === players.length - 1;
+          const color = T[p.color] || T.text;
+          const rowBorder = last ? "none" : "1px solid " + T.border;
+          return [
+            <div key={`l-${pi}`} style={{ padding: "12px", display: "flex", alignItems: "center", borderBottom: rowBorder }}>
+              <span style={{ width: 8, height: 8, borderRadius: 2, background: color, marginRight: 10, flexShrink: 0 }} />
+              <span style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn }}>{p.name}</span>
+            </div>,
+            ...p.coverage.map((c, ci) => {
+              const bg = c > 0 ? toRgba(color, c * 0.22 + 0.04) : "transparent";
+              return (
+                <div key={`c-${pi}-${ci}`} style={{
+                  padding: "12px", borderBottom: rowBorder, borderLeft: "1px solid " + T.border,
+                  background: bg, minHeight: 44, display: "flex", alignItems: "center",
+                }}>
+                  <div style={{
+                    fontSize: 11,
+                    color: c > 0 ? T.text : T.textTer,
+                    fontFamily: Fn,
+                    fontWeight: c >= 0.6 ? 600 : 500,
+                    opacity: c === 0 ? 0.5 : 1,
+                  }}>{p.notes[ci]}</div>
+                </div>
+              );
+            }),
+          ];
+        })}
+      </div>
+      <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 14, lineHeight: 1.6 }}>
+        Shading intensity reflects depth of coverage. Empty cells are not contested. The advanced and cutting-edge logic columns are where the value is, and they remain effectively ASML alone.
+      </div>
+    </Card>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   COMPETITOR CARD
+   ═══════════════════════════════════════════ */
+function CompetitorCard({ competitor: c, T, index }) {
+  const color = T[c.color] || T.text;
+  const bg = toRgba(color, 0.09);
+
+  return (
+    <Card T={T} style={{
+      padding: 0, marginBottom: 20, borderLeft: `4px solid ${color}`, overflow: "hidden",
+      animation: "asml_fadeUp 0.5s ease-out both", animationDelay: `${index * 80}ms`,
+    }}>
+      {/* Header */}
+      <div style={{ padding: "20px 26px 14px", borderBottom: "1px solid " + T.border }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexWrap: "wrap", marginBottom: 6 }}>
+          <span style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 22, color: T.text }}>{c.name}</span>
+          <span style={{ fontSize: 12, color: T.textTer, fontFamily: Fn }}>{c.short}</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <Pill T={T} color={color} bg={bg}>{c.badge}</Pill>
+          <span style={{ fontSize: 11, color: T.textTer, fontFamily: Fn }}>{c.tool} · {c.firstShipped}</span>
+        </div>
+      </div>
+
+      {/* Approach + Angle */}
+      <div style={{ padding: "20px 26px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28 }}>
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.08em", marginBottom: 8, textTransform: "uppercase" }}>How it works</div>
+          <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>{c.approach}</p>
+        </div>
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.08em", marginBottom: 8, textTransform: "uppercase" }}>Why it exists</div>
+          <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>{c.angle}</p>
+        </div>
+      </div>
+
+      {/* Reach */}
+      <div style={{ padding: "0 26px 18px" }}>
+        <div style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.08em", marginBottom: 8, textTransform: "uppercase" }}>Reach</div>
+        <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>{c.targets}</p>
+      </div>
+
+      {/* What breaks */}
+      <div style={{ padding: "16px 26px", background: T.pillBg, borderTop: "1px solid " + T.border, borderBottom: "1px solid " + T.border }}>
+        <div style={{ fontSize: 10, fontWeight: 600, color: T.capRed, fontFamily: Fn, letterSpacing: "0.08em", marginBottom: 10, textTransform: "uppercase" }}>What breaks</div>
+        <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+          {c.breaks.map((b, i) => (
+            <li key={i} style={{
+              fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.7,
+              paddingLeft: 18, position: "relative", marginBottom: i < c.breaks.length - 1 ? 8 : 0,
+            }}>
+              <span style={{ position: "absolute", left: 0, top: 0, color: T.capRed, fontWeight: 700 }}>·</span>
+              {b}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Footer */}
+      <div style={{ padding: "18px 26px", display: "grid", gridTemplateColumns: "1fr 1.8fr", gap: 28, alignItems: "start" }}>
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>Realistic horizon</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: color, fontFamily: Fn, marginBottom: 4 }}>{c.horizonShort}</div>
+          <div style={{ fontSize: 11.5, color: T.textTer, fontFamily: Fn, lineHeight: 1.6 }}>{c.horizon}</div>
+        </div>
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>Threat to ASML</div>
+          <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>{c.threatToASML}</p>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
 /* ════════════════════════════════════════════════════════════════ */
 export default function ResearchASML({ T }) {
   useKeyframes();
+  const [tab, setTab] = useState("EUV Technology");
+  const allTabs = ["EUV Technology", "Competitors"];
 
   /* ─── HEADER ─── */
   const header = (
@@ -566,10 +729,9 @@ export default function ResearchASML({ T }) {
   /* Find a step by id helper */
   const find = (arr, id) => arr.find(s => s.id === id);
 
-  return (
-    <div>
-      {header}
-
+  /* ─── PRIMER TAB (the EUV technology walkthrough) ─── */
+  const primerTab = (
+    <>
       <p style={{ fontSize: 15, color: T.text, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 24px", fontStyle: "italic" }}>{intro}</p>
 
       <Card T={T} style={{ padding: "22px 26px", marginBottom: 28, borderLeft: `4px solid ${T.capRed}` }}>
@@ -794,6 +956,70 @@ export default function ResearchASML({ T }) {
       <Card T={T} style={{ padding: "22px 26px", borderLeft: `4px solid ${T.deepBlue}` }}>
         <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, margin: 0 }}>{monopolyClose}</p>
       </Card>
+    </>
+  );
+
+  /* ─── COMPETITORS TAB ─── */
+  const competitorsTab = (
+    <>
+      <p style={{ fontSize: 15, color: T.text, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 24px", fontStyle: "italic" }}>{competitorIntro}</p>
+
+      {/* Hero stats */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: 10, marginBottom: 28 }}>
+        {competitorStats.map((s, i) => <AnimatedStat key={i} stat={s} index={i} T={T} />)}
+      </div>
+
+      {/* Coverage matrix */}
+      <SectionHeader T={T} eyebrow="LANDSCAPE"
+        title="Who competes where"
+        subtitle="Coverage of each lithography segment by player. The two right-hand columns, where the highest economic value sits, are essentially ASML alone."
+        colorKey="deepBlue" />
+      <MarketCoverageMatrix T={T} />
+
+      {/* Four challengers */}
+      <SectionHeader T={T} eyebrow="THE THREE NAMED CHALLENGERS"
+        title="Each with a different threat profile"
+        subtitle="None are positioned to displace ASML at the leading edge this decade."
+        colorKey="capRed" />
+
+      {competitors.map((c, i) => (
+        <CompetitorCard key={c.id} competitor={c} T={T} index={i} />
+      ))}
+
+      {/* Everything else */}
+      <SectionHeader T={T} eyebrow="ALSO IN THE FIELD"
+        title="Other approaches worth knowing about"
+        subtitle="Not real threats. Useful to track so they can be placed in context when they surface in coverage."
+        colorKey="orange" />
+
+      <Card T={T} style={{ padding: 0, marginBottom: 28 }}>
+        {otherChallenges.map((o, i) => (
+          <div key={i} style={{ padding: "18px 22px", borderBottom: i < otherChallenges.length - 1 ? "1px solid " + T.border : "none" }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{o.name}</div>
+            <div style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.7 }}>{o.description}</div>
+          </div>
+        ))}
+      </Card>
+
+      {/* Bottom line */}
+      <SectionHeader T={T} eyebrow="BOTTOM LINE"
+        title="The moat is integration, not just physics"
+        subtitle="Where ASML's monopoly actually comes from, and what could change it."
+        colorKey="green" />
+      <Card T={T} style={{ padding: "22px 26px", borderLeft: `4px solid ${T.green}` }}>
+        <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, margin: 0 }}>{moatBottomLine}</p>
+      </Card>
+    </>
+  );
+
+  /* ─── TAB CONTENT MAP ─── */
+  const tabContent = { "EUV Technology": primerTab, "Competitors": competitorsTab };
+
+  return (
+    <div>
+      {header}
+      <Tabs tabs={allTabs} active={tab} onChange={setTab} T={T} />
+      {tabContent[tab]}
     </div>
   );
 }
