@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Fn, Fh } from "../theme";
 import { Card, Pill, TabBar } from "../components/shared";
+import ResearchASML from "./ResearchASML";
 import ResearchBKNG from "./ResearchBKNG";
 import ResearchCATL from "./ResearchCATL";
 import ResearchCEG from "./ResearchCEG";
@@ -14,6 +15,15 @@ import ResearchSolar from "./ResearchSolar";
 import ResearchThemes from "./ResearchThemes";
 
 const reports = [
+  {
+    id: "asml", ticker: "ASML", name: "ASML Holding", sector: "Semiconductor Equipment / Lithography",
+    tagline: "Why one Dutch company controls the gating constraint on AI compute",
+    date: "May 2026", type: "Business Primer", color: "deepBlue",
+    stats: [
+      { l: "FY25 Rev", v: "€32.7B" }, { l: "GM", v: "52.8%" },
+      { l: "Backlog", v: "€38.8B" }, { l: "EUV Ships", v: "48" },
+    ],
+  },
   {
     id: "nvo", ticker: "NVO", name: "Novo Nordisk", sector: "Pharma / Incretin",
     tagline: "Lilly overtook on revenue, generics overtook on geography. What's left in the bull case",
@@ -126,6 +136,7 @@ const backBtn = (T, setActive) => (
 );
 
 const reportComponents = {
+  asml: ResearchASML,
   bkng: ResearchBKNG,
   catl: ResearchCATL,
   ceg: ResearchCEG,
