@@ -16,12 +16,12 @@ import ResearchThemes from "./ResearchThemes";
 
 const reports = [
   {
-    id: "asml", ticker: "ASML", name: "ASML Holding", sector: "Semiconductor Equipment / Lithography",
-    tagline: "Why one Dutch company controls the gating constraint on AI compute",
-    date: "May 2026", type: "Business Primer", color: "deepBlue",
+    id: "asml", ticker: "ASML", name: "ASML Holding", sector: "Semiconductor Equipment / EUV Lithography",
+    tagline: "Inside the most physically extreme manufacturing process ever industrialised",
+    date: "May 2026", type: "Technology Primer", color: "deepBlue",
     stats: [
-      { l: "FY25 Rev", v: "€32.7B" }, { l: "GM", v: "52.8%" },
-      { l: "Backlog", v: "€38.8B" }, { l: "EUV Ships", v: "48" },
+      { l: "Wavelength", v: "13.5nm" }, { l: "Conversion", v: "0.02%" },
+      { l: "Mirror Eff.", v: "~70%" }, { l: "Throughput", v: "160-220 w/hr" },
     ],
   },
   {
