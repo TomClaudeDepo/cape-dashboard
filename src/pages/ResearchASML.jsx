@@ -27,6 +27,7 @@ import {
   P1_ProjectionOptics, P2_ExposureSlit,
   P4_PrintedWafer, P5_Throughput,
 } from "../components/asml/ProjectionVisuals";
+import ValuationTab from "../components/asml/ValuationTab";
 
 /* ═══════════════════════════════════════════
    GLOBAL KEYFRAMES — injected once
@@ -987,7 +988,7 @@ function RisksGrid({ T, risks }) {
 export default function ResearchASML({ T }) {
   useKeyframes();
   const [tab, setTab] = useState("EUV Technology");
-  const allTabs = ["EUV Technology", "AI Demand Map", "Competitors"];
+  const allTabs = ["EUV Technology", "AI Demand Map", "Competitors", "Valuations"];
 
   /* ─── HEADER ─── */
   const header = (
@@ -1370,7 +1371,7 @@ export default function ResearchASML({ T }) {
   );
 
   /* ─── TAB CONTENT MAP ─── */
-  const tabContent = { "EUV Technology": primerTab, "AI Demand Map": demandTab, "Competitors": competitorsTab };
+  const tabContent = { "EUV Technology": primerTab, "AI Demand Map": demandTab, "Competitors": competitorsTab, "Valuations": <ValuationTab T={T} /> };
 
   return (
     <div>
