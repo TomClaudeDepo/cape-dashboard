@@ -506,7 +506,7 @@ export default function ResearchTMO({ T }) {
       {prose(platformThesis.intro)}
       {sTitle("The integrated platform — what Thermo Fisher offers at each stage")}
       <div style={{ display: "grid", gap: 8, marginBottom: 24 }}>
-        {platformThesis.stack.map((s, i) => (
+        {platformThesis.stages.map((s, i) => (
           <div key={i} style={{ display: "grid", gridTemplateColumns: "200px 1fr", gap: 16, padding: "14px 18px", background: T.card, borderRadius: T.radiusSm, border: "1px solid " + T.border }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: T.green, fontFamily: Fn }}>{s.name}</div>
             <div style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.7 }}>{s.tmoOffer}</div>
