@@ -1,5 +1,6 @@
 // TMO — Thematic Case Data
-// Five long-term themes, platform thesis, EPS bridge, structural risks
+// Five long-term themes, platform thesis, EPS bridge, structural risks,
+// Bull vs Bear synthesis
 
 export const themesHeroStats = [
   { value: "5", label: "Secular themes underwriting the multi-year story", color: "deepBlue" },
@@ -161,3 +162,82 @@ export const thematicRisks = [
     description: "MFN pricing, IRA negotiation expansion, broader pharma rate-cutting in the US and Europe could compress the customer base's profitability and feed through to capex restraint. Less direct than the demand risks but a real overhang on the entire life sciences tools complex.",
   },
 ];
+
+/* ═══════════════════════════════════════════
+   BULL VS BEAR SYNTHESIS
+   Symmetric framing of the two cases on Thermo Fisher
+   ═══════════════════════════════════════════ */
+export const bullBearIntro = "The bull/bear framing for Thermo Fisher is genuinely symmetric — both cases are internally consistent and supported by real evidence. The binary nature of the upcoming catalysts (Investor Day, Q2 print) means the next two to three months will likely tip the balance decisively in one direction. Below is the full symmetric framing of both arguments.";
+
+export const bullCase = {
+  intro: "The bull case rests on the gap between current valuation discount and through-cycle multiples, with consensus already modelling the demand inflection — meaning the upside is structurally there if management can credibly bridge in-quarter prints to the algorithm.",
+  pillars: [
+    {
+      name: "The de-rating is multiple, not numbers",
+      description: "Consensus has already cut FY26E EPS from ~$32 to ~$25 over the last three years, and estimates have been remarkably stable since mid-2025 despite a string of soft prints. The sell-side is implicitly endorsing the management algorithm. The entire move from ~$640 to ~$438 has been pure multiple compression. At 14.5x 2028 EPS for a name that historically trades mid-20s P/E, you're getting a 30-35% discount to through-cycle multiples on a business whose quality metrics (ROIC mid-teens, ~22% adj operating margin, ~95%+ FCF conversion) haven't deteriorated.",
+    },
+    {
+      name: "Consensus already models the demand inflection",
+      description: "EPS Adj growth modelled at 4.6% (FY25A) → 8.8% (FY26E) → 9.6% (FY27E) → 10.6% (FY28E) → 12.6% (FY29E). This isn't blue-sky — it's underpinned by 5-7% revenue growth plus 50-75bp of annual margin expansion via PPI Business System plus buybacks. So you don't need heroic assumptions; you just need management to credibly bridge in-quarter optics to the run-rate trajectory the sell-side has already pencilled in. Wednesday's Investor Day is the platform to do exactly that.",
+    },
+    {
+      name: "End markets are bifurcating in TMO's favour",
+      description: "Biopharma — the most important end market (~60% of revenue including bioproduction, pharma services, and clinical research) — is strengthening per management commentary and consistent with Q1 industry trends. Bioproduction normalisation is in the rearview after the 2022-2024 destocking cycle. GLP-1 manufacturing is a secular tailwind for the bioproduction franchise. Clinical research benefits from the biotech funding environment stabilising. The weak segments (analytical instruments into academic and government, China) are the smaller share and the bar to clear is already low.",
+    },
+    {
+      name: "Wide moat with structural switching costs",
+      description: "Bioproduction is the canonical example — TMO products are designed into FDA-approved manufacturing processes, and switching requires regulatory refiling. Clinical research has scale economics. Mass spec, electron microscopy and chromatography are duopoly or oligopoly markets with technical barriers. Aftermarket consumables and services drive recurring revenue (~80% of revenue is recurring or consumable in nature), which is exactly the QARP profile.",
+    },
+    {
+      name: "Capital allocation optionality at depressed multiple",
+      description: "TMO generates $6B+ FCF annually. At current multiples, buybacks compound EPS faster. The Clario deal demonstrates continued discipline in M&A — clinical research bolt-on with clear strategic fit, accretive in Year 1. Balance sheet capacity to do more — net debt/EBITDA ~3x but de-levering naturally.",
+    },
+    {
+      name: "Catalyst-rich next 60 days",
+      description: "Investor Day on 20 May 2026 with medium-term algorithm, capital allocation framework, AI roadmap. Q2 print in late July with the ~3% organic confirmation. Both have positive asymmetry given depressed expectations — even a modestly positive print would force a re-rate.",
+    },
+  ],
+};
+
+export const bearCase = {
+  intro: "The bear case is that the discount is accurate rather than opportunistic — that consensus EPS will need to come down further as the demand inflection keeps disappointing, making the cheap multiple a value trap rather than an entry point.",
+  pillars: [
+    {
+      name: "Demand has not actually inflected",
+      description: "Q1 organic at 1% was the latest in a multi-quarter string of soft prints. Management has explained each one away — selling days, pharma services phasing, year-on-year comp issues, FX. At some point the cumulative weight of 'timing' explanations starts to look like structural underperformance versus the algorithm. BI's Adeline Zandi captured this: the FY26 guide raise was almost entirely Clario; underlying organic guide unchanged. The bear says ex-Clario you're looking at a 1-2% organic growth business, not 3-4%, and certainly not the 5-6% the back-end of the consensus model assumes.",
+    },
+    {
+      name: "Bioproduction recovery could be smaller and slower than consensus implies",
+      description: "The 2021-22 COVID peak created supply-demand imbalances that may take years to fully clear. Biotech funding environment, while improved, is not at peak levels. Inventory destocking at customers may not be fully complete. The 'normalised' run-rate of bioproduction demand could be 20-30% below the peak that's implicitly assumed in the long-term algorithm. If the bioproduction reacceleration delivers 4-5% rather than the 8-10% the bulls assume, the whole Life Sciences Solutions segment growth fails to inflect.",
+    },
+    {
+      name: "Academic and government headwinds are structural, not cyclical",
+      description: "NIH funding uncertainty, proposed overhead caps, broader US fiscal pressure on research budgets, China austerity in scientific procurement — these end markets are ~15-20% of revenue, the Analytical Instruments segment is disproportionately exposed, and there's no clear catalyst to inflect. China specifically is in its second or third year of declining instrument demand and the geopolitical overlay limits upside.",
+    },
+    {
+      name: "The valuation trap risk is real",
+      description: "14.5x 2028 EPS is only 'cheap' if you believe the 2028 EPS. Look at what happened to 2026E — cut from ~$32 to ~$25 (-22%) over the last three years. If the demand thesis disappoints and consensus has to cut 2027E and 2028E by a similar magnitude, 'true' forward multiples are closer to 18-20x, which is in line with historical averages, not cheap. The bear thinks the sell-side has been slow to mark to market and the next leg of cuts is coming.",
+    },
+    {
+      name: "Margin pressure is building, not easing",
+      description: "Q1 2026 adj operating margin was -10bp YoY despite the PPI Business System. Management explicitly flagged 'higher inflation in future quarters that we are actively working to mitigate' — meaning higher inflation is a known headwind. Wage inflation in clinical research is a particular concern given labour-intensive PPD and Clario operations. The 50-75bp annual margin expansion that the algorithm depends on becomes much harder if inflation runs above pricing power.",
+    },
+    {
+      name: "No positioning capitulation",
+      description: "Polen and others have been adding. The stock isn't oversold by long-only ownership data — it's in steady accumulation. That means there's no compressed-spring snapback set-up; if demand disappoints, holders have to capitulate, which is a leg-lower scenario rather than a sharp recovery. The 'consensus is too optimistic' trade still has fuel.",
+    },
+  ],
+};
+
+export const tippingPoints = {
+  intro: "The bull/bear hinges on a fairly narrow empirical question — does organic growth reaccelerate to the 3%+ range and stay there, validating the consensus algorithm? The next two to three months will provide the binary evidence.",
+  points: [
+    { event: "Investor Day (20 May 2026)", outcome: "Defended or upgraded medium-term algo", impact: "Bull validation", color: "green" },
+    { event: "Investor Day (20 May 2026)", outcome: "Algo trimmed or non-committal", impact: "Bear validation", color: "red" },
+    { event: "Q2 2026 print (late July)", outcome: "Organic growth at or above 3%", impact: "Bull validation", color: "green" },
+    { event: "Q2 2026 print (late July)", outcome: "Another 'underlying is better than reported' explanation", impact: "Bear validation", color: "red" },
+    { event: "Bioproduction order book trends", outcome: "Sartorius prints positive, TMO Bioproduction inflecting", impact: "Bull validation", color: "green" },
+    { event: "Bioproduction order book trends", outcome: "Continued sluggish, destock excuses persist", impact: "Bear validation", color: "red" },
+  ],
+  qarpRead: "For a QARP framework specifically, the quality is unambiguously intact — the moat, returns, FCF, and capital discipline haven't changed. The valuation is now in QARP-attractive territory on consensus. The single open question is growth — and that's a binary near-term event. This is exactly the kind of setup where a small starter ahead of the event, with room to add post-event, is the typical institutional positioning. Polen Capital appears to have done exactly that in Q1.",
+};

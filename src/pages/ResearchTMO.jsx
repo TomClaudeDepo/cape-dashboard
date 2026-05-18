@@ -9,6 +9,7 @@ import {
 } from "../data/research-tmo";
 import {
   themesHeroStats, themesIntro, themes, platformThesis, epsBridge, thematicRisks,
+  bullBearIntro, bullCase, bearCase, tippingPoints,
 } from "../data/research-tmo-themes";
 import {
   finHeroStats, setupNarrative, q1Results, biNote, consensusEvolution,
@@ -203,11 +204,11 @@ function HorizBar({ label, value, max, color, T, suffix = "" }) {
 export default function ResearchTMO({ T }) {
   const [section, setSection] = useState("primer");
   const [tab, setTab] = useState("Business Overview");
-  const [thTab, setThTab] = useState("Five Themes");
+  const [thTab, setThTab] = useState("Bull vs Bear");
   const [fTab, setFTab] = useState("Current Setup");
 
   const primerTabs = ["Business Overview", "Segments", "Research vs Production", "Bioproduction Primer", "Orbitrap Primer", "Cryo-EM Primer", "Services", "Value Chain", "Competitive Position", "Moat Analysis"];
-  const thematicTabs = ["Five Themes", "Platform Thesis", "EPS Bridge", "Structural Risks"];
+  const thematicTabs = ["Bull vs Bear", "Five Themes", "Platform Thesis", "EPS Bridge", "Structural Risks"];
   const finTabs = ["Current Setup", "Q1 2026 & BI Note", "Consensus Evolution", "Valuation & Multiples", "Peer Comparison", "Why Underperforming", "Catalysts", "Smart Money"];
 
   const prose = (text, s = {}) => <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 16px", ...s }}>{text}</p>;
@@ -585,6 +586,69 @@ export default function ResearchTMO({ T }) {
   );
 
   const thematicContent = {
+    "Bull vs Bear": (
+      <div>
+        {prose(bullBearIntro)}
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 28 }}>
+          {/* BULL COLUMN */}
+          <div>
+            <Card T={T} style={{ padding: "18px 22px", marginBottom: 16, borderTop: `4px solid ${T.green}`, background: T.greenBg }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: T.green, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>The Bull Case</div>
+              <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>{bullCase.intro}</p>
+            </Card>
+            {bullCase.pillars.map((p, i) => (
+              <Card key={i} T={T} style={{ padding: "16px 20px", marginBottom: 10, borderLeft: `3px solid ${T.green}` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <span style={{ fontSize: 11, fontWeight: 800, color: T.green, fontFamily: Fn, fontVariantNumeric: "tabular-nums" }}>{String(i + 1).padStart(2, "0")}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn }}>{p.name}</span>
+                </div>
+                <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>{p.description}</p>
+              </Card>
+            ))}
+          </div>
+
+          {/* BEAR COLUMN */}
+          <div>
+            <Card T={T} style={{ padding: "18px 22px", marginBottom: 16, borderTop: `4px solid ${T.capRed}`, background: T.redBg }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: T.capRed, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>The Bear Case</div>
+              <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>{bearCase.intro}</p>
+            </Card>
+            {bearCase.pillars.map((p, i) => (
+              <Card key={i} T={T} style={{ padding: "16px 20px", marginBottom: 10, borderLeft: `3px solid ${T.capRed}` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <span style={{ fontSize: 11, fontWeight: 800, color: T.capRed, fontFamily: Fn, fontVariantNumeric: "tabular-nums" }}>{String(i + 1).padStart(2, "0")}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn }}>{p.name}</span>
+                </div>
+                <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: 0 }}>{p.description}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {sTitle("What tips the balance — binary events over the next 60-90 days")}
+        <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 16px" }}>{tippingPoints.intro}</p>
+        <div style={{ display: "grid", gap: 8, marginBottom: 24 }}>
+          {tippingPoints.points.map((pt, i) => {
+            const c = pt.color === "green" ? T.green : T.capRed;
+            return (
+              <Card key={i} T={T} style={{ padding: "12px 16px", borderLeft: `3px solid ${c}` }}>
+                <div style={{ display: "grid", gridTemplateColumns: "180px 1fr 140px", gap: 14, alignItems: "center" }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn }}>{pt.event}</div>
+                  <div style={{ fontSize: 12, color: T.textSec, fontFamily: Fn }}>{pt.outcome}</div>
+                  <Pill T={T} color={c} bg={c + "14"}>{pt.impact}</Pill>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+
+        <Card T={T} style={{ padding: "18px 22px", borderLeft: `4px solid ${T.deepBlue}`, background: "rgba(29,78,216,0.04)" }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: T.deepBlue, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 10 }}>The QARP read</div>
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, margin: 0 }}>{tippingPoints.qarpRead}</p>
+        </Card>
+      </div>
+    ),
     "Five Themes": themesTab, "Platform Thesis": platformTab, "EPS Bridge": epsBridgeTab, "Structural Risks": thematicRisksTab,
   };
 
