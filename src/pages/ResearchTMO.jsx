@@ -10,6 +10,7 @@ import {
 import {
   themesHeroStats, themesIntro, themes, platformThesis, epsBridge, thematicRisks,
   bullBearIntro, bullCase, bearCase, tippingPoints,
+  tailwindsIntro, tailwinds, tailwindsConnection,
 } from "../data/research-tmo-themes";
 import {
   finHeroStats, setupNarrative, q1Results, biNote, consensusEvolution,
@@ -204,11 +205,11 @@ function HorizBar({ label, value, max, color, T, suffix = "" }) {
 export default function ResearchTMO({ T }) {
   const [section, setSection] = useState("primer");
   const [tab, setTab] = useState("Business Overview");
-  const [thTab, setThTab] = useState("Bull vs Bear");
+  const [thTab, setThTab] = useState("3 Tailwinds");
   const [fTab, setFTab] = useState("Current Setup");
 
   const primerTabs = ["Business Overview", "Segments", "Research vs Production", "Bioproduction Primer", "Orbitrap Primer", "Cryo-EM Primer", "Services", "Value Chain", "Competitive Position", "Moat Analysis"];
-  const thematicTabs = ["Bull vs Bear", "Five Themes", "Platform Thesis", "EPS Bridge", "Structural Risks"];
+  const thematicTabs = ["3 Tailwinds", "Bull vs Bear", "Five Themes", "Platform Thesis", "EPS Bridge", "Structural Risks"];
   const finTabs = ["Current Setup", "Q1 2026 & BI Note", "Consensus Evolution", "Valuation & Multiples", "Peer Comparison", "Why Underperforming", "Catalysts", "Smart Money"];
 
   const prose = (text, s = {}) => <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 16px", ...s }}>{text}</p>;
@@ -585,7 +586,214 @@ export default function ResearchTMO({ T }) {
     </div>
   );
 
+  /* ─── 3 TAILWINDS — fully visual, meeting-ready presentation ─── */
+  const tailwindsContent = (
+    <div>
+      <p style={{ fontSize: 15, color: T.text, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 24px", fontStyle: "italic" }}>{tailwindsIntro}</p>
+
+      {/* Three big theme cards at top — at-a-glance summary */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 36 }}>
+        {tailwinds.map((tw, i) => {
+          const accent = T[tw.colorKey];
+          return (
+            <div key={i} style={{ background: T.card, borderRadius: T.radius, padding: "20px 22px", borderTop: `4px solid ${accent}`, boxShadow: T.shadow, position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: 14, right: 18, fontSize: 48, fontWeight: 900, color: accent, opacity: 0.15, fontFamily: Fn, lineHeight: 1 }}>0{tw.number}</div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>Tailwind {tw.number}</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: T.text, fontFamily: Fn, lineHeight: 1.3, marginBottom: 14, position: "relative", zIndex: 1 }}>{tw.name}</div>
+              <div style={{ fontSize: 32, fontWeight: 800, color: accent, fontFamily: Fn, marginBottom: 4, position: "relative", zIndex: 1 }}>{tw.heroStat.value}</div>
+              <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.5 }}>{tw.heroStat.label}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* DETAILED THEME SECTIONS */}
+      {tailwinds.map((tw, twIdx) => {
+        const accent = T[tw.colorKey];
+        const accentBg = tw.colorKey === "green" ? T.greenBg : tw.colorKey === "deepBlue" ? "rgba(29,78,216,0.08)" : "rgba(234,88,12,0.08)";
+
+        return (
+          <div key={twIdx} style={{ marginBottom: 48 }}>
+            {/* Theme banner */}
+            <div style={{ background: accentBg, borderRadius: T.radius, padding: "26px 30px", marginBottom: 24, borderLeft: `6px solid ${accent}`, position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", right: 24, top: 14, fontSize: 96, fontWeight: 900, color: accent, opacity: 0.12, fontFamily: Fn, lineHeight: 1 }}>0{tw.number}</div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 8 }}>Tailwind {tw.number}</div>
+              <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 30, color: T.text, marginBottom: 10, lineHeight: 1.2 }}>{tw.name}</div>
+              <div style={{ fontSize: 14, color: T.textSec, fontFamily: Fn, lineHeight: 1.6, maxWidth: "85%" }}>{tw.tagline}</div>
+              <div style={{ marginTop: 18, display: "flex", alignItems: "baseline", gap: 14 }}>
+                <span style={{ fontSize: 44, fontWeight: 900, color: accent, fontFamily: Fn, lineHeight: 1 }}>{tw.heroStat.value}</span>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn }}>{tw.heroStat.label}</div>
+                  <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 2 }}>{tw.heroStat.sub}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* The structural shift */}
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>The structural shift</div>
+              <p style={{ fontSize: 14, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: 0 }}>{tw.structuralShift}</p>
+            </div>
+
+            {/* THEME-SPECIFIC VISUALIZATION */}
+            {tw.pipelineShift && (
+              <Card T={T} style={{ padding: 26, marginBottom: 24 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 18 }}>Pharma pipeline composition over time (% of pipeline)</div>
+                <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, height: 220, paddingBottom: 28, position: "relative" }}>
+                  {tw.pipelineShift.map((d, di) => (
+                    <div key={di} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+                      <div style={{ width: "100%", maxWidth: 100, display: "flex", flexDirection: "column", borderRadius: "6px 6px 0 0", overflow: "hidden", height: 190 }}>
+                        <div style={{ height: `${d.biologic}%`, background: accent, display: "flex", alignItems: "center", justifyContent: "center", transition: "height 1s cubic-bezier(0.22,1,0.36,1)" }}>
+                          <span style={{ fontSize: 14, fontWeight: 800, color: "#fff", fontFamily: Fn }}>{d.biologic}%</span>
+                        </div>
+                        <div style={{ height: `${d.smallMolecule}%`, background: T.grey300 || T.textTer, display: "flex", alignItems: "center", justifyContent: "center", transition: "height 1s cubic-bezier(0.22,1,0.36,1)" }}>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: T.textSec, fontFamily: Fn }}>{d.smallMolecule}%</span>
+                        </div>
+                      </div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: T.text, fontFamily: Fn, marginTop: 8 }}>{d.period}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display: "flex", gap: 24, justifyContent: "center", marginTop: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ width: 14, height: 14, borderRadius: 3, background: accent }} />
+                    <span style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, fontWeight: 600 }}>Biologics</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ width: 14, height: 14, borderRadius: 3, background: T.grey300 || T.textTer }} />
+                    <span style={{ fontSize: 12, color: T.textSec, fontFamily: Fn }}>Small molecules</span>
+                  </div>
+                </div>
+              </Card>
+            )}
+
+            {tw.glp1Stats && (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 24 }}>
+                {tw.glp1Stats.map((s, si) => (
+                  <Card key={si} T={T} style={{ padding: "18px 20px", borderLeft: `3px solid ${accent}` }}>
+                    <div style={{ fontSize: 22, fontWeight: 800, color: accent, fontFamily: Fn, marginBottom: 4 }}>{s.value}</div>
+                    <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.5 }}>{s.label}</div>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {tw.outsourcingGrowth && (
+              <Card T={T} style={{ padding: 26, marginBottom: 24 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 18 }}>Global pharma outsourcing market ($bn)</div>
+                <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, height: 200, position: "relative" }}>
+                  {tw.outsourcingGrowth.map((d, di) => {
+                    const maxV = Math.max(...tw.outsourcingGrowth.map(x => x.value));
+                    const h = (d.value / maxV) * 180;
+                    const isLatest = di === tw.outsourcingGrowth.length - 1;
+                    return (
+                      <div key={di} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <div style={{ fontSize: 16, fontWeight: 800, color: isLatest ? accent : T.text, fontFamily: Fn, marginBottom: 8 }}>${d.value}B</div>
+                        <div style={{ width: "100%", maxWidth: 80, height: h, background: isLatest ? accent : T.grey300 || T.textTer, opacity: isLatest ? 1 : 0.5, borderRadius: "6px 6px 0 0", transition: "height 1s cubic-bezier(0.22,1,0.36,1)" }} />
+                        <div style={{ fontSize: 12, fontWeight: 700, color: isLatest ? accent : T.text, fontFamily: Fn, marginTop: 8 }}>{d.year}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 12, textAlign: "center", fontStyle: "italic" }}>Combined CDMO + CRO + clinical research outsourcing. Industry estimates, multiple sources.</div>
+              </Card>
+            )}
+
+            {tw.capexRamp && (
+              <Card T={T} style={{ padding: 26, marginBottom: 24 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 18 }}>Thermo Fisher capital expenditure ramp ($bn) — the reshoring bet</div>
+                <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, height: 220, position: "relative" }}>
+                  {tw.capexRamp.map((d, di) => {
+                    const maxV = Math.max(...tw.capexRamp.map(x => x.value));
+                    const h = (d.value / maxV) * 190;
+                    const isLatest = di === tw.capexRamp.length - 1;
+                    return (
+                      <div key={di} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <div style={{ fontSize: 14, fontWeight: 800, color: isLatest ? accent : T.text, fontFamily: Fn, marginBottom: 8 }}>${d.value.toFixed(2)}B</div>
+                        <div style={{ width: "100%", maxWidth: 80, height: h, background: accent, opacity: 0.3 + (di / tw.capexRamp.length) * 0.7, borderRadius: "6px 6px 0 0", transition: "height 1s cubic-bezier(0.22,1,0.36,1)" }} />
+                        <div style={{ fontSize: 12, fontWeight: 700, color: isLatest ? accent : T.text, fontFamily: Fn, marginTop: 8 }}>{d.year}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 14, padding: "10px 14px", background: accentBg, borderRadius: T.radiusSm }}>
+                  <span style={{ fontSize: 12, color: T.textSec, fontFamily: Fn }}>Capex ramp 2021 → 2025</span>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: accent, fontFamily: Fn }}>~8x increase ($260M → $2.2B)</span>
+                </div>
+              </Card>
+            )}
+
+            {/* HOW TMO PLAYS IT */}
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>How Thermo Fisher plays it</div>
+              <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 16px" }}>{tw.tmoPlaysIt.summary}</p>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+                {tw.tmoPlaysIt.products.map((p, pi) => (
+                  <Card key={pi} T={T} style={{ padding: 20, borderTop: `3px solid ${accent}`, height: "100%" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: Fn, marginBottom: 10, lineHeight: 1.3 }}>{p.name}</div>
+                    <p style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 12px" }}>{p.desc}</p>
+                    <div style={{ display: "inline-block", padding: "5px 10px", background: accentBg, borderRadius: 4, fontSize: 10, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.05em" }}>{p.economics}</div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* THE BENEFIT */}
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>What this means for Thermo Fisher</div>
+              <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 16px" }}>{tw.benefit.summary}</p>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+                {tw.benefit.metrics.map((m, mi) => (
+                  <div key={mi} style={{ background: T.card, borderRadius: T.radiusSm, padding: "16px 14px", border: "1px solid " + T.border, textAlign: "center" }}>
+                    <div style={{ fontSize: 20, fontWeight: 800, color: T[m.color] || accent, fontFamily: Fn, marginBottom: 4 }}>{m.value}</div>
+                    <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, lineHeight: 1.4 }}>{m.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* MEETING TALKING POINTS */}
+            <Card T={T} style={{ padding: "22px 26px", borderLeft: `4px solid ${accent}`, background: accentBg }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 6, background: accent, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 14, fontWeight: 800, color: "#fff", fontFamily: Fn }}>!</span>
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 800, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase" }}>Meeting talking points</div>
+              </div>
+              <div style={{ display: "grid", gap: 10 }}>
+                {tw.talkingPoints.map((tp, tpi) => (
+                  <div key={tpi} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 14px", background: T.card, borderRadius: T.radiusSm, border: "1px solid " + T.border }}>
+                    <div style={{ flexShrink: 0, width: 22, height: 22, borderRadius: 11, background: accent, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, fontFamily: Fn }}>{tpi + 1}</div>
+                    <p style={{ fontSize: 13, color: T.text, fontFamily: Fn, lineHeight: 1.65, margin: 0 }}>{tp}</p>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+        );
+      })}
+
+      {/* INTERCONNECTION CLOSING */}
+      <Card T={T} style={{ padding: "26px 30px", background: T.text === "#0F172A" ? "rgba(29,78,216,0.04)" : "rgba(96,165,250,0.06)", border: `1px solid ${T.border}`, borderTop: `4px solid ${T.deepBlue}` }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: T.deepBlue, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>Why these three together</div>
+        <p style={{ fontSize: 14, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, margin: "0 0 16px" }}>{tailwindsConnection}</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginTop: 16 }}>
+          {tailwinds.map((tw, ti) => {
+            const c = T[tw.colorKey];
+            return (
+              <div key={ti} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: T.card, borderRadius: T.radiusSm, border: "1px solid " + T.border }}>
+                <div style={{ flexShrink: 0, width: 26, height: 26, borderRadius: 6, background: c, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, fontFamily: Fn }}>{tw.number}</div>
+                <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.5, fontWeight: 600 }}>{tw.name}</div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+    </div>
+  );
+
   const thematicContent = {
+    "3 Tailwinds": tailwindsContent,
     "Bull vs Bear": (
       <div>
         {prose(bullBearIntro)}

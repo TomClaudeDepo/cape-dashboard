@@ -241,3 +241,194 @@ export const tippingPoints = {
   ],
   qarpRead: "For a QARP framework specifically, the quality is unambiguously intact — the moat, returns, FCF, and capital discipline haven't changed. The valuation is now in QARP-attractive territory on consensus. The single open question is growth — and that's a binary near-term event. This is exactly the kind of setup where a small starter ahead of the event, with room to add post-event, is the typical institutional positioning. Polen Capital appears to have done exactly that in Q1.",
 };
+
+/* ═══════════════════════════════════════════
+   3 LONG-TERM THEMATIC TAILWINDS
+   Designed for meeting talking points — visual, focused, dynamic
+   ═══════════════════════════════════════════ */
+
+export const tailwindsIntro = "Three structural tailwinds that underwrite the multi-year case for Thermo Fisher. Each is durable (decade-plus), each is independently confirmable from public data, and each has a specific Thermo Fisher franchise positioned to capture it. Together they cover the full investment narrative — the underlying industry shift, the strategic business model evolution, and the geopolitical overlay.";
+
+export const tailwinds = [
+  {
+    /* ─── TAILWIND 1: BIOLOGICS SUPERCYCLE ─── */
+    number: 1,
+    name: "The Biologics Manufacturing Supercycle",
+    tagline: "Medicine is shifting from chemistry to biology — and every biologic needs a 15-20 year supplier",
+    colorKey: "green",
+
+    heroStat: { value: "60%", label: "of pharma pipeline now biologics", sub: "Up from less than 20% twenty years ago" },
+
+    structuralShift: "Two decades ago, pharmaceutical research was dominated by small-molecule chemistry — pills synthesised in chemical plants. Today, the most valuable drugs are biologics: monoclonal antibodies, antibody-drug conjugates, cell and gene therapies, mRNA vaccines, and now GLP-1 peptides at industrial scale. Biologics are manufactured by genetically engineered cells in bioreactors, requiring entirely different inputs (cell culture media, single-use bioreactor systems, downstream purification chromatography) than small molecules. The pipeline mix has crossed over: roughly 60% of pharmaceuticals in development today are biologics. Industry capex on biologic manufacturing capacity is running at 15-20% annual growth — and the GLP-1 build-out alone is unprecedented in pharmaceutical history.",
+
+    /* Pipeline shift visualization data */
+    pipelineShift: [
+      { period: "2005", smallMolecule: 80, biologic: 20 },
+      { period: "2015", smallMolecule: 55, biologic: 45 },
+      { period: "2025", smallMolecule: 40, biologic: 60 },
+      { period: "2030E", smallMolecule: 30, biologic: 70 },
+    ],
+
+    glp1Stats: [
+      { value: "$60B+", label: "Lilly + Novo combined GLP-1 capex commitment" },
+      { value: "5x", label: "Cell culture media demand from GLP-1 manufacturing" },
+      { value: "Roche, AZ, Pfizer", label: "Entering the GLP-1 race — second wave of capex" },
+    ],
+
+    tmoPlaysIt: {
+      summary: "Thermo Fisher's Bioproduction franchise is the 'arms dealer' of biologic drug manufacturing. The company doesn't make the drug — it sells the critical inputs that everyone else uses to make it. Whoever wins the manufacturing race, Thermo Fisher participates in the upside.",
+      products: [
+        {
+          name: "Gibco cell culture media",
+          desc: "The proprietary nutrient broth that feeds genetically engineered cells. Each commercial biologic drug uses a specific Gibco formulation — locked in at FDA filing for the 15-20 year commercial life of the drug.",
+          economics: "50%+ gross margins",
+        },
+        {
+          name: "HyClone single-use bioreactor systems",
+          desc: "Pre-sterilised disposable bag manufacturing vessels (1L to 2,000L). The architecture that replaced stainless steel and enabled rapid global capacity buildout. Consumable bags = annuity revenue per approved drug.",
+          economics: "Recurring consumable revenue",
+        },
+        {
+          name: "Downstream purification",
+          desc: "Filtration and chromatography for separating drug protein from cell culture. Expanded position via the 2025 acquisition of Solventum's filtration and separation business.",
+          economics: "Locked into FDA process",
+        },
+      ],
+    },
+
+    benefit: {
+      summary: "Bioproduction is roughly 10% of Thermo Fisher revenue (estimated $4-5 billion) but carries an outsized share of strategic value. The combination of FDA process lock-in, oligopoly supply (TMO / Cytiva / Sartorius), and structural end-market growth makes it the highest-quality individual franchise in the company.",
+      metrics: [
+        { value: "$4-5B", label: "Annual bioproduction revenue", color: "green" },
+        { value: "50%+", label: "Gross margins on cell culture media", color: "green" },
+        { value: "15-20yr", label: "Customer lock-in per approved drug", color: "deepBlue" },
+        { value: "Low double-digit", label: "Through-cycle organic growth", color: "orange" },
+      ],
+    },
+
+    talkingPoints: [
+      "60% of pharma pipeline is now biologics — up from less than 20% twenty years ago. The mix shift is structural, not cyclical.",
+      "Once a biologic drug is FDA-approved using Thermo Fisher cell culture media, the customer is locked in for 15-20 years. Switching requires regulatory refiling.",
+      "Lilly and Novo Nordisk have committed over $60 billion combined to GLP-1 manufacturing capacity. Every gram of GLP-1 peptide needs Thermo Fisher inputs.",
+      "Bioproduction is a global triopoly — Thermo Fisher (Gibco/HyClone), Cytiva (inside Danaher), and Sartorius. New entrants face years of qualification work.",
+    ],
+  },
+
+  {
+    /* ─── TAILWIND 2: PHARMA OUTSOURCING ─── */
+    number: 2,
+    name: "The Pharma Outsourcing Megatrend",
+    tagline: "Pharma is shifting from 'make everything in-house' to outsourcing the value chain — and Thermo Fisher is the only player with the full stack",
+    colorKey: "deepBlue",
+
+    heroStat: { value: "$140B+", label: "Global pharma outsourcing market", sub: "Growing 8-10% annually, accelerating consolidation" },
+
+    structuralShift: "For thirty years, big pharma has been progressively outsourcing more of its value chain — first contract sales, then chemistry manufacturing, then clinical trial operations, increasingly now drug substance manufacturing and digital trial infrastructure. The drivers are unchanged but intensifying: drug launches are increasingly biologic (specialised capabilities not worth in-house buildout for any single asset), pipelines are increasingly global (specialist regional infrastructure needed), and pharmaceutical sponsors are under pressure to do more with less. The result is a structural shift in the industry's operating model — and the contract development and manufacturing organisations (CDMOs) plus contract research organisations (CROs) that capture this work are consolidating into a smaller number of larger, more capable platforms. Quality and capability requirements are squeezing out smaller players. The winners are the integrated providers.",
+
+    outsourcingGrowth: [
+      { year: "2015", value: 75 },
+      { year: "2020", value: 100 },
+      { year: "2025", value: 140 },
+      { year: "2030E", value: 210 },
+    ],
+
+    tmoPlaysIt: {
+      summary: "Thermo Fisher is the only company globally that operates at scale across both contract drug manufacturing (Patheon) and contract clinical research (PPD + Clario). Big pharma can sign a single master service agreement and outsource the entire drug development and commercial supply chain to one vendor.",
+      products: [
+        {
+          name: "Patheon (Pharma Services / CDMO)",
+          desc: "Contract drug substance manufacturing, sterile fill-finish, packaging, clinical trial supply. ~50 facilities globally. Acquired 2017 for $7.2bn. Particularly strong in sterile fill-finish (critical for GLP-1 peptides and biologics).",
+          economics: "$7-8bn revenue",
+        },
+        {
+          name: "PPD (Clinical Research / CRO)",
+          desc: "End-to-end clinical trial operations — site selection, patient recruitment, data management, regulatory submissions. One of top 3 CROs globally alongside IQVIA and ICON. Acquired 2021 for $20.9bn.",
+          economics: "Top 3 globally",
+        },
+        {
+          name: "Clario (eClinical / digital endpoints)",
+          desc: "Digital endpoint measurement — electronic clinical outcome assessment, wearable integration, cardiac and respiratory monitoring. The infrastructure for decentralised clinical trials. Acquired 2026 for ~$9bn.",
+          economics: "AI-pharma angle",
+        },
+      ],
+    },
+
+    benefit: {
+      summary: "Combined, Patheon and PPD/Clario generate roughly $15 billion in revenue — and the integrated platform commands premium positioning that pure-play competitors cannot easily match. The 'Accelerator Drug Development' programme is the commercial expression of this thesis: sign one contract, get clinical trials, digital endpoints, drug substance manufacturing, and commercial fill-finish from one vendor.",
+      metrics: [
+        { value: "$15B+", label: "Combined services revenue", color: "deepBlue" },
+        { value: "Top 3", label: "Position in both CDMO and CRO", color: "deepBlue" },
+        { value: "Mid-single", label: "Through-cycle organic growth, accelerating", color: "green" },
+        { value: "Only player", label: "With both CDMO and CRO at scale", color: "orange" },
+      ],
+    },
+
+    talkingPoints: [
+      "Pharma outsourcing is now a $140 billion global market growing 8-10% annually — and accelerating consolidation toward the largest providers.",
+      "Thermo Fisher is the only company globally with leading positions in BOTH contract drug manufacturing (Patheon) AND contract clinical research (PPD + Clario).",
+      "The BIOSECURE Act is actively pushing US pharmaceutical sponsors away from Chinese CDMOs like Wuxi Biologics — direct tailwind for Western providers including Patheon.",
+      "Big pharma signs one master service agreement and outsources clinical trials, manufacturing, and fill-finish to a single vendor. Lonza, Catalent, Samsung, IQVIA all win pieces — Thermo Fisher is the only one with the full stack.",
+    ],
+  },
+
+  {
+    /* ─── TAILWIND 3: US RESHORING ─── */
+    number: 3,
+    name: "US Pharmaceutical Manufacturing Reshoring",
+    tagline: "Pharma supply chains are coming back onshore — and Thermo Fisher has committed $2 billion to capture the window",
+    colorKey: "orange",
+
+    heroStat: { value: "$2B", label: "Thermo Fisher US capacity investment", sub: "Reshoring window is 2027-2029 per management" },
+
+    structuralShift: "Multiple structural forces are simultaneously pushing pharmaceutical manufacturing back onshore in the US. The BIOSECURE Act, formally introduced in 2024 and steadily advancing, restricts US federal contracts with Chinese biotech and CDMO providers including Wuxi Biologics, Wuxi AppTec, BGI Genomics, MGI Tech, and Complete Genomics. Trump administration tariffs on pharmaceutical imports have added direct cost pressure. Post-pandemic supply chain security concerns have made executives wary of single-source international supply for critical medicines. Most Favoured Nation drug pricing politics make it more attractive for pharma to be seen as a domestic manufacturer. The result is a multi-year capex cycle as Western pharmaceutical companies build out US manufacturing capacity that they previously would have outsourced to Asia. This is potentially the most underappreciated of the three tailwinds because it is specific to companies with a substantial US manufacturing footprint — and Thermo Fisher is structurally one of the largest beneficiaries.",
+
+    capexRamp: [
+      { year: "2021", value: 0.26 },
+      { year: "2022", value: 0.85 },
+      { year: "2023", value: 1.40 },
+      { year: "2024", value: 1.95 },
+      { year: "2025", value: 2.21 },
+    ],
+
+    tmoPlaysIt: {
+      summary: "Thermo Fisher has been preparing for this window for several years. The $2 billion US capacity investment programme, the Sanofi New Jersey sterile fill-finish acquisition, and ongoing Patheon facility expansions position the company to capture disproportionate share as Western pharma reshores manufacturing.",
+      products: [
+        {
+          name: "Sanofi NJ sterile fill-finish site",
+          desc: "Acquired in 2025. State-of-the-art aseptic manufacturing capacity in New Jersey. Adds critical fill-finish capability exactly where the industry needs it for GLP-1 peptides and biologics in pre-filled syringes.",
+          economics: "Major reshoring asset",
+        },
+        {
+          name: "$2bn US capacity programme",
+          desc: "Multi-site investment in US bioproduction, Patheon manufacturing, and clinical research infrastructure. Management has framed this as driving above-trend growth from 2027-2029.",
+          economics: "Above-trend 2027-2029",
+        },
+        {
+          name: "Existing US footprint",
+          desc: "Thermo Fisher already operates 100+ US manufacturing and service facilities across all segments. The reshoring tailwind benefits the existing installed base — not just the new capex.",
+          economics: "100+ US facilities",
+        },
+      ],
+    },
+
+    benefit: {
+      summary: "Management has explicitly framed the $2 billion US capacity programme as driving above-trend growth from 2027 to 2029. If the reshoring window plays out as expected, this could add 100-200 basis points to organic revenue growth for several years — exactly when the broader bioproduction reacceleration thesis is also expected to materialise.",
+      metrics: [
+        { value: "$2.0B", label: "US capacity investment commitment", color: "orange" },
+        { value: "8x", label: "Capex ramp since 2021 ($260M → $2.2B)", color: "capRed" },
+        { value: "100+", label: "Existing US manufacturing sites", color: "deepBlue" },
+        { value: "2027-2029", label: "Management's above-trend growth window", color: "green" },
+      ],
+    },
+
+    talkingPoints: [
+      "Thermo Fisher has committed $2 billion to US capacity expansion — management explicitly framed this as driving above-trend growth in 2027-2029.",
+      "The BIOSECURE Act is restricting US contracts with Wuxi Biologics and other Chinese CDMOs. Direct beneficiaries are Western providers with US footprint — Thermo Fisher fits perfectly.",
+      "Capex has ramped 8x since 2021 (from $260 million to $2.2 billion). This is a deliberate strategic bet on the reshoring window.",
+      "The Sanofi New Jersey fill-finish acquisition gave Thermo Fisher state-of-the-art aseptic capacity in the US — exactly where GLP-1 manufacturers need it.",
+    ],
+  },
+];
+
+/* Interconnection / why these three together */
+export const tailwindsConnection = "The three tailwinds reinforce each other. The biologics manufacturing supercycle (Tailwind 1) creates the underlying demand. The pharma outsourcing megatrend (Tailwind 2) means more of that demand flows to platforms like Thermo Fisher rather than in-house pharma manufacturing. And the US reshoring trend (Tailwind 3) determines that the work goes to providers with substantial US capacity rather than Asian CDMOs. Thermo Fisher is positioned to capture all three simultaneously — and arguably is the single best-positioned name globally on the combined thesis.";
