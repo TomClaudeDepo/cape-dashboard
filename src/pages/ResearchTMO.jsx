@@ -248,7 +248,19 @@ export default function ResearchTMO({ T }) {
   const overviewTab = (
     <div>
       {sTitle("What does Thermo Fisher Scientific do?")}
-      {businessDescription.map((p, i) => <div key={i}>{prose(p)}</div>)}
+      {/* First three paragraphs as prose */}
+      {businessDescription.slice(0, 3).map((p, i) => <div key={i}>{prose(p)}</div>)}
+
+      {/* End-market exposure visualized as a pie chart */}
+      <div style={{ margin: "8px 0 20px" }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: T.deepBlue, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>End-market exposure</div>
+        <Card T={T} style={{ padding: 26 }}>
+          <PieChart data={endMarkets.map(e => ({ name: e.name, share: e.share, color: e.color }))} T={T} label="Revenue by end-market (FY2025)" size={220} />
+        </Card>
+      </div>
+
+      {/* Final paragraph (customer concentration) as prose */}
+      {businessDescription.slice(3).map((p, i) => <div key={`tail-${i}`}>{prose(p)}</div>)}
     </div>
   );
 
