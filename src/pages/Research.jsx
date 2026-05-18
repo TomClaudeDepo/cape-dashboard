@@ -13,6 +13,7 @@ import ResearchNXT from "./ResearchNXT";
 import ResearchIBE from "./ResearchIBE";
 import ResearchSolar from "./ResearchSolar";
 import ResearchThemes from "./ResearchThemes";
+import ResearchTMO from "./ResearchTMO";
 
 const reports = [
   {
@@ -22,6 +23,15 @@ const reports = [
     stats: [
       { l: "Wavelength", v: "13.5nm" }, { l: "Conversion", v: "0.02%" },
       { l: "Mirror Eff.", v: "~70%" }, { l: "Throughput", v: "160-220 w/hr" },
+    ],
+  },
+  {
+    id: "tmo", ticker: "TMO", name: "Thermo Fisher Scientific", sector: "Life Sciences Tools & Services",
+    tagline: "Arms dealer to the biologics manufacturing supercycle — quality compounder at a cyclical discount",
+    date: "May 2026", type: "Deep Dive", color: "green",
+    stats: [
+      { l: "Price", v: "$438" }, { l: "Fwd P/E", v: "16.8x" },
+      { l: "Revenue", v: "$44.6B" }, { l: "Customers", v: "~400k" },
     ],
   },
   {
@@ -148,6 +158,7 @@ const reportComponents = {
   nxt: ResearchNXT,
   solar: ResearchSolar,
   themes10: ResearchThemes,
+  tmo: ResearchTMO,
 };
 
 export default function ResearchPg({ T }) {
