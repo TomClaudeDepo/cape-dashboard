@@ -326,13 +326,739 @@ export default function ResearchTMO({ T }) {
   );
 
   /* ── PRODUCT PRIMER tab renderer (used for Bioproduction, Orbitrap, Cryo-EM) ── */
-  const renderProductPrimer = (primer, accentKey) => {
+  /* ═══════════════════════════════════════════════════════════════════════
+     PRIMER VISUAL COMPONENTS LIBRARY
+     Each stage of each primer maps to a dedicated SVG/HTML visualization.
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* ──────── BIOPRODUCTION VISUALS ──────── */
+
+  /* Hero visual — arms dealer position */
+  function ArmsDealerVisual({ T, accent }) {
+    const customers = ["Pfizer", "Roche", "AstraZeneca", "Amgen", "Lilly", "Novo", "Lonza", "Catalent", "Samsung", "Wuxi"];
+    return (
+      <div style={{ padding: "26px 24px", background: T.card, borderRadius: T.radius, border: "1px solid " + T.border, marginBottom: 24, boxShadow: T.shadow }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 16, textAlign: "center" }}>Why "arms dealer" — TMO supplies every manufacturer including the CDMOs</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 30, alignItems: "center" }}>
+          {/* TMO source */}
+          <div style={{ textAlign: "center" }}>
+            <div style={{ display: "inline-block", padding: "18px 22px", background: accent, borderRadius: T.radius, color: "#fff" }}>
+              <div style={{ fontSize: 14, fontWeight: 800, fontFamily: Fn, marginBottom: 4 }}>Thermo Fisher</div>
+              <div style={{ fontSize: 10, opacity: 0.9, fontFamily: Fn, marginBottom: 10 }}>Bioproduction</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {["Gibco media", "HyClone bioreactors", "Purification resins"].map((p, i) => (
+                  <div key={i} style={{ fontSize: 10, padding: "3px 8px", background: "rgba(255,255,255,0.15)", borderRadius: 4, fontFamily: Fn }}>{p}</div>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* Arrow */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+            <svg width="80" height="50" viewBox="0 0 80 50">
+              <defs><marker id="arrow-ad" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill={accent} /></marker></defs>
+              <line x1="5" y1="25" x2="70" y2="25" stroke={accent} strokeWidth="2" markerEnd="url(#arrow-ad)" />
+              <text x="40" y="18" textAnchor="middle" fontSize="9" fill={T.textTer} fontFamily={Fn}>sells inputs</text>
+            </svg>
+          </div>
+          {/* Customers grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 6 }}>
+            {customers.map((c, i) => {
+              const isCdmo = ["Lonza", "Catalent", "Samsung", "Wuxi"].includes(c);
+              return (
+                <div key={i} style={{ padding: "8px 10px", background: T.pillBg, borderRadius: T.radiusSm, border: `1px solid ${isCdmo ? T.orange : T.border}`, textAlign: "center" }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: T.text, fontFamily: Fn }}>{c}</div>
+                  <div style={{ fontSize: 8, color: isCdmo ? T.orange : T.textTer, fontFamily: Fn, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", marginTop: 1 }}>{isCdmo ? "CDMO" : "Pharma"}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 14, textAlign: "center", fontStyle: "italic" }}>Whoever wins the biologics race — pharma or CDMO — Thermo Fisher participates through bioproduction inputs.</div>
+      </div>
+    );
+  }
+
+  /* Media composition wheel — 80-100 components */
+  function MediaCompositionWheel({ T, accent }) {
+    const groups = [
+      { name: "Amino acids", count: 20, color: accent, angle: 80 },
+      { name: "Sugars", count: 5, color: T.deepBlue, angle: 30 },
+      { name: "Vitamins", count: 15, color: T.orange, angle: 50 },
+      { name: "Trace minerals", count: 20, color: T.purple, angle: 70 },
+      { name: "Lipids", count: 10, color: T.capRed, angle: 35 },
+      { name: "Growth factors", count: 8, color: T.textSec, angle: 30 },
+      { name: "Buffering agents", count: 5, color: T.textTer, angle: 25 },
+      { name: "Other", count: 12, color: T.grey400, angle: 40 },
+    ];
+    const total = groups.reduce((s, g) => s + g.count, 0);
+    const cx = 130, cy = 130, r = 100, innerR = 50;
+    let cumAngle = -90;
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Modern cell culture media composition</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 18 }}>~{total} distinct components, each at precise concentration</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 26, flexWrap: "wrap", justifyContent: "center" }}>
+          <svg width={260} height={260} viewBox="0 0 260 260">
+            {groups.map((g, i) => {
+              const angle = (g.count / total) * 360, startAngle = cumAngle; cumAngle += angle;
+              const endAngle = cumAngle, sr = (Math.PI / 180) * startAngle, er = (Math.PI / 180) * endAngle;
+              const large = angle > 180 ? 1 : 0;
+              const x1 = cx + r * Math.cos(sr), y1 = cy + r * Math.sin(sr), x2 = cx + r * Math.cos(er), y2 = cy + r * Math.sin(er);
+              const ix1 = cx + innerR * Math.cos(sr), iy1 = cy + innerR * Math.sin(sr), ix2 = cx + innerR * Math.cos(er), iy2 = cy + innerR * Math.sin(er);
+              const path = `M ${ix1} ${iy1} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerR} ${innerR} 0 ${large} 0 ${ix1} ${iy1} Z`;
+              return <path key={i} d={path} fill={g.color} stroke={T.card} strokeWidth="2" />;
+            })}
+            <text x={cx} y={cy - 6} textAnchor="middle" fontSize="22" fontWeight="800" fill={T.text} fontFamily={Fn}>{total}</text>
+            <text x={cx} y={cy + 12} textAnchor="middle" fontSize="9" fill={T.textTer} fontFamily={Fn}>distinct components</text>
+          </svg>
+          <div style={{ display: "grid", gridTemplateColumns: "auto auto", gap: "6px 16px" }}>
+            {groups.map((g, i) => (
+              <div key={i} style={{ display: "contents" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 3, background: g.color }} />
+                  <span style={{ fontSize: 11, color: T.textSec, fontFamily: Fn }}>{g.name}</span>
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: T.text, fontFamily: Fn, textAlign: "right" }}>~{g.count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  /* Bioreactor scale ladder — 1L to 2000L */
+  function BioreactorScaleLadder({ T, accent }) {
+    const scales = [
+      { size: 1, label: "1L", use: "Lab / process development", height: 30 },
+      { size: 50, label: "50L", use: "Process scale-up", height: 55 },
+      { size: 200, label: "200L", use: "Clinical material", height: 85 },
+      { size: 1000, label: "1,000L", use: "Commercial production", height: 130 },
+      { size: 2000, label: "2,000L", use: "Large commercial", height: 175 },
+    ];
+    const [hov, setHov] = useState(null);
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>HyClone single-use bioreactor scale ladder</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 18 }}>Same product family across the entire commercial manufacturing volume range</div>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-around", gap: 20, height: 220, marginBottom: 12 }}>
+          {scales.map((s, i) => (
+            <div key={i} onMouseEnter={() => setHov(i)} onMouseLeave={() => setHov(null)} style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer", flex: 1 }}>
+              <div style={{ fontSize: 13, fontWeight: 800, color: hov === i ? accent : T.text, fontFamily: Fn, marginBottom: 6 }}>{s.label}</div>
+              <div style={{
+                width: 50 + i * 14, height: s.height,
+                background: hov === i ? accent : accent + "33",
+                border: `2px solid ${accent}`,
+                borderRadius: "8px 8px 6px 6px",
+                position: "relative",
+                transition: "all 0.25s",
+                opacity: hov !== null && hov !== i ? 0.4 : 1,
+              }}>
+                <div style={{ position: "absolute", left: -6, right: -6, top: -3, height: 5, background: accent, borderRadius: 3 }} />
+                <div style={{ position: "absolute", bottom: 6, left: 0, right: 0, textAlign: "center", fontSize: 9, color: hov === i ? "#fff" : accent, fontWeight: 700, fontFamily: Fn }}>SU</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-around", gap: 20 }}>
+          {scales.map((s, i) => (
+            <div key={i} style={{ flex: 1, fontSize: 10, color: hov === i ? T.text : T.textTer, fontFamily: Fn, textAlign: "center", fontWeight: hov === i ? 600 : 400, transition: "all 0.2s" }}>{s.use}</div>
+          ))}
+        </div>
+        <div style={{ marginTop: 16, padding: "12px 14px", background: accent + "10", borderRadius: T.radiusSm, fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>
+          <strong style={{ color: accent }}>Why single-use won:</strong> Pre-sterilised disposable bags eliminate stainless steel cleaning validation (weeks of downtime per batch), enable multi-product flexibility in one facility, and collapse facility build time from years to months. Each bag is a consumable annuity per approved drug.
+        </div>
+      </Card>
+    );
+  }
+
+  /* Purification flow pipeline */
+  function PurificationFlow({ T, accent }) {
+    const stages = [
+      { name: "Cell harvest", method: "Filtration", desc: "Separate cells from liquid", icon: "▼" },
+      { name: "Capture", method: "Protein A affinity", desc: "Bind antibody, discard waste", icon: "◉" },
+      { name: "Polishing", method: "Ion exchange", desc: "Remove final impurities", icon: "✦" },
+      { name: "Viral removal", method: "Nanofiltration", desc: "Pass through ultra-fine filter", icon: "▤" },
+      { name: "Pure drug substance", method: "Final product", desc: "Ready for formulation", icon: "✓" },
+    ];
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Downstream purification — process flow</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 20 }}>Every step uses Thermo Fisher consumables locked into the FDA filing</div>
+        <div style={{ display: "flex", alignItems: "stretch", gap: 0, position: "relative", flexWrap: "wrap" }}>
+          {stages.map((s, i) => (
+            <div key={i} style={{ flex: 1, minWidth: 140, position: "relative", display: "flex", alignItems: "stretch" }}>
+              <div style={{ flex: 1, background: i === stages.length - 1 ? accent : T.card, color: i === stages.length - 1 ? "#fff" : T.text, border: `2px solid ${accent}`, borderRadius: T.radiusSm, padding: "12px 10px", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", margin: "0 4px" }}>
+                <div style={{ fontSize: 20, color: i === stages.length - 1 ? "#fff" : accent, fontFamily: Fn, marginBottom: 4 }}>{s.icon}</div>
+                <div style={{ fontSize: 11, fontWeight: 700, fontFamily: Fn, marginBottom: 3 }}>{s.name}</div>
+                <div style={{ fontSize: 9, fontWeight: 600, opacity: 0.85, fontFamily: Fn, letterSpacing: "0.03em", textTransform: "uppercase", marginBottom: 3 }}>{s.method}</div>
+                <div style={{ fontSize: 9, color: i === stages.length - 1 ? "rgba(255,255,255,0.85)" : T.textTer, fontFamily: Fn, lineHeight: 1.4 }}>{s.desc}</div>
+              </div>
+              {i < stages.length - 1 && (
+                <div style={{ display: "flex", alignItems: "center", color: accent, fontSize: 18, fontWeight: 800 }}>→</div>
+              )}
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  /* FDA Lock-In Timeline — 15-20 year annuity */
+  function FDALockInTimeline({ T, accent }) {
+    const phases = [
+      { label: "Process dev", years: "Years 1-3", desc: "Customer designs in TMO products", color: T.deepBlue },
+      { label: "Clinical trials", years: "Years 3-7", desc: "Process validated in human trials", color: T.orange },
+      { label: "FDA filing", years: "Year 7-8", desc: "TMO products locked into BLA", color: T.capRed, isLock: true },
+      { label: "Commercial supply", years: "Years 8-25+", desc: "Annuity revenue for life of drug", color: accent, isAnnuity: true },
+    ];
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>FDA process lock-in — the 15-20 year annuity</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 20 }}>Once approved, switching media or bioreactor requires regulatory amendment with FDA</div>
+        <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
+          {phases.map((p, i) => {
+            const widths = [12, 25, 8, 55];
+            return (
+              <div key={i} style={{ flex: widths[i], position: "relative" }}>
+                <div style={{ background: p.color, borderRadius: T.radiusSm, padding: "14px 10px", color: "#fff", textAlign: "center", position: "relative" }}>
+                  {p.isLock && (
+                    <div style={{ position: "absolute", top: -12, right: -8, background: T.card, border: `2px solid ${p.color}`, borderRadius: "50%", width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>🔒</div>
+                  )}
+                  <div style={{ fontSize: 11, fontWeight: 800, fontFamily: Fn, marginBottom: 4 }}>{p.label}</div>
+                  <div style={{ fontSize: 9, opacity: 0.85, fontFamily: Fn }}>{p.years}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ display: "flex", gap: 6 }}>
+          {phases.map((p, i) => {
+            const widths = [12, 25, 8, 55];
+            return (
+              <div key={i} style={{ flex: widths[i], fontSize: 10, color: T.textTer, fontFamily: Fn, textAlign: "center", lineHeight: 1.5, padding: "0 4px" }}>{p.desc}</div>
+            );
+          })}
+        </div>
+        <div style={{ marginTop: 18, padding: "14px 16px", background: accent + "10", borderRadius: T.radiusSm, borderLeft: `3px solid ${accent}` }}>
+          <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>
+            <strong style={{ color: accent }}>Switching cost = regulatory refile.</strong> Changing media composition or bioreactor type after FDA approval requires a Prior Approval Supplement (12-24 months) and risks supply disruption. In practice, customers stay with the original supplier for the entire 15-20 year commercial life of the drug.
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  /* Bioprocessing Triopoly market */
+  function TriopolyMarket({ T, accent }) {
+    const players = [
+      { name: "Thermo Fisher", brand: "Gibco / HyClone", share: 35, color: accent, highlight: true },
+      { name: "Cytiva", brand: "(inside Danaher)", share: 35, color: T.deepBlue },
+      { name: "Sartorius", brand: "Bioprocess Solutions", share: 25, color: T.orange },
+      { name: "Other", brand: "Repligen, Merck KGaA, etc.", share: 5, color: T.textTer },
+    ];
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Bioprocessing market — global triopoly structure</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 18 }}>New entrants face years of qualification work plus customers unwilling to take regulatory risk</div>
+        <div style={{ display: "flex", height: 50, borderRadius: T.radiusSm, overflow: "hidden", marginBottom: 12 }}>
+          {players.map((p, i) => (
+            <div key={i} style={{ flex: p.share, background: p.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", borderRight: i < players.length - 1 ? `2px solid ${T.card}` : "none", position: "relative" }}>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 14, fontWeight: 800, fontFamily: Fn }}>{p.share}%</div>
+              </div>
+              {p.highlight && (
+                <div style={{ position: "absolute", top: -8, left: "50%", transform: "translateX(-50%)", fontSize: 12, color: accent }}>▼</div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+          {players.map((p, i) => (
+            <div key={i} style={{ padding: "10px 12px", border: `1px solid ${p.highlight ? p.color : T.border}`, borderRadius: T.radiusSm, background: p.highlight ? p.color + "10" : T.card }}>
+              <div style={{ fontSize: 12, fontWeight: p.highlight ? 800 : 600, color: p.color, fontFamily: Fn }}>{p.name}</div>
+              <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 2 }}>{p.brand}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  /* GLP-1 Capacity Buildout */
+  function GLP1CapacityViz({ T, accent }) {
+    const investments = [
+      { co: "Eli Lilly", amount: 42, color: T.capRed, sites: "Indianapolis, NC, Ireland, Germany" },
+      { co: "Novo Nordisk", amount: 23, color: T.deepBlue, sites: "Denmark, NC, Catalent (acquired)" },
+      { co: "Roche / Pfizer / AZ / Amgen", amount: 8, color: T.orange, sites: "Multiple — second wave" },
+    ];
+    const total = investments.reduce((s, i) => s + i.amount, 0);
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>GLP-1 manufacturing capacity commitment</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 18 }}>${total}B+ committed and growing — every gram needs cell culture media and downstream consumables</div>
+        <div style={{ marginBottom: 16 }}>
+          {investments.map((inv, i) => (
+            <div key={i} style={{ marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn }}>{inv.co}</span>
+                <span style={{ fontSize: 13, fontWeight: 800, color: inv.color, fontFamily: Fn }}>${inv.amount}B</span>
+              </div>
+              <div style={{ height: 14, background: T.pillBg, borderRadius: 7, overflow: "hidden" }}>
+                <div style={{ height: "100%", background: inv.color, width: `${(inv.amount / total) * 100}%`, transition: "width 1s" }} />
+              </div>
+              <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 3 }}>{inv.sites}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", background: accent + "10", borderRadius: T.radiusSm }}>
+          <div style={{ fontSize: 22, color: accent, fontWeight: 800, fontFamily: Fn }}>${total}B+</div>
+          <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.5 }}>Combined GLP-1 manufacturing capex commitment, with second-wave entrants pushing totals significantly higher.</div>
+        </div>
+      </Card>
+    );
+  }
+
+  /* ──────── ORBITRAP VISUALS ──────── */
+
+  /* Resolution comparison vs competitors */
+  function ResolutionComparison({ T, accent }) {
+    const analyzers = [
+      { name: "Quadrupole", maker: "Most makers", resolution: 5000, color: T.textTer },
+      { name: "Time-of-Flight (TOF)", maker: "Waters, Bruker, SCIEX", resolution: 50000, color: T.orange },
+      { name: "Orbitrap (Astral)", maker: "Thermo Fisher only", resolution: 240000, color: accent, highlight: true },
+    ];
+    const max = Math.max(...analyzers.map(a => a.resolution));
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Resolving power — Orbitrap dominance</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 20 }}>Maximum resolving power achievable on commercial instruments (FWHM at m/z 200)</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {analyzers.map((a, i) => (
+            <div key={i}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, alignItems: "baseline" }}>
+                <div>
+                  <span style={{ fontSize: 13, fontWeight: a.highlight ? 800 : 600, color: a.highlight ? a.color : T.text, fontFamily: Fn }}>{a.name}</span>
+                  <span style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginLeft: 8 }}>{a.maker}</span>
+                </div>
+                <span style={{ fontSize: 16, fontWeight: 800, color: a.color, fontFamily: Fn }}>{(a.resolution / 1000).toFixed(0)}k</span>
+              </div>
+              <div style={{ height: 14, background: T.pillBg, borderRadius: 7, overflow: "hidden", position: "relative" }}>
+                <div style={{ height: "100%", borderRadius: 7, background: a.color, width: `${(a.resolution / max) * 100}%`, transition: "width 1.2s" }} />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ marginTop: 16, padding: "12px 14px", background: accent + "10", borderRadius: T.radiusSm, fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>
+          <strong style={{ color: accent }}>~5x the resolution</strong> of the nearest competing technology, plus mass accuracy below 1 part per million. No competitor has replicated this combination in 20 years of trying.
+        </div>
+      </Card>
+    );
+  }
+
+  /* Ion oscillation animation */
+  function IonOscillationViz({ T, accent }) {
+    const [t, setT] = useState(0);
+    useEffect(() => {
+      const id = setInterval(() => setT(x => (x + 1) % 360), 30);
+      return () => clearInterval(id);
+    }, []);
+    const cx = 200, cy = 130;
+    // Two ions orbiting at different m/z (different frequencies)
+    const ion1Angle = t * 2;
+    const ion2Angle = t * 1.4;
+    const orbitR = 70;
+    const ion1Y = cy + Math.sin((t * 5) * Math.PI / 180) * 35; // axial oscillation
+    const ion2Y = cy + Math.sin((t * 3.5) * Math.PI / 180) * 35;
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Orbitrap physics — ion oscillation around central electrode</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 18 }}>Axial oscillation frequency depends only on m/z — measured via image current detection</div>
+        <svg width="100%" height="260" viewBox="0 0 400 260" style={{ display: "block" }}>
+          {/* Outer barrel electrodes */}
+          <ellipse cx={cx} cy={cy} rx="150" ry="90" fill="none" stroke={T.textTer} strokeWidth="2" strokeDasharray="4 3" />
+          <text x="350" y={cy + 4} fontSize="9" fill={T.textTer} fontFamily={Fn}>Outer barrel</text>
+          {/* Spindle central electrode */}
+          <ellipse cx={cx} cy={cy} rx="20" ry="60" fill={accent} opacity="0.85" />
+          <text x={cx} y={cy - 75} fontSize="9" fill={accent} fontFamily={Fn} textAnchor="middle" fontWeight="700">Central spindle electrode</text>
+          {/* Orbit paths */}
+          <ellipse cx={cx} cy={cy} rx={orbitR} ry="50" fill="none" stroke={accent} strokeWidth="1" strokeDasharray="2 4" opacity="0.5" />
+          {/* Ions in motion */}
+          {(() => {
+            const x1 = cx + orbitR * Math.cos(ion1Angle * Math.PI / 180);
+            return <circle cx={x1} cy={ion1Y} r="7" fill={T.capRed}><title>Ion 1 — heavier m/z, slower frequency</title></circle>;
+          })()}
+          {(() => {
+            const x2 = cx + orbitR * Math.cos((ion2Angle + 180) * Math.PI / 180);
+            return <circle cx={x2} cy={ion2Y} r="7" fill={T.deepBlue}><title>Ion 2 — lighter m/z, faster frequency</title></circle>;
+          })()}
+          {/* Labels */}
+          <g transform="translate(20, 220)">
+            <circle cx="6" cy="6" r="5" fill={T.capRed} />
+            <text x="18" y="10" fontSize="10" fill={T.textSec} fontFamily={Fn}>Ion 1 (high m/z) — lower frequency</text>
+          </g>
+          <g transform="translate(220, 220)">
+            <circle cx="6" cy="6" r="5" fill={T.deepBlue} />
+            <text x="18" y="10" fontSize="10" fill={T.textSec} fontFamily={Fn}>Ion 2 (low m/z) — higher frequency</text>
+          </g>
+          {/* Image current detection annotation */}
+          <line x1="20" y1={cy} x2="50" y2={cy} stroke={T.green} strokeWidth="1.5" />
+          <text x="22" y={cy - 6} fontSize="9" fill={T.green} fontFamily={Fn}>Image current detector</text>
+        </svg>
+        <div style={{ marginTop: 8, padding: "12px 14px", background: accent + "10", borderRadius: T.radiusSm, fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>
+          <strong style={{ color: accent }}>Why it works:</strong> Each ion orbits the central spindle while oscillating axially. The axial frequency depends only on mass-to-charge ratio, not initial velocity or position — making the measurement extraordinarily precise.
+        </div>
+      </Card>
+    );
+  }
+
+  /* Orbitrap instrument family */
+  function OrbitrapFamily({ T, accent }) {
+    const instruments = [
+      { name: "Q Exactive", year: 2011, price: "$0.4M", segment: "Entry / pharma QC", level: 1 },
+      { name: "Exploris", year: 2019, price: "$0.7M", segment: "Mainstream proteomics", level: 2 },
+      { name: "Ascend BioPharma", year: 2021, price: "$1.0M", segment: "Biopharma characterisation", level: 3 },
+      { name: "Astral", year: 2023, price: "$1.5M+", segment: "Flagship — proteomics", level: 4 },
+    ];
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Orbitrap instrument family — 18 years of platform evolution</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 20 }}>Continuous R&D investment — the Astral analyser (2023) was a meaningful generational advance</div>
+        <div style={{ display: "flex", alignItems: "flex-end", gap: 12, height: 200, marginBottom: 12 }}>
+          {instruments.map((inst, i) => {
+            const h = 50 + inst.level * 30;
+            return (
+              <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: accent, fontFamily: Fn, marginBottom: 4 }}>{inst.price}</div>
+                <div style={{ width: "100%", maxWidth: 110, height: h, background: i === instruments.length - 1 ? accent : accent + (40 + i * 30).toString(16).slice(0, 2), border: `2px solid ${accent}`, borderRadius: "8px 8px 4px 4px", display: "flex", alignItems: "center", justifyContent: "center", color: i === instruments.length - 1 ? "#fff" : accent, fontWeight: 800, fontSize: 12, fontFamily: Fn, transition: "all 0.3s" }}>{inst.name}</div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: T.text, fontFamily: Fn, marginTop: 6 }}>{inst.year}</div>
+                <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn, marginTop: 2, textAlign: "center", lineHeight: 1.4, maxWidth: 110 }}>{inst.segment}</div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+    );
+  }
+
+  /* Orbitrap applications */
+  function OrbitrapApplications({ T, accent }) {
+    const apps = [
+      { name: "Proteomics", share: 40, desc: "Large-scale protein identification" },
+      { name: "Pharma QC", share: 25, desc: "Impurity characterisation" },
+      { name: "Clinical / TDM", share: 15, desc: "Newborn screening, drug monitoring" },
+      { name: "Metabolomics", share: 10, desc: "Small molecule biomarker discovery" },
+      { name: "Drug discovery", share: 10, desc: "Compound screening libraries" },
+    ];
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Where Orbitrap dominates — application share</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 18 }}>Dominant share in high-value applications where resolution matters most</div>
+        {apps.map((a, i) => (
+          <div key={i} style={{ marginBottom: 12 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn }}>{a.name}</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn }}>{a.share}%</span>
+            </div>
+            <div style={{ height: 8, background: T.pillBg, borderRadius: 4, overflow: "hidden" }}>
+              <div style={{ height: "100%", background: accent, width: `${a.share * 2}%`, transition: "width 1s" }} />
+            </div>
+            <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 3 }}>{a.desc}</div>
+          </div>
+        ))}
+      </Card>
+    );
+  }
+
+  /* ──────── CRYO-EM VISUALS ──────── */
+
+  /* X-ray vs Cryo-EM comparison */
+  function XrayVsCryoEM({ T, accent }) {
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 18 }}>The structural biology revolution — why cryo-EM displaced crystallography</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div style={{ padding: "18px 18px", border: `2px solid ${T.textTer}`, borderRadius: T.radius, background: T.pillBg, opacity: 0.85 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, color: T.textTer, fontFamily: Fn, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 12 }}>X-ray crystallography</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: Fn, marginBottom: 12 }}>Historical workhorse</div>
+            <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, marginBottom: 12 }}>Purify protein → grow crystals → diffract X-rays → reconstruct structure</div>
+            <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 10 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: T.capRed, fontFamily: Fn, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 4 }}>Limitations</div>
+              <ul style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, paddingLeft: 16, lineHeight: 1.7, margin: 0 }}>
+                <li>Cannot crystallise membrane proteins (GPCRs)</li>
+                <li>Cannot resolve large complexes</li>
+                <li>Misses conformational flexibility</li>
+                <li>Crystallisation can take years</li>
+              </ul>
+            </div>
+          </div>
+          <div style={{ padding: "18px 18px", border: `2px solid ${accent}`, borderRadius: T.radius, background: accent + "10" }}>
+            <div style={{ fontSize: 12, fontWeight: 800, color: accent, fontFamily: Fn, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 12 }}>Cryo-EM</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: Fn, marginBottom: 12 }}>Nobel 2017 — new standard</div>
+            <div style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.7, marginBottom: 12 }}>Freeze protein in solution → image with electron beam → reconstruct in 3D computationally</div>
+            <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 10 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: T.green, fontFamily: Fn, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 4 }}>Unlocks</div>
+              <ul style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, paddingLeft: 16, lineHeight: 1.7, margin: 0 }}>
+                <li>Membrane proteins (35% of drugs)</li>
+                <li>Large complexes (ribosomes, channels)</li>
+                <li>Multiple conformations per sample</li>
+                <li>No crystallisation needed — days not years</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  /* Vitrification process */
+  function VitrificationProcess({ T, accent }) {
+    const steps = [
+      { num: 1, title: "Pipette sample", temp: "Room temp", note: "Protein in solution onto grid" },
+      { num: 2, title: "Blot excess", temp: "Room temp", note: "Thin film of liquid remains" },
+      { num: 3, title: "Plunge freeze", temp: "-180°C", note: "Into liquid ethane" },
+      { num: 4, title: "Vitrified glass", temp: "-180°C", note: "Water frozen without crystals" },
+    ];
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Sample vitrification — the Vitrobot Mark IV process</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 20 }}>Reproducible sample preparation is the single biggest practical obstacle to cryo-EM</div>
+        <div style={{ display: "flex", alignItems: "stretch", gap: 0, flexWrap: "wrap" }}>
+          {steps.map((s, i) => (
+            <div key={i} style={{ flex: 1, minWidth: 140, display: "flex", alignItems: "stretch" }}>
+              <div style={{ flex: 1, padding: "14px 12px", background: i === steps.length - 1 ? accent : T.card, color: i === steps.length - 1 ? "#fff" : T.text, border: `2px solid ${accent}`, borderRadius: T.radiusSm, margin: "0 4px", textAlign: "center" }}>
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: i === steps.length - 1 ? "rgba(255,255,255,0.2)" : accent, color: i === steps.length - 1 ? "#fff" : "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, fontFamily: Fn, margin: "0 auto 8px" }}>{s.num}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, fontFamily: Fn, marginBottom: 4 }}>{s.title}</div>
+                <div style={{ fontSize: 9, fontWeight: 600, opacity: 0.85, fontFamily: Fn, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 3 }}>{s.temp}</div>
+                <div style={{ fontSize: 10, color: i === steps.length - 1 ? "rgba(255,255,255,0.85)" : T.textTer, fontFamily: Fn, lineHeight: 1.4 }}>{s.note}</div>
+              </div>
+              {i < steps.length - 1 && <div style={{ display: "flex", alignItems: "center", color: accent, fontSize: 18, fontWeight: 800 }}>→</div>}
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  /* Krios column diagram */
+  function KriosColumn({ T, accent }) {
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Thermo Scientific Krios — flagship cryo-EM</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 18 }}>300kV electrons through electromagnetic lenses to direct detector</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 30 }}>
+          <svg width="120" height="320" viewBox="0 0 120 320">
+            {/* Electron gun */}
+            <rect x="40" y="10" width="40" height="30" fill={accent} rx="4" />
+            <text x="60" y="30" fontSize="9" fill="#fff" fontFamily={Fn} textAnchor="middle" fontWeight="700">Gun 300kV</text>
+            {/* Lens 1 */}
+            <ellipse cx="60" cy="60" rx="35" ry="10" fill={T.textTer} opacity="0.5" />
+            <text x="100" y="62" fontSize="9" fill={T.textSec} fontFamily={Fn}>Lens</text>
+            {/* Lens 2 */}
+            <ellipse cx="60" cy="100" rx="35" ry="10" fill={T.textTer} opacity="0.5" />
+            <text x="100" y="102" fontSize="9" fill={T.textSec} fontFamily={Fn}>Lens</text>
+            {/* Beam */}
+            <line x1="60" y1="40" x2="60" y2="155" stroke={T.capRed} strokeWidth="2" />
+            {/* Sample stage */}
+            <rect x="20" y="155" width="80" height="14" fill={accent} rx="2" />
+            <text x="60" y="166" fontSize="9" fill="#fff" fontFamily={Fn} textAnchor="middle" fontWeight="700">Frozen sample</text>
+            <line x1="60" y1="169" x2="60" y2="240" stroke={T.capRed} strokeWidth="2" />
+            {/* Lens 3 */}
+            <ellipse cx="60" cy="195" rx="35" ry="10" fill={T.textTer} opacity="0.5" />
+            <text x="100" y="197" fontSize="9" fill={T.textSec} fontFamily={Fn}>Lens</text>
+            {/* Energy filter */}
+            <rect x="35" y="220" width="50" height="10" fill={T.orange} rx="2" />
+            <text x="115" y="227" fontSize="9" fill={T.textSec} fontFamily={Fn}>Filter</text>
+            {/* Detector */}
+            <rect x="20" y="250" width="80" height="40" fill={T.deepBlue} rx="4" />
+            <text x="60" y="268" fontSize="10" fill="#fff" fontFamily={Fn} textAnchor="middle" fontWeight="700">Falcon</text>
+            <text x="60" y="282" fontSize="9" fill="#fff" fontFamily={Fn} textAnchor="middle">detector</text>
+          </svg>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {[
+              { label: "Voltage", value: "300 kV" },
+              { label: "Cost per instrument", value: "$5-10M" },
+              { label: "Best resolution", value: "~1.2 Å" },
+              { label: "Sample autoloader", value: "12 grids" },
+              { label: "Service contract", value: "Annuity" },
+              { label: "Lifecycle", value: "8-12 years" },
+            ].map((stat, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+                <div style={{ fontSize: 16, fontWeight: 800, color: accent, fontFamily: Fn, minWidth: 90 }}>{stat.value}</div>
+                <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn }}>{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  /* Resolution revolution timeline */
+  function ResolutionRevolution({ T, accent }) {
+    const milestones = [
+      { year: 2005, resolution: 8.0, label: "Pre-detector era" },
+      { year: 2013, resolution: 4.0, label: "Direct electron detector launches" },
+      { year: 2017, resolution: 3.0, label: "Nobel Prize awarded" },
+      { year: 2020, resolution: 2.0, label: "Atomic resolution routine" },
+      { year: 2024, resolution: 1.2, label: "Sub-atomic resolution" },
+    ];
+    const maxR = 8;
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>The resolution revolution — Å (better = lower)</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 20 }}>From 8 Å to 1.2 Å in two decades — competing directly with crystallography</div>
+        <div style={{ position: "relative", height: 200, paddingLeft: 50 }}>
+          {/* Y-axis labels */}
+          {[8, 6, 4, 2, 0].map((y, i) => (
+            <div key={i} style={{ position: "absolute", left: 0, top: (i / 4) * 170, fontSize: 10, color: T.textTer, fontFamily: Fn }}>{y} Å</div>
+          ))}
+          {/* Grid lines */}
+          {[0, 1, 2, 3, 4].map(i => (
+            <div key={i} style={{ position: "absolute", left: 30, right: 0, top: (i / 4) * 170, height: 1, background: T.border }} />
+          ))}
+          {/* Points */}
+          {milestones.map((m, i) => {
+            const x = (i / (milestones.length - 1)) * 90;
+            const y = (m.resolution / maxR) * 170;
+            const isLatest = i === milestones.length - 1;
+            return (
+              <div key={i} style={{ position: "absolute", left: `${x}%`, top: y, transform: "translate(-50%, -50%)", textAlign: "center" }}>
+                <div style={{ width: isLatest ? 18 : 12, height: isLatest ? 18 : 12, borderRadius: "50%", background: accent, border: `3px solid ${T.card}`, boxShadow: T.shadow, transition: "all 0.3s" }} />
+                <div style={{ fontSize: 11, fontWeight: 800, color: accent, fontFamily: Fn, marginTop: 4 }}>{m.resolution} Å</div>
+              </div>
+            );
+          })}
+          {/* Connecting line */}
+          <svg style={{ position: "absolute", left: 30, right: 0, top: 0, bottom: 0, width: "calc(100% - 30px)", height: 170, pointerEvents: "none" }} preserveAspectRatio="none" viewBox="0 0 100 170">
+            <polyline points={milestones.map((m, i) => `${(i / (milestones.length - 1)) * 100},${(m.resolution / maxR) * 170}`).join(" ")} fill="none" stroke={accent} strokeWidth="0.5" opacity="0.4" />
+          </svg>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: `repeat(${milestones.length}, 1fr)`, gap: 6, marginTop: 16, paddingLeft: 50 }}>
+          {milestones.map((m, i) => (
+            <div key={i} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: T.text, fontFamily: Fn }}>{m.year}</div>
+              <div style={{ fontSize: 9, color: T.textTer, fontFamily: Fn, lineHeight: 1.4, marginTop: 2 }}>{m.label}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  /* Drug discovery target market */
+  function DrugDiscoveryTargets({ T, accent }) {
+    const targets = [
+      { name: "GPCRs", share: 35, desc: "Most drugged target family — membrane proteins that resist crystallisation but yield to cryo-EM" },
+      { name: "Kinases", share: 15, desc: "Cancer & inflammation drug targets" },
+      { name: "Ion channels", share: 12, desc: "Neurological and cardiac drugs" },
+      { name: "Protein complexes", share: 18, desc: "Ribosomes, spliceosomes — impossible to crystallise" },
+      { name: "Antibodies & ADCs", share: 12, desc: "Biologic drug characterisation" },
+      { name: "Other", share: 8, desc: "Conformationally flexible proteins, vaccines" },
+    ];
+    return (
+      <Card T={T} style={{ padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Where cryo-EM unlocks drug discovery</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 20 }}>Pharmaceutical target categories enabled by cryo-EM that crystallography could not address</div>
+        <div style={{ display: "flex", height: 36, borderRadius: T.radiusSm, overflow: "hidden", marginBottom: 14 }}>
+          {targets.map((t, i) => (
+            <div key={i} style={{ flex: t.share, background: i === 0 ? accent : `${accent}${(95 - i * 10).toString(16)}`, borderRight: i < targets.length - 1 ? `2px solid ${T.card}` : "none", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ fontSize: 11, fontWeight: 800, color: "#fff", fontFamily: Fn }}>{t.share}%</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "grid", gap: 8 }}>
+          {targets.map((t, i) => (
+            <div key={i} style={{ display: "grid", gridTemplateColumns: "140px 60px 1fr", gap: 12, padding: "8px 12px", background: i === 0 ? accent + "10" : "transparent", borderRadius: T.radiusSm }}>
+              <span style={{ fontSize: 12, fontWeight: i === 0 ? 800 : 600, color: i === 0 ? accent : T.text, fontFamily: Fn }}>{t.name}</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: accent, fontFamily: Fn }}>{t.share}%</span>
+              <span style={{ fontSize: 11, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>{t.desc}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     STAGE WITH VISUALIZATION
+     Replaces the prose-only StageCard with prose + custom viz per stage
+     ═══════════════════════════════════════════════════════════════════════ */
+  function StageWithViz({ stage, color, T, idx, viz, defaultOpen = false }) {
+    const [open, setOpen] = useState(defaultOpen || idx === 0);
+    return (
+      <div style={{ marginBottom: 18 }}>
+        <Card T={T} style={{ padding: 0, overflow: "hidden", borderLeft: `4px solid ${color}` }}>
+          <div onClick={() => setOpen(!open)} style={{ padding: "18px 22px", cursor: "pointer", display: "flex", alignItems: "center", gap: 14 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 8, background: color + "1A", border: "1px solid " + color + "33", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <span style={{ fontSize: 14, fontWeight: 700, color: color, fontFamily: Fn }}>{idx + 1}</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: Fn }}>{stage.title}</div>
+              <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 2 }}>{stage.subtitle}</div>
+            </div>
+            <span style={{ fontSize: 16, color: T.textTer, transition: "transform 0.2s", transform: open ? "rotate(180deg)" : "rotate(0)" }}>▾</span>
+          </div>
+          {open && (
+            <div style={{ padding: "0 22px 22px 22px" }}>
+              <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, margin: "0 0 18px" }}>{stage.content}</p>
+              {viz && <div style={{ marginBottom: 16 }}>{viz}</div>}
+              <div style={{ padding: "14px 16px", borderRadius: T.radiusSm, background: T.pillBg, borderLeft: `3px solid ${color}` }}>
+                <div style={{ fontSize: 10, fontWeight: 600, color: color, fontFamily: Fn, letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>Deeper detail</div>
+                <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>{stage.detail}</p>
+              </div>
+            </div>
+          )}
+        </Card>
+      </div>
+    );
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     UPDATED PRIMER RENDERER — visualizations per stage
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* Per-primer viz maps — stage id -> visualization */
+  const primerVizMaps = {
+    bioproduction: {
+      hero: <ArmsDealerVisual T={T} accent={T.green} />,
+      stageViz: {
+        media: <MediaCompositionWheel T={T} accent={T.green} />,
+        bioreactor: <BioreactorScaleLadder T={T} accent={T.green} />,
+        purification: <PurificationFlow T={T} accent={T.green} />,
+        moat: <><FDALockInTimeline T={T} accent={T.green} /><TriopolyMarket T={T} accent={T.green} /></>,
+        commercial: <GLP1CapacityViz T={T} accent={T.green} />,
+      },
+    },
+    orbitrap: {
+      hero: <ResolutionComparison T={T} accent={T.deepBlue} />,
+      stageViz: {
+        physics: <IonOscillationViz T={T} accent={T.deepBlue} />,
+        instrument: <OrbitrapFamily T={T} accent={T.deepBlue} />,
+        applications: <OrbitrapApplications T={T} accent={T.deepBlue} />,
+        moat: null, // moat content is already strong as prose
+      },
+    },
+    cryoem: {
+      hero: <XrayVsCryoEM T={T} accent={T.purple} />,
+      stageViz: {
+        vitrification: <VitrificationProcess T={T} accent={T.purple} />,
+        imaging: <KriosColumn T={T} accent={T.purple} />,
+        reconstruction: <ResolutionRevolution T={T} accent={T.purple} />,
+        applications: <DrugDiscoveryTargets T={T} accent={T.purple} />,
+      },
+    },
+  };
+
+  const renderProductPrimer = (primer, accentKey, vizKey) => {
     const accent = T[accentKey] || T.green;
+    const vizMap = primerVizMaps[vizKey] || {};
     return (
       <div>
+        {/* Header */}
         <div style={{ marginBottom: 24 }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 8, flexWrap: "wrap" }}>
-            <span style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 26, color: T.text }}>{primer.title}</span>
+            <span style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 28, color: T.text }}>{primer.title}</span>
             <Pill T={T} color={accent} bg={accent + "14"}>Blockbuster Product Primer</Pill>
           </div>
           <div style={{ fontSize: 13, color: T.textTer, fontFamily: Fn, marginBottom: 20 }}>{primer.subtitle}</div>
@@ -345,20 +1071,31 @@ export default function ResearchTMO({ T }) {
             ))}
           </div>
         </div>
+
+        {/* Intro prose */}
         <p style={{ fontSize: 15, color: T.text, fontFamily: Fn, lineHeight: 1.7, margin: "0 0 24px", fontStyle: "italic" }}>{primer.intro}</p>
+
+        {/* Core problem callout */}
         <Card T={T} style={{ padding: "22px 26px", marginBottom: 28, borderLeft: `4px solid ${T.capRed}` }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: T.capRed, fontFamily: Fn, letterSpacing: "0.08em", marginBottom: 12, textTransform: "uppercase" }}>The core problem</div>
           <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, margin: 0 }}>{primer.coreProblem}</p>
         </Card>
+
+        {/* Hero visualization */}
+        {vizMap.hero}
+
+        {/* Walkthrough */}
         {sTitle("Walkthrough — how it actually works")}
-        {primer.stages.map((stg, i) => (<StageCard key={stg.id} stage={stg} color={accent} T={T} idx={i} />))}
+        {primer.stages.map((stg, i) => (
+          <StageWithViz key={stg.id} stage={stg} color={accent} T={T} idx={i} viz={vizMap.stageViz?.[stg.id]} />
+        ))}
       </div>
     );
   };
 
-  const bioproductionTab = renderProductPrimer(bioproduction, "green");
-  const orbitrapTab = renderProductPrimer(orbitrap, "deepBlue");
-  const cryoemTab = renderProductPrimer(cryoem, "purple");
+  const bioproductionTab = renderProductPrimer(bioproduction, "green", "bioproduction");
+  const orbitrapTab = renderProductPrimer(orbitrap, "deepBlue", "orbitrap");
+  const cryoemTab = renderProductPrimer(cryoem, "purple", "cryoem");
 
   const servicesTab = (
     <div>
