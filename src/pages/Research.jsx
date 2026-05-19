@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Fn, Fh } from "../theme";
 import { Card, Pill, TabBar } from "../components/shared";
 import ResearchASML from "./ResearchASML";
+import ResearchBioproc from "./ResearchBioproc";
 import ResearchBKNG from "./ResearchBKNG";
 import ResearchCATL from "./ResearchCATL";
 import ResearchCEG from "./ResearchCEG";
@@ -16,6 +17,15 @@ import ResearchThemes from "./ResearchThemes";
 import ResearchTMO from "./ResearchTMO";
 
 const reports = [
+  {
+    id: "bioproc", ticker: "MAP", name: "Bioprocessing Value Chain", sector: "Healthcare / Bioproduction / CDMOs",
+    tagline: "How tools, contract manufacturers, drug innovators, and end markets fit together — interactive map",
+    date: "May 2026", type: "Thematic Map", color: "deepBlue",
+    stats: [
+      { l: "Outsourced", v: "~70%" }, { l: "ADC Outsourced", v: "~80%" },
+      { l: "CDMO CAGR", v: "~12%" }, { l: "Top CDMOs", v: "4" },
+    ],
+  },
   {
     id: "asml", ticker: "ASML", name: "ASML Holding", sector: "Semiconductor Equipment / EUV Lithography",
     tagline: "Inside the most physically extreme manufacturing process ever industrialised",
@@ -147,6 +157,7 @@ const backBtn = (T, setActive) => (
 
 const reportComponents = {
   asml: ResearchASML,
+  bioproc: ResearchBioproc,
   bkng: ResearchBKNG,
   catl: ResearchCATL,
   ceg: ResearchCEG,
