@@ -9,10 +9,10 @@ import {
 /* ═══════════════════════════════════════════════════════════════
    GEOMETRY HELPERS
    ═══════════════════════════════════════════════════════════════ */
-const NODE_W = 156;
-const NODE_H = 56;
-const VB_W = 1140;
-const VB_H = 600;
+const NODE_W = 220;
+const NODE_H = 88;
+const VB_W = 1600;
+const VB_H = 920;
 
 function nodeBox(n) {
   const layer = layers.find(l => l.id === n.layer);
@@ -173,13 +173,13 @@ export default function ResearchBioproc({ T }) {
         {/* Layer headers */}
         {layers.map((l, i) => (
           <g key={l.id}>
-            <text x={l.xCenter} y={22} textAnchor="middle" fontFamily={Fn} fontSize="13" fontWeight="600" fill={T.text}>
+            <text x={l.xCenter} y={32} textAnchor="middle" fontFamily={Fn} fontSize="18" fontWeight="600" fill={T.text}>
               {l.title}
             </text>
-            <text x={l.xCenter} y={40} textAnchor="middle" fontFamily={Fn} fontSize="10" fill={T.textTer}>
+            <text x={l.xCenter} y={58} textAnchor="middle" fontFamily={Fn} fontSize="13" fill={T.textTer}>
               {l.subtitle}
             </text>
-            <line x1={l.xCenter - 80} y1={50} x2={l.xCenter + 80} y2={50} stroke={T.border} strokeWidth="1" />
+            <line x1={l.xCenter - 110} y1={75} x2={l.xCenter + 110} y2={75} stroke={T.border} strokeWidth="1" />
           </g>
         ))}
 
@@ -188,7 +188,7 @@ export default function ResearchBioproc({ T }) {
           if (!f.isVisible) return null;
           const color = modColor(T, f.dominantMod);
           const baseOpacity = f.isHighlighted ? 0.85 : (selectedNode ? 0.05 : (activeMod === "all" ? 0.18 : 0.32));
-          const strokeWidth = f.isHighlighted ? 2.2 : 1.2;
+          const strokeWidth = f.isHighlighted ? 3.2 : 1.8;
           return (
             <path
               key={`${f.from}-${f.to}-${i}`}
@@ -222,33 +222,33 @@ export default function ResearchBioproc({ T }) {
             >
               {/* Card */}
               <rect
-                width={NODE_W} height={NODE_H} rx={8} ry={8}
+                width={NODE_W} height={NODE_H} rx={10} ry={10}
                 fill={T.card}
                 stroke={isSelected ? nodeColor : T.border}
-                strokeWidth={isSelected ? 2 : 1}
-                style={{ filter: isSelected ? `drop-shadow(0 4px 12px ${nodeColor}30)` : "none", transition: "all 0.2s" }}
+                strokeWidth={isSelected ? 2.5 : 1}
+                style={{ filter: isSelected ? `drop-shadow(0 6px 18px ${nodeColor}30)` : "none", transition: "all 0.2s" }}
               />
               {/* Top color strip */}
               <rect
-                x={0} y={0} width={NODE_W} height={3}
+                x={0} y={0} width={NODE_W} height={4}
                 rx={2} ry={2}
                 fill={nodeColor}
                 opacity={isSelected ? 1 : 0.55}
               />
               {/* Name */}
-              <text x={12} y={22} fontFamily={Fn} fontSize="12" fontWeight="600" fill={T.text}>
-                {n.name.length > 22 ? n.name.slice(0, 20) + "…" : n.name}
+              <text x={18} y={32} fontFamily={Fn} fontSize="17" fontWeight="600" fill={T.text}>
+                {n.name.length > 26 ? n.name.slice(0, 24) + "…" : n.name}
               </text>
               {/* Ticker or subtitle */}
-              <text x={12} y={36} fontFamily={Fn} fontSize="10" fill={T.textTer}>
-                {n.ticker || (n.sub && n.sub.length > 26 ? n.sub.slice(0, 24) + "…" : n.sub) || ""}
+              <text x={18} y={52} fontFamily={Fn} fontSize="13" fill={T.textTer}>
+                {n.ticker || (n.sub && n.sub.length > 32 ? n.sub.slice(0, 30) + "…" : n.sub) || ""}
               </text>
               {/* Modality dots */}
-              <g transform={`translate(12, 46)`}>
+              <g transform={`translate(18, 70)`}>
                 {modalities.filter(m => m.id !== "all" && n.mods.includes(m.id)).map((m, i) => (
                   <circle
                     key={m.id}
-                    cx={i * 9} cy={0} r={3}
+                    cx={i * 13} cy={0} r={4.5}
                     fill={T[m.color]}
                     opacity={activeMod === "all" || activeMod === m.id ? 0.9 : 0.25}
                   />
@@ -260,7 +260,7 @@ export default function ResearchBioproc({ T }) {
 
         {/* Hint when nothing selected */}
         {!selectedNode && (
-          <text x={VB_W / 2} y={VB_H - 14} textAnchor="middle" fontFamily={Fn} fontSize="10.5" fill={T.textTer}>
+          <text x={VB_W / 2} y={VB_H - 18} textAnchor="middle" fontFamily={Fn} fontSize="13" fill={T.textTer}>
             Hover any node for details · click to pin · use modality filter to isolate a single therapeutic class
           </text>
         )}
@@ -336,10 +336,8 @@ export default function ResearchBioproc({ T }) {
   const mapTab = (
     <div>
       {modBar}
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 360px", gap: 20, alignItems: "start" }}>
-        <div style={{ minWidth: 0 }}>{diagram}</div>
-        <div style={{ position: "sticky", top: 20 }}>{detailPanel}</div>
-      </div>
+      {diagram}
+      <div style={{ marginTop: 4 }}>{detailPanel}</div>
     </div>
   );
 

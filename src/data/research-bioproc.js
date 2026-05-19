@@ -28,10 +28,10 @@ export const modalities = [
 ];
 
 export const layers = [
-  { id: "tools",   title: "Tools & Equipment",  subtitle: "Picks-and-shovels",                xCenter: 130,  width: 170 },
-  { id: "mfg",     title: "Manufacturing",       subtitle: "In-house or outsourced (CDMOs)",   xCenter: 430,  width: 200 },
-  { id: "ip",      title: "Drug Innovators",     subtitle: "Own the IP and patient relationship", xCenter: 760, width: 200 },
-  { id: "end",     title: "End Market",          subtitle: "Payors and patients",              xCenter: 1010, width: 140 },
+  { id: "tools",   title: "Tools & Equipment",  subtitle: "Picks-and-shovels",                xCenter: 180,  width: 220 },
+  { id: "mfg",     title: "Manufacturing",       subtitle: "In-house or outsourced (CDMOs)",   xCenter: 600,  width: 240 },
+  { id: "ip",      title: "Drug Innovators",     subtitle: "Own the IP and patient relationship", xCenter: 1060, width: 240 },
+  { id: "end",     title: "End Market",          subtitle: "Payors and patients",              xCenter: 1430, width: 200 },
 ];
 
 // Each node lives in one layer. yCenter is in SVG units (viewBox 0..600 tall).
@@ -39,7 +39,7 @@ export const layers = [
 export const nodes = [
   // ─── TOOLS & EQUIPMENT (col 1) ─────────────────────────────────
   {
-    id: "tmo", layer: "tools", yCenter: 90,
+    id: "tmo", layer: "tools", yCenter: 150,
     name: "Thermo Fisher", ticker: "TMO", color: "deepBlue",
     mods: ["bio", "adc", "cgt", "mrna"],
     role: "Diversified life-sciences tools + bioproduction consumables + Patheon CDMO",
@@ -54,7 +54,7 @@ export const nodes = [
     },
   },
   {
-    id: "srt", layer: "tools", yCenter: 200,
+    id: "srt", layer: "tools", yCenter: 330,
     name: "Sartorius", ticker: "SRT3.DE", color: "deepBlue",
     mods: ["bio", "adc", "cgt", "mrna"],
     role: "Pure-play bioprocessing — single-use systems, filtration, cell culture",
@@ -69,7 +69,7 @@ export const nodes = [
     },
   },
   {
-    id: "dhr", layer: "tools", yCenter: 310,
+    id: "dhr", layer: "tools", yCenter: 510,
     name: "Danaher", ticker: "DHR", color: "deepBlue",
     mods: ["bio", "adc", "cgt", "mrna"],
     role: "Cytiva + Pall + Beckman + Aldevron — full bioprocessing stack",
@@ -84,7 +84,7 @@ export const nodes = [
     },
   },
   {
-    id: "rgen", layer: "tools", yCenter: 420,
+    id: "rgen", layer: "tools", yCenter: 690,
     name: "Repligen", ticker: "RGEN", color: "deepBlue",
     mods: ["bio", "cgt"],
     role: "Specialty consumables — filtration, chromatography, analytics",
@@ -101,7 +101,7 @@ export const nodes = [
 
   // ─── MANUFACTURING (col 2) ─────────────────────────────────
   {
-    id: "inhouse", layer: "mfg", yCenter: 80,
+    id: "inhouse", layer: "mfg", yCenter: 130,
     name: "In-house manufacturing", sub: "Roche, Lilly, Novartis, J&J, Pfizer", color: "textSec",
     mods: ["bio", "adc", "mrna"],
     role: "Big Pharma still manufactures most of its own commercial biologics",
@@ -116,7 +116,7 @@ export const nodes = [
     },
   },
   {
-    id: "lonza", layer: "mfg", yCenter: 200,
+    id: "lonza", layer: "mfg", yCenter: 310,
     name: "Lonza", ticker: "LONN.SW", color: "capRed",
     mods: ["bio", "adc", "cgt"],
     role: "Pure-play CDMO — biologics, ADCs, cell & gene leadership",
@@ -131,7 +131,7 @@ export const nodes = [
     },
   },
   {
-    id: "samsung", layer: "mfg", yCenter: 295,
+    id: "samsung", layer: "mfg", yCenter: 470,
     name: "Samsung Biologics", ticker: "207940.KS", color: "capRed",
     mods: ["bio"],
     role: "Largest mAb capacity globally — pure mammalian focus",
@@ -146,7 +146,7 @@ export const nodes = [
     },
   },
   {
-    id: "wuxi", layer: "mfg", yCenter: 390,
+    id: "wuxi", layer: "mfg", yCenter: 630,
     name: "WuXi Biologics", ticker: "2269.HK", color: "capRed",
     mods: ["bio", "adc"],
     role: "Largest Chinese CDMO — under BIOSECURE pressure",
@@ -161,7 +161,7 @@ export const nodes = [
     },
   },
   {
-    id: "ctlt", layer: "mfg", yCenter: 480,
+    id: "ctlt", layer: "mfg", yCenter: 790,
     name: "Catalent", sub: "Novo Holdings (private since 2024)", color: "capRed",
     mods: ["bio", "mrna", "cgt"],
     role: "Diversified CDMO — fill-finish, drug product, gene therapy",
@@ -178,7 +178,7 @@ export const nodes = [
 
   // ─── DRUG INNOVATORS (col 3) ─────────────────────────────────
   {
-    id: "pharma", layer: "ip", yCenter: 90,
+    id: "pharma", layer: "ip", yCenter: 150,
     name: "Big Pharma", sub: "Roche, Lilly, Pfizer, BMS, AZ, JNJ, GSK, Novartis", color: "purple",
     mods: ["bio", "adc", "mrna"],
     role: "Established pharma — large pipelines, mixed make-vs-buy strategies",
@@ -193,7 +193,7 @@ export const nodes = [
     },
   },
   {
-    id: "biotech_bio", layer: "ip", yCenter: 215,
+    id: "biotech_bio", layer: "ip", yCenter: 360,
     name: "Biotech (Biologics)", sub: "Regeneron, Vertex, Amgen, Argenx, BioNTech", color: "purple",
     mods: ["bio"],
     role: "Biologics-native biotechs — typically outsource manufacturing",
@@ -208,7 +208,7 @@ export const nodes = [
     },
   },
   {
-    id: "biotech_cgt", layer: "ip", yCenter: 315,
+    id: "biotech_cgt", layer: "ip", yCenter: 540,
     name: "Biotech (Cell & Gene)", sub: "Vertex/CRISPR Tx, BMS Juno, bluebird, Gilead Kite", color: "purple",
     mods: ["cgt"],
     role: "Cell & gene therapy developers — manufacturing is the rate-limiter, not the science",
@@ -223,7 +223,7 @@ export const nodes = [
     },
   },
   {
-    id: "biotech_mrna", layer: "ip", yCenter: 415,
+    id: "biotech_mrna", layer: "ip", yCenter: 720,
     name: "Biotech (mRNA)", sub: "Moderna, BioNTech, CureVac", color: "purple",
     mods: ["mrna"],
     role: "mRNA developers — vaccine + emerging therapeutic applications",
@@ -240,7 +240,7 @@ export const nodes = [
 
   // ─── END MARKET (col 4) ─────────────────────────────────
   {
-    id: "patients", layer: "end", yCenter: 230,
+    id: "patients", layer: "end", yCenter: 350,
     name: "Patients", sub: "Hospitals, clinics, infusion centres", color: "green",
     mods: ["bio", "adc", "cgt", "mrna"],
     role: "Drug recipients — concentrated in specialty/hospital settings for biologics",
@@ -255,7 +255,7 @@ export const nodes = [
     },
   },
   {
-    id: "payors", layer: "end", yCenter: 360,
+    id: "payors", layer: "end", yCenter: 560,
     name: "Payors", sub: "PBMs, governments, insurers", color: "green",
     mods: ["bio", "adc", "cgt", "mrna"],
     role: "Where the money originates — drives net pricing for the entire chain",
