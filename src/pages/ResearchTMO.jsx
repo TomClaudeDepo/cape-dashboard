@@ -140,7 +140,7 @@ export default function ResearchTMO({ T }) {
 
   /* ─── HEADER (left rail) ─── */
   const header = (
-    <aside style={{ position: "sticky", top: 64, alignSelf: "start" }}>
+    <aside style={{ position: "sticky", top: 16, alignSelf: "start" }}>
       <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 24, color: T.text, lineHeight: 1.12, marginBottom: 6 }}>Thermo Fisher Scientific</div>
       <div style={{ fontSize: 11, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", marginBottom: 10 }}>TMO US · NYSE · Waltham, MA</div>
       <div style={{ marginBottom: 12 }}>

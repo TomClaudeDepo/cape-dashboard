@@ -108,6 +108,44 @@ function Dashboard({ dark, setDark }) {
           })}
         </nav>
 
+        {/* Controls cluster \u2014 search / theme / avatar */}
+        <div style={{
+          padding: collapsed ? "8px 6px" : "10px 12px",
+          borderTop: "1px solid " + T.border,
+          display: "flex",
+          flexDirection: collapsed ? "column" : "row",
+          alignItems: "center",
+          justifyContent: collapsed ? "center" : "space-between",
+          gap: collapsed ? 6 : 8,
+        }}>
+          <button onClick={() => setCmdOpen(true)} title="Search (\u2318K)" style={{
+            display: "flex", alignItems: "center", gap: 6,
+            padding: collapsed ? 0 : "6px 10px",
+            width: collapsed ? 32 : "auto", height: collapsed ? 32 : "auto",
+            justifyContent: "center",
+            border: collapsed ? "none" : "1px solid " + T.border,
+            borderRadius: collapsed ? "50%" : T.radiusSm,
+            background: collapsed ? "transparent" : T.bg,
+            cursor: "pointer", color: T.textTer, fontSize: 11, fontFamily: Fn, transition: "all 0.15s",
+          }}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="7" cy="7" r="4.5"/><line x1="10.5" y1="10.5" x2="14" y2="14"/></svg>
+            {!collapsed && <span className="cmd-hint" style={{ opacity: 0.6 }}>&thinsp;&#8984;K</span>}
+          </button>
+          <button onClick={() => { const d = !dark; setDark(d); localStorage.setItem("cape_dark", d ? "1" : "0") }} title={dark ? "Light mode" : "Dark mode"} style={{
+            width: 32, height: 32, borderRadius: "50%", border: "none", background: collapsed ? "transparent" : T.pillBg, cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: T.textSec,
+            transition: "all 0.2s", boxShadow: collapsed ? "none" : T.shadow, flexShrink: 0,
+          }}>
+            {dark ? "\u2600" : "\u263D"}
+          </button>
+          <div title="CC" style={{
+            width: 32, height: 32, borderRadius: "50%",
+            background: `linear-gradient(135deg, ${T.purple}, ${T.capRed})`,
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "#fff", fontWeight: 700,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)", flexShrink: 0,
+          }}>CC</div>
+        </div>
+
         {/* Collapse toggle (desktop only) */}
         <button className="collapse-btn" onClick={() => setCollapsed(!collapsed)} style={{
           display: "flex", alignItems: "center", justifyContent: "center", margin: collapsed ? "0 auto 12px" : "0 8px 12px",
@@ -123,44 +161,20 @@ function Dashboard({ dark, setDark }) {
         {!collapsed && <div style={{ padding: "12px 20px", borderTop: "1px solid " + T.border, fontSize: 9, color: T.textTer, textTransform: "uppercase", letterSpacing: "0.2em", opacity: 0.5 }}>Confidential</div>}
       </div>
 
+      {/* Floating hamburger \u2014 mobile only, replaces the removed top bar's menu button */}
+      <button className="hamburger" onClick={() => setSidebarOpen(!sidebarOpen)} style={{
+        display: "none", position: "fixed", top: 12, left: 12, zIndex: 8,
+        width: 36, height: 36, borderRadius: "50%", background: T.card, border: "1px solid " + T.border,
+        boxShadow: T.shadow, color: T.text, fontSize: 18, cursor: "pointer", padding: 0, lineHeight: 1,
+        alignItems: "center", justifyContent: "center",
+      }}>
+        {sidebarOpen ? "\u2715" : "\u2630"}
+      </button>
+
       {/* Main */}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", transition: "background 0.3s" }}>
-        <div style={{
-          height: 48, background: T.topbar, backdropFilter: T.glassBlur, WebkitBackdropFilter: T.glassBlur,
-          borderBottom: T.glassBorder, display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "0 28px", flexShrink: 0, transition: "background 0.3s", position: "sticky", top: 0, zIndex: 5,
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <button className="hamburger" onClick={() => setSidebarOpen(!sidebarOpen)} style={{ display: "none", background: "none", border: "none", color: T.text, fontSize: 20, cursor: "pointer", padding: 0, lineHeight: 1 }}>
-              {sidebarOpen ? "\u2715" : "\u2630"}
-            </button>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <button onClick={() => setCmdOpen(true)} style={{
-              display: "flex", alignItems: "center", gap: 6, padding: "6px 12px", border: "1px solid " + T.border,
-              borderRadius: T.radiusSm, background: T.bg, cursor: "pointer", color: T.textTer, fontSize: 11, fontFamily: Fn, transition: "all 0.15s",
-            }}>
-              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="7" cy="7" r="4.5"/><line x1="10.5" y1="10.5" x2="14" y2="14"/></svg>
-              <span className="cmd-hint" style={{ opacity: 0.6 }}>&thinsp;&#8984;K</span>
-            </button>
-            <button onClick={() => { const d = !dark; setDark(d); localStorage.setItem("cape_dark", d ? "1" : "0") }} style={{
-              width: 34, height: 34, borderRadius: "50%", border: "none", background: T.pillBg, cursor: "pointer",
-              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: T.textSec,
-              transition: "all 0.2s", boxShadow: T.shadow,
-            }}>
-              {dark ? "\u2600" : "\u263D"}
-            </button>
-            <div style={{
-              width: 34, height: 34, borderRadius: "50%",
-              background: `linear-gradient(135deg, ${T.purple}, ${T.capRed})`,
-              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "#fff", fontWeight: 700,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            }}>CC</div>
-          </div>
-        </div>
-
         <div style={{ flex: 1, overflowY: "auto", padding: "0 32px 28px" }}>
-          <div key={nav} style={{ maxWidth: 1140, margin: "0 auto", paddingTop: 24, animation: "fadeIn 0.3s ease" }}>
+          <div key={nav} style={{ maxWidth: 1140, margin: "0 auto", paddingTop: 20, animation: "fadeIn 0.3s ease" }}>
             {pages[nav]()}
             <div style={{ marginTop: 28, paddingTop: 14, borderTop: "1px solid " + T.border, fontSize: 10, color: T.textTer, fontFamily: Fn, textAlign: "center", opacity: 0.6 }}>
               Cape Capital AG &middot; Utoquai 55, 8008 Z&uuml;rich &middot; Benchmark: MSCI ACWI NTR (NDEEWNR) &middot; All data EUR unless stated
