@@ -347,11 +347,184 @@ function ProductMapTab({ T, sTitle, prose }) {
   );
 }
 
+/* ════════════════════════════════════════════════════════════════
+   TL;DR TAB — meeting-ready 4-card summary
+   Big italic headline, signature stat, tiny context line.
+   ════════════════════════════════════════════════════════════════ */
+function BucketBar({ label, share, status, color, T }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(140px, 1.1fr) 64px minmax(0, 3fr) 130px", gap: 12, alignItems: "center", padding: "6px 0" }}>
+      <div style={{ fontSize: 12.5, fontWeight: 600, color: T.text, fontFamily: Fn }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 800, color, fontFamily: Fn, fontVariantNumeric: "tabular-nums" }}>{share}%</div>
+      <div style={{ height: 8, background: T.pillBg, borderRadius: 4, overflow: "hidden" }}>
+        <div style={{ width: share + "%", height: "100%", background: color, borderRadius: 4 }} />
+      </div>
+      <div style={{ fontSize: 10.5, fontWeight: 700, color, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", textAlign: "right" }}>{status}</div>
+    </div>
+  );
+}
+
+function TakeawayCard({ num, headline, stat, statColor, statSub, children, footer, T }) {
+  return (
+    <div style={{
+      background: T.card,
+      borderRadius: T.radius,
+      padding: "32px 36px",
+      boxShadow: T.shadow,
+      border: "1px solid " + T.border,
+      marginBottom: 18,
+    }}>
+      <div style={{ display: "grid", gridTemplateColumns: "auto minmax(0, 1fr) auto", gap: 28, alignItems: "start", marginBottom: 22 }}>
+        <div style={{
+          fontFamily: Fh, fontStyle: "italic", fontWeight: 400,
+          fontSize: 64, lineHeight: 0.9, color: T.textTer,
+          letterSpacing: "-0.04em",
+        }}>{num}</div>
+        <div style={{ minWidth: 0 }}>
+          <div style={{
+            fontFamily: Fh, fontStyle: "italic", fontWeight: 400,
+            fontSize: 30, lineHeight: 1.15, color: T.text,
+            letterSpacing: "-0.02em",
+          }}>{headline}</div>
+        </div>
+        {stat && (
+          <div style={{ textAlign: "right", minWidth: 140 }}>
+            <div style={{ fontSize: 38, fontWeight: 700, fontFamily: Fn, lineHeight: 1, color: statColor || T.text, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>{stat}</div>
+            {statSub && <div style={{ fontSize: 10.5, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase", marginTop: 6 }}>{statSub}</div>}
+          </div>
+        )}
+      </div>
+      {children && (
+        <div style={{ marginBottom: 18 }}>{children}</div>
+      )}
+      {footer && (
+        <div style={{ paddingTop: 16, borderTop: "1px solid " + T.border, fontSize: 11.5, color: T.textTer, fontFamily: Fn, lineHeight: 1.65, fontStyle: "italic" }}>{footer}</div>
+      )}
+    </div>
+  );
+}
+
+function TldrTab({ T }) {
+  // 4 buckets coloured to match the org-map segment palette
+  const buckets = [
+    { label: "Pharma & Biotech",     share: 57, status: "Accelerating",  color: "#1D4ED8" },
+    { label: "Academic & Government", share: 17, status: "Stalled",       color: "#9333EA" },
+    { label: "Industrial & Applied",  share: 13, status: "Stable → up",   color: "#059669" },
+    { label: "Diagnostics & Health",  share: 13, status: "Flat",          color: "#EA580C" },
+  ];
+
+  return (
+    <div>
+      <div style={{ fontSize: 11, fontWeight: 800, color: T.textTer, fontFamily: Fn, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 8 }}>
+        Bottom-up end-market read · 20 May 2026
+      </div>
+      <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 26, color: T.text, lineHeight: 1.2, marginBottom: 28, letterSpacing: "-0.02em" }}>
+        Four things to walk in with.
+      </div>
+
+      {/* 01 — Customer health */}
+      <TakeawayCard
+        num="01"
+        headline={<>Customer base is healthier than 6 months ago <span style={{ color: T.textTer }}>— but the recovery is narrow.</span></>}
+        stat="57%"
+        statColor="#1D4ED8"
+        statSub="of mix accelerating"
+        footer="~57% of TMO's mix is accelerating, ~13% improving slowly, ~17% stalled, ~13% sideways. Weighted, this is a portfolio inflecting up at the margin — not enough to support a return to the mid-20s P/E unless the bioproduction equipment cycle compounds through 2027."
+        T={T}
+      >
+        <div style={{ display: "grid", gap: 2 }}>
+          {buckets.map(b => <BucketBar key={b.label} {...b} T={T} />)}
+        </div>
+      </TakeawayCard>
+
+      {/* 02 — Bioproduction inflection */}
+      <TakeawayCard
+        num="02"
+        headline={<>Bioproduction inflection is <span style={{ color: "#059669" }}>real and durable.</span></>}
+        stat="+30%"
+        statColor="#059669"
+        statSub="Danaher Q1 equipment orders YoY"
+        footer="First quarter of YoY equipment order growth in nearly two years at Danaher (Cytiva). Corroborated by five independent peers — Sartorius BPS +8.1% cc, Merck KGaA Process Solutions +16%, Repligen consumables double-digit, Cytiva high-single-digit. Structural drivers: GLP-1 capacity (Lilly's $27B US footprint, Novo's DKK 55B 2026 capex), ADC pipeline, CGT manufacturing build-out, US reshoring under Section 232."
+        T={T}
+      >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 8 }}>
+          {[
+            { name: "Danaher",     val: "+>30% orders",    label: "equipment, first +YoY in ~2y" },
+            { name: "Sartorius",   val: "+8.1% cc",        label: "Bioprocess Solutions" },
+            { name: "Merck KGaA",  val: "+16% organic",    label: "Process Solutions, first €1B Q since Q1'23" },
+            { name: "Repligen",    val: "+50% / +25%",     label: "process analytics / chromatography" },
+            { name: "Cytiva (DHR)",val: "double-digit CN", label: "China bioprocessing" },
+          ].map(p => (
+            <div key={p.name} style={{ padding: "10px 12px", background: "#05966910", border: "1px solid #05966933", borderRadius: 8 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 3 }}>{p.name}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#059669", fontFamily: Fn, lineHeight: 1.15 }}>{p.val}</div>
+              <div style={{ fontSize: 10.5, color: T.textSec, fontFamily: Fn, marginTop: 4, lineHeight: 1.4 }}>{p.label}</div>
+            </div>
+          ))}
+        </div>
+      </TakeawayCard>
+
+      {/* 03 — Consensus math */}
+      <TakeawayCard
+        num="03"
+        headline={<>Consensus is well-calibrated <span style={{ color: T.textTer }}>— but biased bearish on the right tail.</span></>}
+        stat="+3.5–4.5%"
+        statColor={T.text}
+        statSub="our weighted FY26 organic vs Street 3–4%"
+        footer="Bucket-weighted math brackets the Bloomberg/BI consensus almost exactly. The Street H2 step-up is mostly comp + Clario — not a demand inflection at the consolidated level — but it is at the bucket level. Asymmetric upside: if TMO bioproduction compounds at 8–10% in H2'26 / FY27, Street 2027 EPS ($27.26) looks 5–8% too low."
+        T={T}
+      >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
+          {[
+            { bucket: "Pharma & Biotech",     contrib: "+2.9 to +3.4%", color: "#1D4ED8" },
+            { bucket: "Academic & Govt",      contrib: "−0.3 to −0.2%", color: "#9333EA" },
+            { bucket: "Industrial & Applied", contrib: "+0.4 to +0.5%", color: "#059669" },
+            { bucket: "Diagnostics & Health", contrib: "0.0 to +0.1%",  color: "#EA580C" },
+          ].map(c => (
+            <div key={c.bucket} style={{ padding: "12px 14px", background: T.pillBg, borderRadius: 8, borderLeft: "3px solid " + c.color }}>
+              <div style={{ fontSize: 10.5, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 4 }}>{c.bucket}</div>
+              <div style={{ fontSize: 17, fontWeight: 700, color: T.text, fontFamily: Fn, fontVariantNumeric: "tabular-nums" }}>{c.contrib}</div>
+              <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 2 }}>weighted contribution</div>
+            </div>
+          ))}
+        </div>
+      </TakeawayCard>
+
+      {/* 04 — Recommendation */}
+      <TakeawayCard
+        num="04"
+        headline={<>Constructive, not deeply convinced. <span style={{ color: T.text }}>Buy on weakness — start at 50%.</span></>}
+        stat="50%"
+        statColor={T.capRed}
+        statSub="initial position of target"
+        footer="At $438 / 16.1x FY27E / 14.5x FY28E, TMO is below mid-20s historical. Directional thesis holds; multiple-expansion thesis waits on TMO's own bioproduction disclosure (TMO doesn't break out the order KPI Danaher does)."
+        T={T}
+      >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+          <div style={{ padding: "14px 16px", background: T.greenBg || "#ECFDF5", borderRadius: 8, borderLeft: "3px solid #10B981" }}>
+            <div style={{ fontSize: 10, fontWeight: 800, color: "#10B981", fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Add on</div>
+            <div style={{ fontSize: 12, color: T.text, fontFamily: Fn, lineHeight: 1.5 }}>Q2 LSS organic ≥ 3% · Q3 confirms bioprod equipment orders · IQVIA TTM book-to-bill &gt; 1.15x</div>
+          </div>
+          <div style={{ padding: "14px 16px", background: T.redBg || "#FEF2F2", borderRadius: 8, borderLeft: "3px solid " + T.capRed }}>
+            <div style={{ fontSize: 10, fontWeight: 800, color: T.capRed, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Trim on</div>
+            <div style={{ fontSize: 12, color: T.text, fontFamily: Fn, lineHeight: 1.5 }}>Bioprod consumables decel below 5% · IQVIA NNB &lt; $2.0B/Q · ICR cap legal pathway reopens · MFN capex reversals</div>
+          </div>
+        </div>
+      </TakeawayCard>
+
+      <div style={{ marginTop: 24, padding: "14px 18px", background: T.pillBg, borderRadius: 8, fontSize: 11, color: T.textTer, fontFamily: Fn, lineHeight: 1.65, fontStyle: "italic" }}>
+        Source · TMO Q1 2026 (23 Apr), peer reads (DHR, SRT, MRK GR, RGEN, RVTY, A US, IQV, CRL, WAT, BIO, MTD), Bloomberg/BI consensus, J.P. Morgan Q1 biopharma licensing report, NACUBO-Commonfund 2025 endowment study. Internal Cape Capital research, 20 May 2026.
+      </div>
+    </div>
+  );
+}
+
 /* ════════════════════════════════════════════════════════════════ MAIN ════════════════════════════════════════════════════════════════ */
 export default function ResearchTMO({ T }) {
-  const [tab, setTab] = useState("whydown");
+  const [tab, setTab] = useState("tldr");
 
   const tabs = [
+    { id: "tldr",     num: "00", label: "TL;DR" },
     { id: "whydown",  num: "01", label: "Why It's Down" },
     { id: "value",    num: "02", label: "Valuation & Entry" },
     { id: "primer",   num: "03", label: "Business Primer" },
@@ -880,6 +1053,7 @@ export default function ResearchTMO({ T }) {
 
   /* ═══════════════════════════════════════════ ROUTING ═══════════════════════════════════════════ */
   const content = {
+    tldr: <TldrTab T={T} />,
     whydown: whyDownTab,
     value: valueTab,
     primer: primerTab,
