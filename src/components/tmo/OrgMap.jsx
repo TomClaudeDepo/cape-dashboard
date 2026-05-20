@@ -601,7 +601,7 @@ export default function OrgMap({ T }) {
 
 
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.1fr) minmax(0, 1fr)", gap: 24, marginBottom: 28, alignItems: "start" }}>
-        <Card T={T} style={{ padding: isMobile ? "16px 12px" : "26px 56px", overflow: "visible", position: isMobile ? "static" : "sticky", top: 16, alignSelf: "start" }}>
+        <Card T={T} style={{ padding: isMobile ? "16px 12px" : "26px 56px", overflow: "visible", position: isMobile ? "static" : "sticky", top: 64, alignSelf: "start" }}>
           {isMobile
             ? <MobileTreeList selectedId={selectedId} onSelect={setSelectedId} T={T} />
             : <RadialDiagram selectedId={selectedId} onSelect={setSelectedId} T={T} />

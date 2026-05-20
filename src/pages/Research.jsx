@@ -179,7 +179,6 @@ export default function ResearchPg({ T }) {
   const ReportComponent = active ? reportComponents[active] : null;
   if (ReportComponent) return (
     <div>
-      {backBtn(T, setActive)}
       <ReportComponent T={T} />
     </div>
   );

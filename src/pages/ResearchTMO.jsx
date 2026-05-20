@@ -138,24 +138,26 @@ export default function ResearchTMO({ T }) {
     { value: "20 May", label: "2026 Investor Day — Wednesday this week", color: "deepBlue" },
   ];
 
-  /* ─── HEADER ─── */
+  /* ─── HEADER (left rail) ─── */
   const header = (
-    <div style={{ marginBottom: 28 }}>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
-        <span style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 36, color: T.text }}>Thermo Fisher Scientific</span>
-        <span style={{ fontSize: 14, fontWeight: 600, color: T.textTer, fontFamily: Fn, letterSpacing: "0.04em" }}>TMO US</span>
+    <aside style={{ position: "sticky", top: 64, alignSelf: "start" }}>
+      <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 24, color: T.text, lineHeight: 1.12, marginBottom: 6 }}>Thermo Fisher Scientific</div>
+      <div style={{ fontSize: 11, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", marginBottom: 10 }}>TMO US · NYSE · Waltham, MA</div>
+      <div style={{ marginBottom: 12 }}>
         <Pill T={T} color={T.deepBlue} bg="rgba(29,78,216,0.08)">PM presentation, May 2026</Pill>
       </div>
-      <div style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, marginBottom: 20 }}>NYSE · Waltham, Massachusetts · World's largest life sciences tools and services platform · ~$45bn revenue · Eight sections, presentation-ordered.</div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 10 }}>
+      <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginBottom: 16, lineHeight: 1.5 }}>
+        World's largest life sciences tools and services platform · ~$45bn revenue · Eight sections, presentation-ordered.
+      </div>
+      <div style={{ display: "grid", gap: 6 }}>
         {heroStats.map((s, i) => (
-          <div key={i} style={{ background: T.card, borderRadius: T.radiusSm, padding: "14px 16px", border: "1px solid " + T.border }}>
-            <div style={{ fontSize: 18, fontWeight: 700, color: T[s.color] || T.text, fontFamily: Fn }}>{s.value}</div>
-            <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 3, lineHeight: 1.4 }}>{s.label}</div>
+          <div key={i} style={{ background: T.card, borderRadius: T.radiusSm, padding: "8px 10px", border: "1px solid " + T.border }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T[s.color] || T.text, fontFamily: Fn, lineHeight: 1.1 }}>{s.value}</div>
+            <div style={{ fontSize: 9.5, color: T.textTer, fontFamily: Fn, marginTop: 2, lineHeight: 1.35 }}>{s.label}</div>
           </div>
         ))}
       </div>
-    </div>
+    </aside>
   );
 
   /* ═══════════════════════════════════════════ 01 — WHY IT'S DOWN ═══════════════════════════════════════════ */
@@ -703,10 +705,12 @@ export default function ResearchTMO({ T }) {
   };
 
   return (
-    <div>
+    <div style={{ display: "grid", gridTemplateColumns: "200px minmax(0, 1fr)", gap: 28, alignItems: "start" }}>
       {header}
-      <Tabs tabs={tabs} active={tab} onChange={setTab} T={T} />
-      {content[tab]}
+      <main style={{ minWidth: 0 }}>
+        <Tabs tabs={tabs} active={tab} onChange={setTab} T={T} />
+        {content[tab]}
+      </main>
     </div>
   );
 }
