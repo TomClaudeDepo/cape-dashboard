@@ -22,6 +22,7 @@ import {
 import OrgMap from "../components/tmo/OrgMap";
 import PeerExplorer from "../components/tmo/PeerExplorer";
 import EndMarketsTab from "../components/tmo/EndMarketsTab";
+import SectorBriefTab from "../components/tmo/SectorBriefTab";
 
 /* ═══════════════════════════════════════════ SHARED COMPONENTS ═══════════════════════════════════════════ */
 
@@ -526,16 +527,17 @@ export default function ResearchTMO({ T }) {
 
   const tabs = [
     { id: "tldr",      num: "00", label: "TL;DR" },
-    { id: "endmkts",   num: "01", label: "End Markets" },
-    { id: "whydown",   num: "02", label: "Why It's Down" },
-    { id: "value",     num: "03", label: "Valuation & Entry" },
-    { id: "primer",    num: "04", label: "Business Primer" },
-    { id: "orgmap",    num: "05", label: "Org Map" },
-    { id: "products",  num: "06", label: "Product Map" },
-    { id: "peers",     num: "07", label: "Competitors" },
-    { id: "trough",    num: "08", label: "Cyclical Trough KPIs" },
-    { id: "catalysts", num: "09", label: "Near-Term Catalysts" },
-    { id: "tailwinds", num: "10", label: "LT Tailwinds" },
+    { id: "brief",     num: "01", label: "Sector Brief" },
+    { id: "endmkts",   num: "02", label: "End Markets" },
+    { id: "whydown",   num: "03", label: "Why It's Down" },
+    { id: "value",     num: "04", label: "Valuation & Entry" },
+    { id: "primer",    num: "05", label: "Business Primer" },
+    { id: "orgmap",    num: "06", label: "Org Map" },
+    { id: "products",  num: "07", label: "Product Map" },
+    { id: "peers",     num: "08", label: "Competitors" },
+    { id: "trough",    num: "09", label: "Cyclical Trough KPIs" },
+    { id: "catalysts", num: "10", label: "Near-Term Catalysts" },
+    { id: "tailwinds", num: "11", label: "LT Tailwinds" },
   ];
 
   const prose = (text, s = {}) => <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 16px", ...s }}>{text}</p>;
@@ -1056,6 +1058,7 @@ export default function ResearchTMO({ T }) {
   /* ═══════════════════════════════════════════ ROUTING ═══════════════════════════════════════════ */
   const content = {
     tldr: <TldrTab T={T} />,
+    brief: <SectorBriefTab T={T} />,
     endmkts: <EndMarketsTab T={T} sTitle={sTitle} prose={prose} />,
     whydown: whyDownTab,
     value: valueTab,
