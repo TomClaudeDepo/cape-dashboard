@@ -3,6 +3,7 @@ import { Fn, Fh } from "../../theme";
 import { Card, Pill } from "../shared";
 import { useMobile } from "../../hooks/useMobile";
 import { orgTree, glossary, glossaryCategories, orgMapIntro, productEcon, priceTierLabels, volumeTierLabels } from "../../data/research-tmo-orgmap";
+import { ProductIcon, productIconMap } from "./ProductIcons";
 
 /* ════════════════════════════════════════════════
    Per-product economics — small "price × volume" scatter
@@ -489,9 +490,12 @@ function InfoPanel({ selectedId, T }) {
             <div style={{ display: "grid", gap: 10 }}>
               {sub.children.map(p => (
                 <div key={p.id} style={{ padding: "14px 16px", background: T.card, border: "1px solid " + T.border, borderRadius: T.radiusSm, borderLeft: `3px solid ${accent}` }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: Fn, marginBottom: 8 }}>{p.name}</div>
-                  <div style={{ marginBottom: 10 }}>
-                    <RichText text={p.desc} T={T} fontSize={12.5} />
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 10 }}>
+                    <ProductIcon id={productIconMap[p.id]} color={accent} size={56} T={T} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: Fn, marginBottom: 6 }}>{p.name}</div>
+                      <RichText text={p.desc} T={T} fontSize={12.5} />
+                    </div>
                   </div>
                   <div style={{ padding: "8px 10px", background: accentBg, borderRadius: 4, fontSize: 11.5, color: T.text, fontFamily: Fn, lineHeight: 1.6 }}>
                     <span style={{ fontWeight: 700, color: accent, letterSpacing: "0.04em", textTransform: "uppercase", fontSize: 9, marginRight: 8 }}>In plain English</span>
