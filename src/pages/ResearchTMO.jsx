@@ -477,11 +477,25 @@ export default function ResearchTMO({ T }) {
       </Card>
 
       {sTitle("Segment-by-segment competitor mapping")}
-      {prose("Different competitors mirror different sub-businesses. No single peer mirrors TMO at the corporate level.")}
+      {prose("Different competitors mirror different sub-businesses. No single peer mirrors TMO at the corporate level. Each card below covers one peer's strengths versus TMO and where the comparison breaks down.")}
       <div style={{ display: "grid", gap: 10, marginBottom: 28 }}>
         {competitors.map((c, i) => (
-          <Expandable key={i} title={c.segment} subtitle={`Key rivals: ${c.rivals.join(" · ")}`} T={T}>
-            {prose(c.detail)}
+          <Expandable
+            key={i}
+            title={c.name}
+            subtitle={c.hq ? `HQ: ${c.hq}` : undefined}
+            T={T}
+          >
+            <div style={{ display: "grid", gap: 12 }}>
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 800, color: T.green, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Where they compete with TMO</div>
+                <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>{c.strengths}</p>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 800, color: T.capRed, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Where the comparison breaks</div>
+                <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: 0 }}>{c.weaknesses}</p>
+              </div>
+            </div>
           </Expandable>
         ))}
       </div>
