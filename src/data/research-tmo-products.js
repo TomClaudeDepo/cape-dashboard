@@ -16,7 +16,11 @@ export const productStack = [
     color: "#0EA5E9",
     products: ["Fisher Scientific channel", "Invitrogen reagents", "Nalgene labware", "Gibco cell culture media (research)"],
     revBucket: "Fisher channel ~ $9-10bn / ~22%",
+    revShare: 22,
     end: "Academic, biotech, pharma R&D, hospital labs",
+    competitors: ["Avantor/VWR", "Merck KGaA", "Cardinal Health"],
+    strategicStrength: 3,
+    strategicRole: "Channel scale leader",
   },
   {
     stage: "2",
@@ -26,7 +30,11 @@ export const productStack = [
     color: "#1D4ED8",
     products: ["Orbitrap mass spec", "Ion Torrent NGS", "Applied Biosystems qPCR", "Cryo-EM (Krios, Glacios)", "Electron microscopy"],
     revBucket: "Analytical Instruments ~ $7-8bn / ~17%",
+    revShare: 17,
     end: "Pharma discovery, academic research, applied markets",
+    competitors: ["Agilent", "Waters", "Bruker", "Illumina", "Bio-Rad"],
+    strategicStrength: 3,
+    strategicRole: "Crown-jewel franchises",
   },
   {
     stage: "3",
@@ -36,7 +44,11 @@ export const productStack = [
     color: "#9333EA",
     products: ["ImmunoCAP allergy testing", "One Lambda transplant diagnostics", "Newborn screening", "Clinical mass spec"],
     revBucket: "Specialty Diagnostics ~ $4-5bn / ~10%",
+    revShare: 10,
     end: "Hospitals, reference labs, clinical labs",
+    competitors: ["Roche Diagnostics", "Beckman Coulter (Danaher)", "Werfen", "Bio-Rad"],
+    strategicStrength: 2,
+    strategicRole: "Niche monopolies",
   },
   {
     stage: "4",
@@ -46,7 +58,11 @@ export const productStack = [
     color: "#EA580C",
     products: ["PPD clinical research operations", "Clario eCOA + digital endpoints", "Wearables / DCT infrastructure", "Bioanalytical services"],
     revBucket: "Clinical Research (PPD + Clario) ~ $7-8bn / ~17%",
+    revShare: 17,
     end: "Pharma development teams (Phase 1-4)",
+    competitors: ["IQVIA", "ICON", "Parexel", "Labcorp Drug Dev"],
+    strategicStrength: 2,
+    strategicRole: "Top-3 CRO",
   },
   {
     stage: "5",
@@ -56,7 +72,11 @@ export const productStack = [
     color: "#059669",
     products: ["Gibco cell culture media", "HyClone single-use bioreactors", "POROS chromatography resins", "Pierce filtration", "Single-use assemblies"],
     revBucket: "Bioproduction (in LSS) ~ $4-5bn / ~10%",
+    revShare: 10,
     end: "All biologics manufacturers (pharma + CDMOs)",
+    competitors: ["Cytiva (Danaher)", "Sartorius", "Merck Millipore"],
+    strategicStrength: 3,
+    strategicRole: "Arms dealer",
   },
   {
     stage: "6",
@@ -66,7 +86,11 @@ export const productStack = [
     color: "#DC2626",
     products: ["Biologics drug substance", "Small molecule API", "Cell + gene therapy manufacturing (Brammer Bio)", "ADC conjugation"],
     revBucket: "Patheon drug substance (in PSS) ~ $3-4bn / ~8%",
+    revShare: 8,
     end: "Pharma & biotech clinical and commercial supply",
+    competitors: ["Lonza", "Samsung Biologics", "Catalent (Novo)", "WuXi Biologics", "Boehringer Ingelheim"],
+    strategicStrength: 2,
+    strategicRole: "Capacity participant",
   },
   {
     stage: "7",
@@ -76,7 +100,11 @@ export const productStack = [
     color: "#F59E0B",
     products: ["Sterile fill-finish (vials + pre-filled syringes)", "Sanofi NJ site", "Cold chain packaging", "Auto-injector assembly"],
     revBucket: "Fill-finish + packaging (in PSS) ~ $3-4bn / ~8%",
+    revShare: 8,
     end: "Pharma commercial supply, especially biologics + GLP-1",
+    competitors: ["Catalent (Novo)", "Aenova", "Vetter", "Recipharm"],
+    strategicStrength: 3,
+    strategicRole: "GLP-1 capacity bottleneck",
   },
   {
     stage: "8",
@@ -86,8 +114,38 @@ export const productStack = [
     color: "#64748B",
     products: ["Fisher Healthcare distribution", "Cold chain logistics", "Channel services"],
     revBucket: "Channel + services (cross-segment) ~ $3-4bn / ~8%",
+    revShare: 8,
     end: "Hospitals, clinical labs, retail",
+    competitors: ["Cardinal Health", "McKesson", "Avantor"],
+    strategicStrength: 2,
+    strategicRole: "Loop-closing channel",
   },
+];
+
+/* ═══════════════════════════════════════════
+   PEER × STAGE COVERAGE MATRIX
+   Which competitors play in which stages. Used to demonstrate
+   visually that TMO is the only firm covering all 8 stages —
+   while individual peers cover 1-3 stages each.
+   Stage IDs map 1:1 to productStack[i].stage.
+   ═══════════════════════════════════════════ */
+export const peerCoverage = [
+  { peer: "Thermo Fisher", ticker: "TMO", isHero: true, stages: [1,2,3,4,5,6,7,8], note: "Only firm with the full stack" },
+  { peer: "Danaher", ticker: "DHR", stages: [2,3,5], note: "Strong in instruments + Cytiva bioproduction + Beckman Dx" },
+  { peer: "Sartorius", ticker: "SRT", stages: [5], note: "Pure-play bioproduction" },
+  { peer: "Merck KGaA", ticker: "MRK", stages: [1,5], note: "Life Science distribution + Millipore bioproduction" },
+  { peer: "Agilent", ticker: "A", stages: [2], note: "Analytical instruments specialist" },
+  { peer: "Waters", ticker: "WAT", stages: [2], note: "Premium chromatography & mass spec" },
+  { peer: "Bruker", ticker: "BRKR", stages: [2], note: "Mass spec + MRI / proteomics tools" },
+  { peer: "Roche Diagnostics", ticker: "ROG", stages: [3], note: "Global Dx leader" },
+  { peer: "IQVIA", ticker: "IQV", stages: [4], note: "Largest CRO globally" },
+  { peer: "ICON", ticker: "ICLR", stages: [4], note: "Top-tier CRO" },
+  { peer: "Lonza", ticker: "LONN", stages: [6,7], note: "Largest pure-play CDMO" },
+  { peer: "Samsung Biologics", ticker: "207940", stages: [6,7], note: "Asia mega-capacity CDMO" },
+  { peer: "Catalent (Novo)", ticker: "CTLT", stages: [6,7], note: "Owned by Novo Nordisk since 2025" },
+  { peer: "WuXi Biologics", ticker: "2269", stages: [6], note: "Geopolitically constrained CDMO" },
+  { peer: "Avantor", ticker: "AVTR", stages: [1,8], note: "VWR-led lab distribution" },
+  { peer: "Cardinal Health", ticker: "CAH", stages: [8], note: "Healthcare distribution at scale" },
 ];
 
 export const productMapInsight = "The 'arms dealer' angle is the most important framing. TMO Bioproduction (cell culture media, single-use systems, chromatography resins) is sold to EVERY biologics manufacturer on earth — including TMO's own competitor CDMOs (Lonza, Samsung Biologics, post-Novo Catalent). Wuxi Biologics buys TMO bioproduction inputs. Roche, AstraZeneca, Pfizer, Amgen, Lilly, Novo all buy them. This is the highest-quality competitive position in the company — TMO captures value from biologics manufacturing growth regardless of which manufacturer wins the customer.";

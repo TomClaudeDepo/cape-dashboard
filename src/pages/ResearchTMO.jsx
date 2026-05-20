@@ -16,7 +16,7 @@ import {
   cyclicalIntro, troughSignals, priorCycle, confirmInvalidate,
 } from "../data/research-tmo-cyclical";
 import {
-  productMapIntro, productStack, productMapInsight,
+  productMapIntro, productStack, productMapInsight, peerCoverage,
   valHistory, peerValTable, valInsight,
 } from "../data/research-tmo-products";
 import OrgMap from "../components/tmo/OrgMap";
@@ -106,6 +106,242 @@ function HorizBar({ label, value, max, color, T, suffix = "" }) {
           transition: "width 0.8s"
         }} />
       </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   PRODUCT MAP — Value-chain driven tab
+   The 8-stage diagram is the central control surface; everything
+   else (detail panel, peer matrix) updates from the selected stage.
+   ════════════════════════════════════════════════════════════════ */
+function StrengthDots({ n, color }) {
+  return (
+    <div style={{ display: "inline-flex", gap: 3 }}>
+      {[1,2,3].map(i => (
+        <span key={i} style={{
+          width: 6, height: 6, borderRadius: "50%",
+          background: i <= n ? "#fff" : "rgba(255,255,255,0.28)",
+          boxShadow: i <= n ? `0 0 0 1.5px ${color}` : "none",
+        }} />
+      ))}
+    </div>
+  );
+}
+
+function ProductMapTab({ T, sTitle, prose }) {
+  const [selectedStage, setSelectedStage] = useState("5"); // default: Bioproduction, the arms-dealer stage
+  const selected = productStack.find(s => s.stage === selectedStage) || productStack[0];
+
+  // Revenue-share to relative tile flex weighting — bigger stages get visibly wider tiles
+  const minShare = Math.min(...productStack.map(s => s.revShare));
+  const tileFlex = (share) => 1 + (share - minShare) / 6; // gentle scaling
+
+  return (
+    <div>
+      {prose(productMapIntro)}
+
+      {sTitle("The full stack — click a stage to drive the page")}
+
+      {/* ── THE DIAGRAM ─────────────────────────────────────── */}
+      <Card T={T} style={{ padding: "26px 24px", marginBottom: 20, overflow: "hidden" }}>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase" }}>Drug development & manufacturing value chain</div>
+          <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, fontStyle: "italic" }}>Tile width = revenue share · dots = strategic strength</div>
+        </div>
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "stretch" }}>
+          {productStack.map((s) => {
+            const active = s.stage === selectedStage;
+            return (
+              <div
+                key={s.stage}
+                onClick={() => setSelectedStage(s.stage)}
+                style={{
+                  flex: `${tileFlex(s.revShare)} 1 110px`,
+                  minWidth: 110,
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{
+                  position: "relative",
+                  padding: "14px 12px 12px",
+                  background: s.color,
+                  borderRadius: 8,
+                  color: "#fff",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  boxShadow: active ? "0 6px 20px " + s.color + "55" : T.shadow,
+                  transform: active ? "translateY(-3px)" : "none",
+                  outline: active ? `2px solid ${s.color}` : "none",
+                  outlineOffset: 3,
+                  transition: "all 0.2s",
+                  opacity: selectedStage && !active ? 0.78 : 1,
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <div style={{ fontSize: 10, fontWeight: 800, fontFamily: Fn, opacity: 0.85, letterSpacing: "0.06em" }}>STAGE {s.stage}</div>
+                    <StrengthDots n={s.strategicStrength} color={s.color} />
+                  </div>
+                  <div style={{ fontSize: 12.5, fontWeight: 700, fontFamily: Fn, lineHeight: 1.3, marginBottom: 5 }}>{s.name}</div>
+                  <div style={{ fontSize: 10, fontFamily: Fn, opacity: 0.92, lineHeight: 1.4, marginBottom: 8 }}>{s.sub}</div>
+                  <div style={{ marginTop: "auto", fontSize: 11, fontWeight: 700, fontFamily: Fn, opacity: 0.96, letterSpacing: "0.02em" }}>~{s.revShare}%</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      {/* ── DYNAMIC STAGE DETAIL ──────────────────────────── */}
+      <Card T={T} style={{ padding: 0, marginBottom: 24, overflow: "hidden", borderLeft: `4px solid ${selected.color}` }}>
+        <div style={{ padding: "22px 26px", animation: "fadeIn 0.25s ease" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14, flexWrap: "wrap" }}>
+            <div style={{
+              width: 44, height: 44, borderRadius: 10, background: selected.color, color: "#fff",
+              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+              fontSize: 18, fontWeight: 800, fontFamily: Fn, boxShadow: "0 4px 12px " + selected.color + "55",
+            }}>{selected.stage}</div>
+            <div style={{ flex: 1, minWidth: 220 }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: T.text, fontFamily: Fn, lineHeight: 1.2 }}>{selected.name}</div>
+              <div style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, marginTop: 3 }}>{selected.sub}</div>
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+              <Pill T={T} color={selected.color} bg={selected.color + "14"}>{selected.revBucket}</Pill>
+              <Pill T={T} color={T.text} bg={T.pillBg}>{selected.strategicRole}</Pill>
+            </div>
+          </div>
+
+          <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 18px" }}>{selected.desc}</p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+            <div>
+              <div style={{ fontSize: 9.5, fontWeight: 800, color: selected.color, fontFamily: Fn, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 8 }}>TMO brands & products</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                {selected.products.map((p, pi) => (
+                  <div key={pi} style={{ padding: "8px 12px", fontSize: 12, background: selected.color + "10", color: T.text, borderRadius: 4, fontFamily: Fn, borderLeft: `2px solid ${selected.color}` }}>{p}</div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: 9.5, fontWeight: 800, color: T.textTer, fontFamily: Fn, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 8 }}>End customers</div>
+              <div style={{ padding: "10px 14px", fontSize: 12, background: T.pillBg, color: T.text, borderRadius: 6, fontFamily: Fn, lineHeight: 1.6 }}>
+                {selected.end}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: 9.5, fontWeight: 800, color: T.textTer, fontFamily: Fn, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 8 }}>Who else plays here</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                {selected.competitors.map((c, ci) => (
+                  <div key={ci} style={{ padding: "8px 12px", fontSize: 12, background: T.card, color: T.textSec, borderRadius: 4, fontFamily: Fn, border: `1px solid ${T.border}` }}>{c}</div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* ── PEER × STAGE COVERAGE MATRIX ──────────────────── */}
+      {sTitle("Who plays where — peer coverage across the stack")}
+      <Card T={T} style={{ padding: "22px 24px", marginBottom: 24, overflow: "auto" }}>
+        <div style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.6, marginBottom: 16 }}>
+          Every row is a peer or competitor. Every column is one of the eight stages above. A filled cell means the peer has a meaningful business in that stage. <strong style={{ color: T.text }}>TMO is the only firm with a presence in all eight</strong> — every other peer covers one to three. Click a stage header above to highlight that column.
+        </div>
+        <div style={{ minWidth: 720 }}>
+          {/* Header row */}
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(170px, 1.6fr) repeat(8, minmax(0, 1fr)) minmax(70px, 0.8fr)", gap: 4, marginBottom: 8 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", padding: "6px 8px" }}>Peer</div>
+            {productStack.map(s => {
+              const isCol = s.stage === selectedStage;
+              return (
+                <div
+                  key={s.stage}
+                  onClick={() => setSelectedStage(s.stage)}
+                  title={s.name}
+                  style={{
+                    padding: "6px 4px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    background: isCol ? s.color + "1F" : "transparent",
+                    borderRadius: 4,
+                    border: isCol ? `1px solid ${s.color}66` : "1px solid transparent",
+                    transition: "all 0.15s",
+                  }}
+                >
+                  <div style={{ fontSize: 9, fontWeight: 800, color: s.color, fontFamily: Fn, letterSpacing: "0.06em" }}>S{s.stage}</div>
+                </div>
+              );
+            })}
+            <div style={{ fontSize: 9.5, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", padding: "6px 4px", textAlign: "center" }}>Cov.</div>
+          </div>
+
+          {/* Peer rows */}
+          {peerCoverage.map((p) => {
+            const coverage = p.stages.length;
+            return (
+              <div key={p.ticker} style={{
+                display: "grid",
+                gridTemplateColumns: "minmax(170px, 1.6fr) repeat(8, minmax(0, 1fr)) minmax(70px, 0.8fr)",
+                gap: 4,
+                alignItems: "center",
+                padding: "4px 0",
+                borderRadius: 4,
+                background: p.isHero ? T.pillBg : "transparent",
+                marginBottom: 2,
+              }}>
+                <div style={{ padding: "8px 10px" }}>
+                  <div style={{ fontSize: 12, fontWeight: p.isHero ? 800 : 600, color: T.text, fontFamily: Fn, display: "flex", alignItems: "center", gap: 6 }}>
+                    {p.peer}
+                    {p.isHero && <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 3, background: T.capRed, color: "#fff", letterSpacing: "0.04em", fontWeight: 700 }}>FULL STACK</span>}
+                  </div>
+                  <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, marginTop: 2 }}>{p.ticker} · {p.note}</div>
+                </div>
+                {productStack.map(s => {
+                  const present = p.stages.includes(parseInt(s.stage, 10));
+                  const isCol = s.stage === selectedStage;
+                  return (
+                    <div
+                      key={s.stage}
+                      onClick={() => setSelectedStage(s.stage)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "8px 0",
+                        cursor: "pointer",
+                        background: isCol ? s.color + "10" : "transparent",
+                        borderRadius: 4,
+                        transition: "all 0.15s",
+                      }}
+                    >
+                      {present ? (
+                        <div style={{
+                          width: 18, height: 18, borderRadius: "50%",
+                          background: s.color,
+                          boxShadow: p.isHero ? `0 0 0 2px ${s.color}33` : "none",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          color: "#fff", fontSize: 11, fontWeight: 800, fontFamily: Fn,
+                        }}>✓</div>
+                      ) : (
+                        <div style={{ width: 6, height: 6, borderRadius: "50%", background: T.border }} />
+                      )}
+                    </div>
+                  );
+                })}
+                <div style={{ textAlign: "center", fontSize: 12, fontFamily: Fn, fontVariantNumeric: "tabular-nums", fontWeight: p.isHero ? 800 : 600, color: p.isHero ? T.capRed : T.textSec }}>
+                  {coverage}/8
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      {/* ── ARMS DEALER INSIGHT (always visible) ──────────── */}
+      <Card T={T} style={{ padding: "22px 26px", borderLeft: `4px solid ${T.green}`, background: T.greenBg }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: T.green, fontFamily: Fn, letterSpacing: "0.1em", marginBottom: 12, textTransform: "uppercase" }}>The arms dealer angle</div>
+        <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, margin: 0 }}>{productMapInsight}</p>
+      </Card>
     </div>
   );
 }
@@ -375,60 +611,7 @@ export default function ResearchTMO({ T }) {
   );
 
   /* ═══════════════════════════════════════════ 04 — PRODUCT MAP ═══════════════════════════════════════════ */
-  const productMapTab = (
-    <div>
-      {prose(productMapIntro)}
-
-      {sTitle("The full stack — eight stages from test tube to commercial supply")}
-      <Card T={T} style={{ padding: "26px 24px", marginBottom: 24, overflow: "hidden" }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 18 }}>Drug development & manufacturing value chain — what TMO owns</div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "stretch", justifyContent: "flex-start" }}>
-          {productStack.map((s, i) => (
-            <div key={i} style={{ flex: "1 1 110px", minWidth: 110 }}>
-              <div style={{ padding: "12px 10px", background: s.color, borderRadius: 6, color: "#fff", height: "100%", display: "flex", flexDirection: "column" }}>
-                <div style={{ fontSize: 10, fontWeight: 800, fontFamily: Fn, opacity: 0.85, marginBottom: 4, letterSpacing: "0.05em" }}>STAGE {s.stage}</div>
-                <div style={{ fontSize: 12, fontWeight: 700, fontFamily: Fn, lineHeight: 1.3, marginBottom: 4 }}>{s.name}</div>
-                <div style={{ fontSize: 10, fontFamily: Fn, opacity: 0.92, lineHeight: 1.4 }}>{s.sub}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div style={{ marginTop: 14, fontSize: 11, color: T.textTer, fontFamily: Fn, lineHeight: 1.6, fontStyle: "italic" }}>From basic-research test tubes to commercial supply — TMO touches every stage. Most peers play in one or two.</div>
-      </Card>
-
-      {sTitle("Stage detail")}
-      <div style={{ display: "grid", gap: 10, marginBottom: 28 }}>
-        {productStack.map((s, i) => (
-          <Card key={i} T={T} style={{ padding: 0, overflow: "hidden", borderLeft: `4px solid ${s.color}` }}>
-            <div style={{ padding: "18px 22px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10, flexWrap: "wrap" }}>
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: s.color + "1A", border: "1px solid " + s.color + "33", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: s.color, fontFamily: Fn }}>{s.stage}</span>
-                </div>
-                <div style={{ flex: 1, minWidth: 200 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: T.text, fontFamily: Fn }}>{s.name}</div>
-                  <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 2 }}>{s.sub}</div>
-                </div>
-                <Pill T={T} color={s.color} bg={s.color + "14"}>{s.revBucket}</Pill>
-              </div>
-              <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: "0 0 12px" }}>{s.desc}</p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
-                {s.products.map((p, pi) => (
-                  <span key={pi} style={{ padding: "5px 10px", fontSize: 11, background: T.pillBg, color: T.text, borderRadius: 4, fontFamily: Fn, border: "1px solid " + T.border }}>{p}</span>
-                ))}
-              </div>
-              <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, fontStyle: "italic" }}>End customer: {s.end}</div>
-            </div>
-          </Card>
-        ))}
-      </div>
-
-      <Card T={T} style={{ padding: "20px 24px", borderLeft: `4px solid ${T.green}`, background: T.greenBg }}>
-        <div style={{ fontSize: 11, fontWeight: 800, color: T.green, fontFamily: Fn, letterSpacing: "0.1em", marginBottom: 12, textTransform: "uppercase" }}>The arms dealer angle</div>
-        <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.85, margin: 0 }}>{productMapInsight}</p>
-      </Card>
-    </div>
-  );
+  const productMapTab = <ProductMapTab T={T} sTitle={sTitle} prose={prose} />;
 
   /* ═══════════════════════════════════════════ 05 — COMPETITORS ═══════════════════════════════════════════ */
   const compTab = (
