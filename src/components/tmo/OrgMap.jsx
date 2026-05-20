@@ -192,13 +192,16 @@ function RadialDiagram({ selectedId, onSelect, T }) {
   const [hov, setHov] = useState(null);
   // Cardinal angles (radians). Top, right, bottom, left.
   const segAngles = { lpbs: -Math.PI / 2, lss: 0, ai: Math.PI / 2, sd: Math.PI };
-  // Angular spread for sub-businesses around each segment angle
-  const fanSpread = (n) => Math.min(Math.PI * 0.5, (n - 1) * 0.32 + 0.4);
+  // Tighter spread so the outer subs of adjacent segments don't collide at the diagonals.
+  const fanSpread = (n) => Math.min(1.1, (n - 1) * 0.25 + 0.45);
+  // Strip parenthetical brand suffixes for the diagram label
+  // ("Transplant Diagnostics (One Lambda)" → "Transplant Diagnostics").
+  const shortLabel = (name) => name.replace(/\s*\([^)]+\)\s*$/, "");
 
   const W = 760, H = 720;
   const cx = W / 2, cy = H / 2;
-  const R_seg = 165;   // distance to segment hubs
-  const R_sub = 305;   // distance to sub-business nodes
+  const R_seg = 165;
+  const R_sub = 305;
 
   const segByAngle = orgTree.map(seg => {
     const θ = segAngles[seg.id];
@@ -216,12 +219,55 @@ function RadialDiagram({ selectedId, onSelect, T }) {
     return { ...seg, x, y, θ, subs };
   });
 
-  // Determine highlight state for connection lines
   const isSegActive = (id) => selectedId === id || segByAngle.find(s => s.subs.some(sub => sub.id === selectedId))?.id === id || hov === id;
   const isSubActive = (id) => selectedId === id || hov === id;
+  const anySelected = selectedId !== null || hov !== null;
+
+  // Gentle bezier curve from segment hub to sub-business
+  const curve = (x1, y1, x2, y2) => {
+    const mx = (x1 + x2) / 2;
+    const my = (y1 + y2) / 2;
+    const dx = x2 - x1, dy = y2 - y1;
+    // Curl control point slightly perpendicular to line for a soft arc
+    const px = -dy * 0.10, py = dx * 0.10;
+    return `M ${x1} ${y1} Q ${mx + px} ${my + py}, ${x2} ${y2}`;
+  };
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ maxWidth: 760, display: "block", margin: "0 auto" }}>
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      width="100%"
+      style={{ maxWidth: 760, display: "block", margin: "0 auto", overflow: "visible" }}
+    >
+      <defs>
+        {/* Subtle radial wash giving the diagram a soft centre */}
+        <radialGradient id="tmo-bg" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stopColor={T.text} stopOpacity="0.045" />
+          <stop offset="65%" stopColor={T.text} stopOpacity="0.018" />
+          <stop offset="100%" stopColor={T.text} stopOpacity="0" />
+        </radialGradient>
+        {/* Soft drop shadow for the segment hubs */}
+        <filter id="hub-shadow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+          <feOffset dx="0" dy="2" result="offset" />
+          <feComponentTransfer><feFuncA type="linear" slope="0.25" /></feComponentTransfer>
+          <feMerge>
+            <feMergeNode />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        {/* Per-segment soft gradient used to fill the hub disc */}
+        {orgTree.map(seg => (
+          <radialGradient key={"hg-" + seg.id} id={`hub-grad-${seg.id}`} cx="35%" cy="30%" r="80%">
+            <stop offset="0%" stopColor="#fff" stopOpacity="0.30" />
+            <stop offset="55%" stopColor={seg.color} stopOpacity="0" />
+          </radialGradient>
+        ))}
+      </defs>
+
+      {/* Background wash */}
+      <circle cx={cx} cy={cy} r={R_sub + 40} fill="url(#tmo-bg)" />
+
       {/* Faint orbital rings */}
       <circle cx={cx} cy={cy} r={R_seg} fill="none" stroke={T.border} strokeDasharray="3 5" />
       <circle cx={cx} cy={cy} r={R_sub} fill="none" stroke={T.border} strokeDasharray="3 5" />
@@ -235,22 +281,26 @@ function RadialDiagram({ selectedId, onSelect, T }) {
             x1={cx} y1={cy} x2={seg.x} y2={seg.y}
             stroke={active ? seg.color : T.border}
             strokeWidth={active ? 2.5 : 1.5}
+            strokeLinecap="round"
             style={{ transition: "stroke 0.2s, stroke-width 0.2s" }}
           />
         );
       })}
 
-      {/* Segment → sub-business lines */}
+      {/* Segment → sub-business curves */}
       {segByAngle.map(seg =>
         seg.subs.map(sub => {
           const active = isSubActive(sub.id) || (isSegActive(seg.id) && selectedId === seg.id);
+          const dim = anySelected && !active && !(isSegActive(seg.id) && (hov === seg.id || selectedId === seg.id));
           return (
-            <line
+            <path
               key={"sl-" + sub.id}
-              x1={seg.x} y1={seg.y} x2={sub.sx} y2={sub.sy}
-              stroke={active ? seg.color : T.border}
+              d={curve(seg.x, seg.y, sub.sx, sub.sy)}
+              fill="none"
+              stroke={seg.color}
               strokeWidth={active ? 2 : 1}
-              opacity={isSegActive(seg.id) || hov === null && selectedId === null ? 1 : 0.35}
+              strokeLinecap="round"
+              opacity={dim ? 0.18 : (active ? 0.95 : 0.5)}
               style={{ transition: "all 0.2s" }}
             />
           );
@@ -262,7 +312,6 @@ function RadialDiagram({ selectedId, onSelect, T }) {
         seg.subs.map(sub => {
           const active = isSubActive(sub.id);
           const dimmed = selectedId && !isSubActive(sub.id) && selectedId !== seg.id && !seg.subs.some(s => s.id === selectedId);
-          // Position label outside the ring
           const labelR = R_sub + 14;
           const lx = cx + labelR * Math.cos(sub.subθ);
           const ly = cy + labelR * Math.sin(sub.subθ);
@@ -275,9 +324,12 @@ function RadialDiagram({ selectedId, onSelect, T }) {
               onMouseLeave={() => setHov(null)}
               style={{ cursor: "pointer", opacity: dimmed ? 0.4 : 1, transition: "opacity 0.2s" }}
             >
+              {active && (
+                <circle cx={sub.sx} cy={sub.sy} r={18} fill={seg.color} opacity={0.18} />
+              )}
               <circle
                 cx={sub.sx} cy={sub.sy} r={active ? 10 : 7}
-                fill={active ? seg.color : T.card}
+                fill={active ? seg.color : seg.color + "1A"}
                 stroke={seg.color}
                 strokeWidth={2}
                 style={{ transition: "all 0.2s" }}
@@ -292,7 +344,7 @@ function RadialDiagram({ selectedId, onSelect, T }) {
                 fill={active ? T.text : T.textSec}
                 style={{ transition: "all 0.2s", userSelect: "none" }}
               >
-                {sub.name}
+                {shortLabel(sub.name)}
               </text>
             </g>
           );
@@ -309,19 +361,23 @@ function RadialDiagram({ selectedId, onSelect, T }) {
             onMouseEnter={() => setHov(seg.id)}
             onMouseLeave={() => setHov(null)}
             style={{ cursor: "pointer" }}
+            filter="url(#hub-shadow)"
           >
-            <circle cx={seg.x} cy={seg.y} r={active ? 42 : 36} fill={seg.color} opacity={active ? 1 : 0.94} style={{ transition: "all 0.2s" }} />
+            <circle cx={seg.x} cy={seg.y} r={active ? 42 : 36} fill={seg.color} style={{ transition: "all 0.2s" }} />
+            {/* highlight overlay gives a subtle glossy 3D feel */}
+            <circle cx={seg.x} cy={seg.y} r={active ? 42 : 36} fill={`url(#hub-grad-${seg.id})`} style={{ transition: "all 0.2s" }} />
             <text x={seg.x} y={seg.y - 4} textAnchor="middle" fontFamily={Fn} fontSize={14} fontWeight={800} fill="#fff" style={{ userSelect: "none" }}>{seg.short}</text>
-            <text x={seg.x} y={seg.y + 13} textAnchor="middle" fontFamily={Fn} fontSize={11} fontWeight={700} fill="#fff" opacity={0.88} style={{ userSelect: "none" }}>{seg.share}%</text>
+            <text x={seg.x} y={seg.y + 13} textAnchor="middle" fontFamily={Fn} fontSize={11} fontWeight={700} fill="#fff" opacity={0.92} style={{ userSelect: "none" }}>{seg.share}%</text>
           </g>
         );
       })}
 
       {/* Central TMO node */}
-      <g onClick={() => onSelect(null)} style={{ cursor: "pointer" }}>
+      <g onClick={() => onSelect(null)} style={{ cursor: "pointer" }} filter="url(#hub-shadow)">
         <circle cx={cx} cy={cy} r={48} fill={T.text} />
+        <circle cx={cx} cy={cy} r={48} fill="url(#hub-grad-lpbs)" opacity={0.4} />
         <text x={cx} y={cy - 6} textAnchor="middle" fontFamily={Fn} fontSize={15} fontWeight={800} fill={T.card} style={{ userSelect: "none" }}>TMO</text>
-        <text x={cx} y={cy + 12} textAnchor="middle" fontFamily={Fn} fontSize={9} fontWeight={600} fill={T.card} opacity={0.7} style={{ userSelect: "none" }}>$44.6B FY25</text>
+        <text x={cx} y={cy + 12} textAnchor="middle" fontFamily={Fn} fontSize={9} fontWeight={600} fill={T.card} opacity={0.75} style={{ userSelect: "none" }}>$44.6B FY25</text>
       </g>
     </svg>
   );
@@ -570,7 +626,7 @@ export default function OrgMap({ T }) {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.1fr) minmax(0, 1fr)", gap: 24, marginBottom: 28 }}>
-        <Card T={T} style={{ padding: isMobile ? "16px 12px" : "26px 18px", overflow: "hidden" }}>
+        <Card T={T} style={{ padding: isMobile ? "16px 12px" : "26px 56px", overflow: "visible" }}>
           {isMobile
             ? <MobileTreeList selectedId={selectedId} onSelect={setSelectedId} T={T} />
             : <RadialDiagram selectedId={selectedId} onSelect={setSelectedId} T={T} />
