@@ -18,8 +18,8 @@ const NATURE_LABEL = {
 
 function ProductEconCard({ econ, accent, T }) {
   if (!econ) return null;
-  const W = 300, H = 210;
-  const padL = 56, padR = 12, padT = 16, padB = 38;
+  const W = 300, H = 220;
+  const padL = 64, padR = 12, padT = 28, padB = 40;
   const gridW = W - padL - padR;
   const gridH = H - padT - padB;
   const xFor = (vt) => padL + ((vt - 0.5) / 6) * gridW;
@@ -47,6 +47,9 @@ function ProductEconCard({ econ, accent, T }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", gap: 14, alignItems: "center" }}>
         <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block", maxWidth: W }}>
+          {/* Axis caption (above chart, horizontal — no rotated text to overlap ticks) */}
+          <text x={padL} y={14} fontFamily={Fn} fontSize={9} fontWeight={700} fill={T.textSec} style={{ letterSpacing: "0.08em" }}>↑ PRICE / UNIT</text>
+
           <rect x={padL} y={padT} width={gridW} height={gridH} fill={T.pillBg} />
           {[1,2,3,4,5].map(i => (
             <g key={"gx-" + i}>
@@ -56,8 +59,9 @@ function ProductEconCard({ econ, accent, T }) {
           ))}
           <rect x={padL} y={padT} width={gridW} height={gridH} fill="none" stroke={T.textTer} strokeWidth={1} />
 
+          {/* Y-axis tick labels — priceTier 1 (cheapest) at the bottom, priceTier 6 (most expensive) at the top */}
           {priceTierLabels.map((lbl, i) => {
-            const tier = 6 - i;
+            const tier = i + 1;
             return (
               <text key={"yl-" + i} x={padL - 6} y={yFor(tier) + 3} textAnchor="end" fontFamily={Fn} fontSize={8.5} fill={T.textSec}>{lbl}</text>
             );
@@ -66,7 +70,6 @@ function ProductEconCard({ econ, accent, T }) {
             <text key={"xl-" + i} x={xFor(i + 1)} y={padT + gridH + 12} textAnchor="middle" fontFamily={Fn} fontSize={8.5} fill={T.textSec}>{lbl}</text>
           ))}
 
-          <text x={padL - 46} y={padT + gridH / 2} textAnchor="middle" fontFamily={Fn} fontSize={9} fontWeight={700} fill={T.textSec} transform={`rotate(-90 ${padL - 46} ${padT + gridH / 2})`} style={{ letterSpacing: "0.08em" }}>PRICE / UNIT →</text>
           <text x={padL + gridW / 2} y={H - 4} textAnchor="middle" fontFamily={Fn} fontSize={9} fontWeight={700} fill={T.textSec} style={{ letterSpacing: "0.08em" }}>UNITS SOLD / YEAR →</text>
 
           <circle cx={dotX} cy={dotY} r={14} fill={accent} opacity={0.18} />
