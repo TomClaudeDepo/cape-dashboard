@@ -2,7 +2,131 @@ import { useState, useMemo } from "react";
 import { Fn, Fh } from "../../theme";
 import { Card, Pill } from "../shared";
 import { useMobile } from "../../hooks/useMobile";
-import { orgTree, glossary, glossaryCategories, orgMapIntro } from "../../data/research-tmo-orgmap";
+import { orgTree, glossary, glossaryCategories, orgMapIntro, productEcon, priceTierLabels, volumeTierLabels } from "../../data/research-tmo-orgmap";
+
+/* ════════════════════════════════════════════════
+   Per-product economics — small "price × volume" scatter
+   showing where each end-product sits on a log-log economic plane.
+   ════════════════════════════════════════════════ */
+const NATURE_LABEL = {
+  instrument: "Instrument",
+  consumable: "Consumable",
+  service: "Service",
+  software: "Software",
+  platform: "Platform",
+};
+
+function ProductEconCard({ econ, accent, T }) {
+  if (!econ) return null;
+  // Map tier (1-6) → SVG coordinates on a 6x6 grid
+  const W = 280, H = 200;
+  const padL = 50, padR = 12, padT = 14, padB = 36;
+  const gridW = W - padL - padR;
+  const gridH = H - padT - padB;
+  const xFor = (vt) => padL + ((vt - 0.5) / 6) * gridW;
+  const yFor = (pt) => padT + ((6 - pt + 0.5) / 6) * gridH; // top = high price
+  const dotX = xFor(econ.volumeTier);
+  const dotY = yFor(econ.priceTier);
+
+  return (
+    <div style={{ marginTop: 10, padding: "12px 12px", border: `1px solid ${T.border}`, borderRadius: T.radiusSm, background: T.card }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10, flexWrap: "wrap", gap: 6 }}>
+        <div style={{ fontSize: 9.5, fontWeight: 800, color: accent, fontFamily: Fn, letterSpacing: "0.12em", textTransform: "uppercase" }}>Economic profile</div>
+        <Pill T={T} color={accent} bg={accent + "14"}>{NATURE_LABEL[econ.nature] || econ.nature}</Pill>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
+        <div>
+          <div style={{ fontSize: 9.5, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 3 }}>Buyer</div>
+          <div style={{ fontSize: 11.5, color: T.text, fontFamily: Fn, lineHeight: 1.45 }}>{econ.customer}</div>
+        </div>
+        <div>
+          <div style={{ fontSize: 9.5, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 3 }}>Cadence</div>
+          <div style={{ fontSize: 11.5, color: T.text, fontFamily: Fn, lineHeight: 1.45 }}>{econ.cadence}</div>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", gap: 14, alignItems: "center" }}>
+        {/* Mini scatter diagram */}
+        <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block", maxWidth: W }}>
+          {/* Quadrant tint backgrounds (subtle diagonal hint) */}
+          <rect x={padL} y={padT} width={gridW} height={gridH} fill={T.pillBg} />
+          {/* gridlines */}
+          {[1,2,3,4,5].map(i => (
+            <g key={"gx-" + i}>
+              <line x1={padL + (i/6)*gridW} y1={padT} x2={padL + (i/6)*gridW} y2={padT + gridH} stroke={T.border} strokeWidth={1} />
+              <line x1={padL} y1={padT + (i/6)*gridH} x2={padL + gridW} y2={padT + (i/6)*gridH} stroke={T.border} strokeWidth={1} />
+            </g>
+          ))}
+          {/* Axis frame */}
+          <rect x={padL} y={padT} width={gridW} height={gridH} fill="none" stroke={T.textTer} strokeWidth={1} />
+
+          {/* Y-axis tick labels (price tiers, top→bottom = high→low) */}
+          {priceTierLabels.map((lbl, i) => {
+            const tier = 6 - i; // index 0 = tier 6 at top
+            return (
+              <text
+                key={"yl-" + i}
+                x={padL - 6}
+                y={yFor(tier) + 3}
+                textAnchor="end"
+                fontFamily={Fn}
+                fontSize={7.5}
+                fill={T.textTer}
+              >{lbl}</text>
+            );
+          })}
+          {/* X-axis tick labels (volume tiers) */}
+          {volumeTierLabels.map((lbl, i) => (
+            <text
+              key={"xl-" + i}
+              x={xFor(i + 1)}
+              y={padT + gridH + 11}
+              textAnchor="middle"
+              fontFamily={Fn}
+              fontSize={7.5}
+              fill={T.textTer}
+            >{lbl}</text>
+          ))}
+
+          {/* Axis titles */}
+          <text x={padL - 42} y={padT + gridH / 2} textAnchor="middle" fontFamily={Fn} fontSize={8.5} fontWeight={700} fill={T.textSec} transform={`rotate(-90 ${padL - 42} ${padT + gridH / 2})`} style={{ letterSpacing: "0.08em" }}>PRICE / UNIT →</text>
+          <text x={padL + gridW / 2} y={H - 4} textAnchor="middle" fontFamily={Fn} fontSize={8.5} fontWeight={700} fill={T.textSec} style={{ letterSpacing: "0.08em" }}>UNITS SOLD / YEAR →</text>
+
+          {/* Corner archetype labels */}
+          <text x={padL + 4} y={padT + 10} fontFamily={Fn} fontSize={7.5} fontStyle="italic" fill={T.textTer}>flagship capex</text>
+          <text x={padL + gridW - 4} y={padT + 10} textAnchor="end" fontFamily={Fn} fontSize={7.5} fontStyle="italic" fill={T.textTer}>rare big-ticket</text>
+          <text x={padL + 4} y={padT + gridH - 4} fontFamily={Fn} fontSize={7.5} fontStyle="italic" fill={T.textTer}>niche consumable</text>
+          <text x={padL + gridW - 4} y={padT + gridH - 4} textAnchor="end" fontFamily={Fn} fontSize={7.5} fontStyle="italic" fill={T.textTer}>mass reagent</text>
+
+          {/* The dot */}
+          <circle cx={dotX} cy={dotY} r={14} fill={accent} opacity={0.18} />
+          <circle cx={dotX} cy={dotY} r={8} fill={accent} opacity={0.32} />
+          <circle cx={dotX} cy={dotY} r={4.5} fill={accent} stroke={T.card} strokeWidth={1.5} />
+        </svg>
+
+        {/* Stat strip */}
+        <div style={{ display: "grid", gap: 8, minWidth: 96 }}>
+          <div>
+            <div style={{ fontSize: 8.5, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase" }}>Price/unit</div>
+            <div style={{ fontSize: 11.5, fontWeight: 700, color: T.text, fontFamily: Fn }}>{priceTierLabels[econ.priceTier - 1]}</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 8.5, fontWeight: 700, color: T.textTer, fontFamily: Fn, letterSpacing: "0.08em", textTransform: "uppercase" }}>Units/year</div>
+            <div style={{ fontSize: 11.5, fontWeight: 700, color: T.text, fontFamily: Fn }}>{volumeTierLabels[econ.volumeTier - 1]}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: 12, paddingTop: 10, borderTop: `1px dashed ${T.border}`, fontSize: 11.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.6, fontStyle: "italic" }}>
+        {econ.story}
+      </div>
+      <div style={{ marginTop: 8, fontSize: 9, color: T.textTer, fontFamily: Fn, fontStyle: "italic", lineHeight: 1.4 }}>
+        Illustrative archetype, not company-reported data. Triangulated from public catalogue prices, third-party market studies and sell-side notes.
+      </div>
+    </div>
+  );
+}
 
 /* ════════════════════════════════════════════════
    Rich text parser — handles {{key|displayed text}}
@@ -517,6 +641,7 @@ function InfoPanel({ selectedId, T }) {
                     <span style={{ fontWeight: 700, color: accent, letterSpacing: "0.04em", textTransform: "uppercase", fontSize: 9, marginRight: 8 }}>In plain English</span>
                     {p.plain}
                   </div>
+                  <ProductEconCard econ={productEcon[p.id]} accent={accent} T={T} />
                 </div>
               ))}
             </div>

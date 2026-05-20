@@ -333,6 +333,134 @@ export const orgTree = [
 ];
 
 /* ═══════════════════════════════════════════
+   PRODUCT ECONOMICS — illustrative archetypes, NOT company data
+   ─────────────────────────────────────────────────────────────
+   For every end-product leaf, an "economic profile" describing the
+   buyer archetype, purchase cadence, approximate per-unit price
+   tier and annual unit-volume tier. These are educated estimates
+   triangulated from public catalogue prices, third-party market
+   studies (SDi, BCC Research), academic procurement records and
+   sell-side notes. Thermo Fisher does not disclose product-level
+   revenue, volume or price; nothing below is company-reported.
+
+   Tiers (logarithmic):
+     priceTier  1: <$50      2: $50-500   3: $500-5k
+                4: $5k-50k   5: $50k-500k 6: $500k+
+     volumeTier 1: <1k/yr    2: 1k-10k    3: 10k-100k
+                4: 100k-1M   5: 1M-10M    6: >10M
+   ═══════════════════════════════════════════ */
+
+export const priceTierLabels = ["<$50", "$50–$500", "$500–$5k", "$5k–$50k", "$50k–$500k", "$500k+"];
+export const volumeTierLabels = ["<1k/yr", "1k–10k/yr", "10k–100k/yr", "100k–1M/yr", "1M–10M/yr", ">10M/yr"];
+
+export const productEcon = {
+  // ─── LPBS · Laboratory Products ──────────────────────────────
+  nalgene: { nature: "consumable", customer: "Every wet lab; consumer outdoor market", cadence: "Standing bench orders + one-off consumer purchases", priceTier: 2, volumeTier: 5, story: "Cheap, ubiquitous plastic. Lab bottles ship by the case to every chemistry bench; the consumer water-bottle line piggybacks on the same moulds at higher unit volume." },
+  nunc: { nature: "consumable", customer: "Cell biology and biotech research labs", cadence: "Weekly to monthly bulk reorders", priceTier: 2, volumeTier: 5, story: "Plastic dishes consumed daily in every cell-culture facility. Low per-case price, mass volume — classic recurring consumable." },
+  forma: { nature: "instrument", customer: "Every biology, clinical and pharma lab", cadence: "Capex, 10–15-year replacement cycle", priceTier: 4, volumeTier: 3, story: "A −80 freezer is replaced once a decade or two — but every lab runs multiple units, and biopharma capacity expansion drives steady demand." },
+  sorvall: { nature: "instrument", customer: "Biology, clinical and pharma labs", cadence: "Capex, 10–20-year life + spare parts", priceTier: 4, volumeTier: 3, story: "Workhorse centrifuges with very long life. Once installed, generates spare-parts and service revenue for decades." },
+  barnstead: { nature: "instrument", customer: "Analytical and pharma manufacturing labs", cadence: "Capex install + recurring cartridges", priceTier: 4, volumeTier: 3, story: "Installed once, but each unit pulls a steady stream of replacement cartridges and filters — the razor with a built-in consumable line." },
+  "thermo-reagents": { nature: "consumable", customer: "Every wet lab globally", cadence: "Weekly catalogue orders", priceTier: 2, volumeTier: 5, story: "Pure shelf-fill consumables — buffers, solvents, basic biochemistry — that every lab burns through constantly." },
+  pierce: { nature: "consumable", customer: "Protein biochemistry research labs", cadence: "Monthly project-driven reorders", priceTier: 3, volumeTier: 4, story: "Mid-priced kits with project-driven purchase cadence. Higher complexity than bulk reagents, with brand stickiness around validated protocols." },
+
+  // ─── LPBS · Research & Safety Market Channel ─────────────────
+  fishersci: { nature: "service", customer: "Academic, biotech, pharma, industrial labs", cadence: "Continuous order flow per active lab account", priceTier: 2, volumeTier: 6, story: "Distribution at massive scale. Thin per-line gross margin but extraordinary stickiness — the catalogue is the default purchasing infrastructure of Western lab science." },
+  "fisher-healthcare": { nature: "service", customer: "Hospital labs, reference labs, physician offices", cadence: "Continuous standing orders", priceTier: 2, volumeTier: 5, story: "Same distribution machine as Fisher Scientific, but selling into the more stable, slower-growing clinical channel." },
+  "fisher-safety": { nature: "consumable", customer: "Lab and industrial customers", cadence: "Bulk standing orders for PPE", priceTier: 2, volumeTier: 5, story: "Commodity PPE and lab-safety supplies sold through the Fisher channel. Volume-driven margins; COVID surge has fully unwound." },
+  unitylabs: { nature: "service", customer: "Pharma and biotech with large lab estates", cadence: "Multi-year managed-service contracts", priceTier: 6, volumeTier: 1, story: "Enterprise services — one signed contract is millions per year over several years. Few customers, huge contract value, very sticky." },
+
+  // ─── LPBS · Pharma Services (Patheon) ────────────────────────
+  "drug-substance-sm": { nature: "service", customer: "Pharma & biotech without in-house API capacity", cadence: "Multi-year supply contracts, per-batch", priceTier: 6, volumeTier: 1, story: "Long-duration contract manufacturing for chemical APIs. Each program is multi-year; low single-digit new wins per year per site." },
+  "drug-substance-bio": { nature: "service", customer: "Biopharma making antibodies, recombinant proteins, vaccines", cadence: "Multi-year manufacturing contracts", priceTier: 6, volumeTier: 1, story: "The growth engine of Patheon. GLP-1 and mAb pipelines mean each bioreactor slot is booked years ahead at multi-million-dollar batches." },
+  "sterile-ff": { nature: "service", customer: "Every injectable-drug pharma sponsor", cadence: "Per-batch fills, capacity-constrained", priceTier: 6, volumeTier: 1, story: "Bottleneck capacity in the GLP-1 era. Each filled batch is millions of vials and millions of dollars in service revenue; capacity sold out years ahead." },
+  "drug-product": { nature: "service", customer: "Generic and branded oral pharma", cadence: "Long-term tolling agreements per SKU", priceTier: 5, volumeTier: 2, story: "Lower-margin but stable. Patheon's solid-dose plants press billions of pills per year under steady commercial tolling deals." },
+  "clinical-supply": { nature: "service", customer: "Pharma sponsors running multi-site trials", cadence: "Per-study scope, multi-year", priceTier: 5, volumeTier: 2, story: "Highly logistical service. Each trial generates a defined multi-month scope; thousands of studies in flight at once provides a stable book." },
+  "viral-vector": { nature: "service", customer: "Cell & gene therapy sponsors", cadence: "Per-batch, often bespoke per patient", priceTier: 6, volumeTier: 1, story: "Bespoke manufacturing at the biotech frontier. Low volume, very high value, capacity-constrained — and the early commercial cell therapies are scaling now." },
+  "pharma-packaging": { nature: "service", customer: "Branded and generic pharma", cadence: "Per-SKU ongoing supply", priceTier: 4, volumeTier: 3, story: "The 'back end' of CDMO. Less glamorous, lower margin, but high-volume and necessary for every commercial drug." },
+
+  // ─── LPBS · Clinical Research (PPD + Clario) ─────────────────
+  "ppd-clinical": { nature: "service", customer: "Pharma & biotech trial sponsors", cadence: "Per-trial, multi-year contracts", priceTier: 6, volumeTier: 1, story: "Each Phase III trial is a $50–200M multi-year contract. PPD runs thousands of trial-years of work at any given time across global sponsors." },
+  "ppd-lab": { nature: "service", customer: "Trial sponsors using PPD central labs", cadence: "Per-trial scope, recurring sample flow", priceTier: 5, volumeTier: 2, story: "The lab work attached to a clinical trial — bloods, biomarkers, GMP testing. Bundled into PPD trial contracts or sold standalone." },
+  "ppd-real-world": { nature: "service", customer: "Pharma medical affairs and payer-evidence teams", cadence: "Per-study or per-data-product", priceTier: 5, volumeTier: 2, story: "Post-approval studies and analytics. Growing line as payers demand real-world evidence for reimbursement and label expansion." },
+  "clario-ecoa": { nature: "software", customer: "Trial sponsors and CROs", cadence: "Per-trial license + per-patient-month", priceTier: 5, volumeTier: 2, story: "SaaS-style platform attached to each trial. Per-patient billing scales with trial size; recurring revenue while the trial runs." },
+  "clario-imaging": { nature: "service", customer: "Sponsors of oncology, CNS and cardiac trials", cadence: "Per-trial central read", priceTier: 5, volumeTier: 2, story: "Centralised reading of MRIs, CTs and PETs from every trial site. High-margin specialist function inside Clario's portfolio." },
+  "clario-cardio": { nature: "service", customer: "Sponsors of trials with cardiac safety endpoints", cadence: "Per-trial + per-patient ECG read", priceTier: 5, volumeTier: 2, story: "ECGs from every trial patient pulled into a central reading service. Regulatory-required for many new molecular entities." },
+  "clario-respiratory": { nature: "service", customer: "Asthma and COPD trial sponsors", cadence: "Per-trial spirometry contracts", priceTier: 5, volumeTier: 1, story: "Specialist niche — centralised spirometry for respiratory trials. Lower volume than imaging but high pricing power in its niche." },
+
+  // ─── LSS · Bioproduction ─────────────────────────────────────
+  gibco: { nature: "consumable", customer: "Commercial biologic drug manufacturers", cadence: "Continuous bulk supply per drug program", priceTier: 4, volumeTier: 3, story: "Once a drug's BLA names Gibco media, switching requires FDA re-filing. Each approved biologic delivers a decades-long revenue tail; the pipeline keeps adding more." },
+  hyclone: { nature: "consumable", customer: "Vaccine and Asia-Pacific biopharma", cadence: "Continuous bulk supply", priceTier: 4, volumeTier: 3, story: "Sister brand to Gibco, often the contract incumbent for non-Western vaccine manufacturers and APAC bioprocess operators." },
+  "single-use-tech": { nature: "instrument", customer: "Biologic drug manufacturers (CDMOs and pharma)", cadence: "System purchase + per-batch bag consumables", priceTier: 5, volumeTier: 2, story: "Hybrid economics. The frame is capex; the bag is a single-use consumable each batch. Secular shift away from stainless steel powers double-digit growth." },
+  "downstream-purif": { nature: "consumable", customer: "Biologic drug manufacturers", cadence: "Per-batch resin and filter consumption", priceTier: 4, volumeTier: 3, story: "Lower-glamour than upstream, but every gram of drug substance pulled out of a bioreactor flows through filters and chromatography resins." },
+  "process-analytics": { nature: "instrument", customer: "Bioprocess engineers in pharma and CDMOs", cadence: "Capex install + sensor replacements", priceTier: 4, volumeTier: 3, story: "Sensors embedded in every modern bioreactor. Smaller revenue line than media but critical infrastructure for FDA process-control expectations." },
+
+  // ─── LSS · Biosciences ───────────────────────────────────────
+  invitrogen: { nature: "consumable", customer: "Academic and biotech research labs", cadence: "Weekly project-driven catalogue orders", priceTier: 3, volumeTier: 5, story: "The default research-reagent brand. Each shelf item is a few hundred dollars; the catalogue collectively prints money." },
+  "alexa-fluor": { nature: "consumable", customer: "Microscopy and flow-cytometry labs", cadence: "Per-experiment small-volume orders", priceTier: 3, volumeTier: 4, story: "Patented dye family with premium pricing. Hundreds of variants for different colours mean labs accumulate stock across the catalogue." },
+  "gibco-research": { nature: "consumable", customer: "Academic and biotech cell-biology labs", cadence: "Weekly bench orders", priceTier: 2, volumeTier: 5, story: "The 'food' that every cultured cell in academia eats. Lower margin than GMP bioproduction media but huge installed customer base." },
+  antibodies: { nature: "consumable", customer: "Protein research labs globally", cadence: "Per-experiment one-off vials", priceTier: 3, volumeTier: 5, story: "Catalogue of >100k SKUs. Each vial is a few hundred dollars; researchers buy multiple antibodies per project; the long tail is the moat." },
+  "biosci-instr": { nature: "instrument", customer: "Research labs", cadence: "Capex, 7–10-year cycle", priceTier: 4, volumeTier: 3, story: "Mid-priced bench instruments. Each lab buys one or two; consumable cartridges and kits pull steady aftermarket revenue." },
+  qubit: { nature: "instrument", customer: "Genomics and NGS prep labs", cadence: "Capex once + per-sample reagent tubes", priceTier: 3, volumeTier: 3, story: "Cheap, ubiquitous DNA-quantification instrument. Razor sells for a few thousand; the assay tubes consumed in every NGS prep are the real revenue." },
+
+  // ─── LSS · Genetic Sciences ──────────────────────────────────
+  "abi-quantstudio": { nature: "instrument", customer: "Molecular biology research and clinical labs", cadence: "Capex + per-sample consumables", priceTier: 4, volumeTier: 3, story: "Workhorse qPCR machine in every molecular lab. Each instrument pulls steady consumable revenue from TaqMan assays for a decade." },
+  taqman: { nature: "consumable", customer: "qPCR users globally", cadence: "Per-experiment assay kit", priceTier: 2, volumeTier: 5, story: "Pre-validated qPCR assays — hundreds of thousands catalogued, plus custom-design business. Razor-and-blade lock-in with QuantStudio." },
+  "ion-torrent": { nature: "instrument", customer: "Clinical oncology and infectious-disease labs", cadence: "Capex + per-run chip consumables", priceTier: 5, volumeTier: 2, story: "Lost the discovery race to Illumina. Holds clinical positions where smaller targeted panels (oncology, infectious disease) matter more than throughput." },
+  seqstudio: { nature: "instrument", customer: "Clinical, forensic and verification labs", cadence: "Capex + per-run consumables", priceTier: 4, volumeTier: 2, story: "Modern Sanger sequencer for short-but-accurate reads. Niche but durable in forensics, paternity, and gene-edit verification." },
+  axiom: { nature: "consumable", customer: "Agrigenomics and biobank-scale studies", cadence: "Per-project bulk genotyping runs", priceTier: 3, volumeTier: 4, story: "Genotyping chips bought in large project batches. Used by livestock breeders, crop genetics teams, and biobank studies like UK Biobank." },
+  "absolute-q": { nature: "instrument", customer: "Specialist molecular labs (CGT QC, env. surveillance)", cadence: "Capex + per-run chip", priceTier: 5, volumeTier: 2, story: "High-precision digital PCR. Sells where extreme molecular sensitivity matters — cell & gene therapy QC, environmental detection of rare targets." },
+
+  // ─── AI · Chromatography & Mass Spec ─────────────────────────
+  orbitrap: { nature: "instrument", customer: "Pharma R&D, proteomics cores, large academic labs", cadence: "Capex, 7–10-year cycle + service contract", priceTier: 6, volumeTier: 1, story: "The flagship. Each Orbitrap sale is six- to seven-figure capex; service contracts and LC-column consumables pull a long tail of revenue." },
+  tsq: { nature: "instrument", customer: "Pharma QC, food safety, anti-doping labs", cadence: "Capex + per-sample consumables", priceTier: 5, volumeTier: 2, story: "High-throughput targeted mass spec. Sold to regulated quality labs; less prestige than Orbitrap but more units shipped per year." },
+  iliad: { nature: "instrument", customer: "Routine quantitative MS labs", cadence: "Capex, replacement cycle", priceTier: 5, volumeTier: 2, story: "New 2024 platform refreshing the routine MS line — Thermo's bid to defend the high-volume QC market against Sciex and Waters." },
+  vanquish: { nature: "instrument", customer: "Every analytical chemistry lab", cadence: "Capex + column and pump consumables", priceTier: 4, volumeTier: 3, story: "Workhorse UHPLC. Sells in front of every mass-spec sale and as a standalone; pulls steady chromatography column consumable revenue." },
+  "dionex-ic": { nature: "instrument", customer: "Water and pharma quality labs", cadence: "Capex + consumables", priceTier: 4, volumeTier: 2, story: "Specialised IC franchise. Dionex is the brand name in inorganic-ion testing for water utilities and pharma raw-material QC." },
+  "trace-gc": { nature: "instrument", customer: "Petrochemical, fragrance and environmental labs", cadence: "Capex + column consumables", priceTier: 4, volumeTier: 3, story: "GC for volatile analytes. Stable applied-markets exposure with a consumable column revenue tail." },
+
+  // ─── AI · Chemical Analysis ──────────────────────────────────
+  niton: { nature: "instrument", customer: "Scrap recyclers, mining geologists, lead-paint inspectors", cadence: "Capex per handheld", priceTier: 4, volumeTier: 3, story: "Point-and-shoot metal identification. Every yard wants its own gun; tens of thousands in the field globally." },
+  "ftir-instr": { nature: "instrument", customer: "Pharma raw-material QC, materials labs, forensics", cadence: "Capex + occasional accessory", priceTier: 4, volumeTier: 3, story: "Chemical-fingerprint instruments. Pharma QC labs run them daily to verify incoming raw materials against reference spectra." },
+  "process-nir": { nature: "instrument", customer: "Refineries, polymer plants, pharma production lines", cadence: "Capex bespoke install + service", priceTier: 4, volumeTier: 2, story: "Inline process spectroscopy. Each install is bespoke and integrated into a production line; lower volume than benchtop instruments but stickier." },
+  "iris-icp": { nature: "instrument", customer: "Trace-metal labs (environmental, semi, pharma)", cadence: "Capex + consumables", priceTier: 5, volumeTier: 2, story: "Parts-per-trillion metal detection. Standard for semiconductor purity testing — a market expanding with advanced-node manufacturing." },
+  "env-process": { nature: "instrument", customer: "Power plants, refineries, regulatory agencies", cadence: "Capex install + service contracts", priceTier: 5, volumeTier: 2, story: "Continuous emissions monitoring. Each install is six-figure capex plus regulated multi-year service obligations." },
+
+  // ─── AI · Electron Microscopy ────────────────────────────────
+  krios: { nature: "instrument", customer: "Pharma structural biology + academic cryo-EM cores", cadence: "Capex, multi-year capacity planning", priceTier: 6, volumeTier: 1, story: "Top of the EM tower. Few hundred installed globally; each is multi-million-dollar capex with a long service tail. Effective monopoly in high-end cryo-EM." },
+  glacios: { nature: "instrument", customer: "Smaller structural biology labs", cadence: "Capex", priceTier: 6, volumeTier: 1, story: "Cheaper sibling of Krios for screening and lower-end cryo-EM. Opens the platform to labs without Krios-tier budget." },
+  talos: { nature: "instrument", customer: "Semiconductor and materials science", cadence: "Capex, replaced per technology cycle", priceTier: 6, volumeTier: 1, story: "Materials-science TEM. Sold to chip fabs, advanced battery and materials research groups." },
+  "helios-dualbeam": { nature: "instrument", customer: "Semiconductor fabs (failure analysis)", cadence: "Capex, replaced per node generation", priceTier: 6, volumeTier: 1, story: "Mandatory tool at advanced semiconductor nodes — slices and images chips layer by layer. Tied to the semiconductor capex super-cycle." },
+  "apreo-sem": { nature: "instrument", customer: "Wide research and applied use", cadence: "Capex, 10-year life", priceTier: 5, volumeTier: 2, story: "General-purpose SEM. Widest deployment in the EM line — used everywhere from materials labs to biology cores." },
+  "verios-sem": { nature: "instrument", customer: "Semiconductor metrology at advanced nodes", cadence: "Capex per fab generation", priceTier: 6, volumeTier: 1, story: "Ultra-high-resolution SEM for advanced-node chip metrology. Tied directly to leading-edge fab investments." },
+
+  // ─── SD · Clinical Diagnostics ───────────────────────────────
+  "binding-site": { nature: "consumable", customer: "Haematology clinical labs", cadence: "Per-patient testing, recurring monitoring", priceTier: 3, volumeTier: 3, story: "Reference standard for multiple myeloma diagnostics. Recurring patient-monitoring tests create durable clinical-lab demand." },
+  "brahms-pct": { nature: "consumable", customer: "Hospital emergency departments and ICUs", cadence: "Per-patient on infection workup", priceTier: 2, volumeTier: 4, story: "Bacterial-vs-viral infection test ordered millions of times annually. Helps stewardship of antibiotic use across hospital networks." },
+  "drug-monitoring": { nature: "consumable", customer: "Hospital labs, especially transplant centres", cadence: "Per-patient ongoing", priceTier: 2, volumeTier: 4, story: "Recurring blood draws on transplant, epilepsy and infectious-disease patients. Steady recurring volume across hospital networks." },
+  "drugs-of-abuse": { nature: "consumable", customer: "Hospital tox, workplace testing, forensics", cadence: "Per-test panel", priceTier: 1, volumeTier: 5, story: "Cheap, high-volume immunoassay panels. Workplace screening and tox labs drive millions of tests per year." },
+
+  // ─── SD · ImmunoDiagnostics (Phadia) ─────────────────────────
+  immunocap: { nature: "consumable", customer: "Allergy and immunology clinics globally", cadence: "Per-patient panel", priceTier: 3, volumeTier: 4, story: "Global standard for blood-based allergy testing. >750 allergens catalogued; each test is one allergen-patient pair, and panels can span dozens of allergens." },
+  elia: { nature: "consumable", customer: "Rheumatology and clinical immunology labs", cadence: "Per-patient diagnostic", priceTier: 3, volumeTier: 3, story: "Autoimmune-disease serology on the same Phadia platform as ImmunoCAP. Smaller market but very high specificity." },
+  "phadia-instr": { nature: "instrument", customer: "Hospital allergy and immunology labs", cadence: "Capex (often placed) + 10-year reagent contract", priceTier: 5, volumeTier: 1, story: "Razor in a razor-and-blade model — the instrument is placed, sometimes free, and the lab is locked into Phadia assays for the next decade." },
+
+  // ─── SD · Microbiology ───────────────────────────────────────
+  oxoid: { nature: "consumable", customer: "Clinical microbiology and food-testing labs", cadence: "Weekly bulk reorders", priceTier: 2, volumeTier: 5, story: "Dehydrated and prepared media for growing bacteria. Stable, low-tech, high-volume — the backbone of clinical microbiology." },
+  remel: { nature: "consumable", customer: "Hospital microbiology labs", cadence: "Per-week pre-poured-plate orders", priceTier: 2, volumeTier: 5, story: "Pre-poured plates that save a hospital lab the prep time. Convenience product, but huge per-account weekly volume." },
+  sensititre: { nature: "consumable", customer: "Clinical microbiology labs", cadence: "Per-isolate susceptibility testing", priceTier: 2, volumeTier: 4, story: "Once an infection is identified, find the right antibiotic. Reference-standard microbroth dilution panels priced per isolate." },
+  "oxoid-pathogen": { nature: "consumable", customer: "Food companies and clinical microbiology", cadence: "Per-sample testing kits", priceTier: 2, volumeTier: 4, story: "Listeria, Salmonella, MRSA detection kits. Volume driven by food-safety regulation and clinical screening protocols." },
+
+  // ─── SD · Transplant Diagnostics (One Lambda) ────────────────
+  labtype: { nature: "consumable", customer: "Every transplant centre globally", cadence: "Per-donor + per-recipient typing", priceTier: 4, volumeTier: 2, story: "Used on every donor and every recipient before every solid-organ transplant globally. Effectively monopolistic in its niche." },
+  labscreen: { nature: "consumable", customer: "Transplant clinics monitoring patients", cadence: "Quarterly per-patient panels", priceTier: 4, volumeTier: 2, story: "Recurring post-transplant monitoring. Each transplant patient generates a steady stream of antibody panels for years." },
+  fusion: { nature: "software", customer: "Transplant programmes globally", cadence: "Annual licence per centre", priceTier: 5, volumeTier: 1, story: "Specialist transplant-workflow software bundled with the One Lambda diagnostic franchise. Tiny installed base, very sticky." },
+
+  // ─── SD · Healthcare Market Channel ──────────────────────────
+  "fisher-clin": { nature: "service", customer: "Hospital and reference labs", cadence: "Continuous standing orders", priceTier: 2, volumeTier: 5, story: "Distribution of third-party clinical IVD supplies into hospital labs. Stable, low-growth, mostly resale margin." },
+  "fisher-clin-pos": { nature: "service", customer: "Physician offices, urgent care, retail clinics", cadence: "Standing orders for rapid kits", priceTier: 2, volumeTier: 4, story: "Rapid tests routed to outpatient settings. Volume grew through COVID; sustained at lower level by retail-clinic expansion." },
+};
+
+/* ═══════════════════════════════════════════
    GLOSSARY CATEGORIES — for the searchable list view
    ═══════════════════════════════════════════ */
 export const glossaryCategories = [
