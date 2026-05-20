@@ -1,0 +1,494 @@
+import { useState, useMemo } from "react";
+import { Fn, Fh } from "../../theme";
+import { Card, Pill } from "../shared";
+import { useMobile } from "../../hooks/useMobile";
+import { orgTree, glossary, glossaryCategories, orgMapIntro } from "../../data/research-tmo-orgmap";
+
+/* ════════════════════════════════════════════════
+   Rich text parser — handles {{key|displayed text}}
+   Replaces with dotted-underlined span with hover tooltip
+   ════════════════════════════════════════════════ */
+function RichText({ text, T, fontSize = 13, color }) {
+  const [hov, setHov] = useState(null);
+  const parts = useMemo(() => {
+    const re = /\{\{([a-zA-Z]+)\|([^}]+)\}\}/g;
+    const out = [];
+    let lastIdx = 0;
+    let m;
+    let idx = 0;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > lastIdx) out.push({ type: "text", value: text.slice(lastIdx, m.index), i: idx++ });
+      out.push({ type: "term", key: m[1], value: m[2], i: idx++ });
+      lastIdx = m.index + m[0].length;
+    }
+    if (lastIdx < text.length) out.push({ type: "text", value: text.slice(lastIdx), i: idx++ });
+    return out;
+  }, [text]);
+
+  return (
+    <span style={{ fontSize, color: color || T.textSec, fontFamily: Fn, lineHeight: 1.7 }}>
+      {parts.map(p =>
+        p.type === "text" ? (
+          <span key={p.i}>{p.value}</span>
+        ) : (
+          <span
+            key={p.i}
+            onMouseEnter={() => setHov(p.i)}
+            onMouseLeave={() => setHov(null)}
+            style={{
+              position: "relative",
+              borderBottom: `1px dotted ${T.deepBlue}`,
+              cursor: "help",
+              color: T.text,
+              fontWeight: 500,
+            }}
+          >
+            {p.value}
+            {hov === p.i && glossary[p.key] && (
+              <span
+                style={{
+                  position: "absolute",
+                  bottom: "calc(100% + 8px)",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: 280,
+                  padding: "10px 12px",
+                  background: T.text,
+                  color: T.card,
+                  borderRadius: 6,
+                  fontSize: 11.5,
+                  fontFamily: Fn,
+                  lineHeight: 1.55,
+                  fontWeight: 400,
+                  boxShadow: T.shadowLg,
+                  zIndex: 100,
+                  pointerEvents: "none",
+                  textAlign: "left",
+                }}
+              >
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.textTer, marginBottom: 4 }}>
+                  {p.value}
+                </div>
+                {glossary[p.key]}
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: 0,
+                    height: 0,
+                    borderLeft: "5px solid transparent",
+                    borderRight: "5px solid transparent",
+                    borderTop: `5px solid ${T.text}`,
+                  }}
+                />
+              </span>
+            )}
+          </span>
+        )
+      )}
+    </span>
+  );
+}
+
+/* ════════════════════════════════════════════════
+   Radial diagram — TMO at centre, segments at four cardinal
+   positions, sub-businesses fanning out in each quadrant.
+   ════════════════════════════════════════════════ */
+function RadialDiagram({ selectedId, onSelect, T }) {
+  const [hov, setHov] = useState(null);
+  // Cardinal angles (radians). Top, right, bottom, left.
+  const segAngles = { lpbs: -Math.PI / 2, lss: 0, ai: Math.PI / 2, sd: Math.PI };
+  // Angular spread for sub-businesses around each segment angle
+  const fanSpread = (n) => Math.min(Math.PI * 0.5, (n - 1) * 0.32 + 0.4);
+
+  const W = 760, H = 720;
+  const cx = W / 2, cy = H / 2;
+  const R_seg = 165;   // distance to segment hubs
+  const R_sub = 305;   // distance to sub-business nodes
+
+  const segByAngle = orgTree.map(seg => {
+    const θ = segAngles[seg.id];
+    const x = cx + R_seg * Math.cos(θ);
+    const y = cy + R_seg * Math.sin(θ);
+    const spread = fanSpread(seg.children.length);
+    const subs = seg.children.map((sub, i) => {
+      const subθ = seg.children.length === 1
+        ? θ
+        : θ - spread / 2 + (spread * i) / (seg.children.length - 1);
+      const sx = cx + R_sub * Math.cos(subθ);
+      const sy = cy + R_sub * Math.sin(subθ);
+      return { ...sub, sx, sy, subθ, segId: seg.id };
+    });
+    return { ...seg, x, y, θ, subs };
+  });
+
+  // Determine highlight state for connection lines
+  const isSegActive = (id) => selectedId === id || segByAngle.find(s => s.subs.some(sub => sub.id === selectedId))?.id === id || hov === id;
+  const isSubActive = (id) => selectedId === id || hov === id;
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ maxWidth: 760, display: "block", margin: "0 auto" }}>
+      {/* Faint orbital rings */}
+      <circle cx={cx} cy={cy} r={R_seg} fill="none" stroke={T.border} strokeDasharray="3 5" />
+      <circle cx={cx} cy={cy} r={R_sub} fill="none" stroke={T.border} strokeDasharray="3 5" />
+
+      {/* Centre → segment connection lines */}
+      {segByAngle.map(seg => {
+        const active = isSegActive(seg.id);
+        return (
+          <line
+            key={"l-" + seg.id}
+            x1={cx} y1={cy} x2={seg.x} y2={seg.y}
+            stroke={active ? seg.color : T.border}
+            strokeWidth={active ? 2.5 : 1.5}
+            style={{ transition: "stroke 0.2s, stroke-width 0.2s" }}
+          />
+        );
+      })}
+
+      {/* Segment → sub-business lines */}
+      {segByAngle.map(seg =>
+        seg.subs.map(sub => {
+          const active = isSubActive(sub.id) || (isSegActive(seg.id) && selectedId === seg.id);
+          return (
+            <line
+              key={"sl-" + sub.id}
+              x1={seg.x} y1={seg.y} x2={sub.sx} y2={sub.sy}
+              stroke={active ? seg.color : T.border}
+              strokeWidth={active ? 2 : 1}
+              opacity={isSegActive(seg.id) || hov === null && selectedId === null ? 1 : 0.35}
+              style={{ transition: "all 0.2s" }}
+            />
+          );
+        })
+      )}
+
+      {/* Sub-business nodes */}
+      {segByAngle.map(seg =>
+        seg.subs.map(sub => {
+          const active = isSubActive(sub.id);
+          const dimmed = selectedId && !isSubActive(sub.id) && selectedId !== seg.id && !seg.subs.some(s => s.id === selectedId);
+          // Position label outside the ring
+          const labelR = R_sub + 14;
+          const lx = cx + labelR * Math.cos(sub.subθ);
+          const ly = cy + labelR * Math.sin(sub.subθ);
+          const anchor = Math.abs(Math.cos(sub.subθ)) < 0.2 ? "middle" : Math.cos(sub.subθ) > 0 ? "start" : "end";
+          return (
+            <g
+              key={"sub-" + sub.id}
+              onClick={() => onSelect(sub.id)}
+              onMouseEnter={() => setHov(sub.id)}
+              onMouseLeave={() => setHov(null)}
+              style={{ cursor: "pointer", opacity: dimmed ? 0.4 : 1, transition: "opacity 0.2s" }}
+            >
+              <circle
+                cx={sub.sx} cy={sub.sy} r={active ? 10 : 7}
+                fill={active ? seg.color : T.card}
+                stroke={seg.color}
+                strokeWidth={2}
+                style={{ transition: "all 0.2s" }}
+              />
+              <text
+                x={lx} y={ly}
+                textAnchor={anchor}
+                dominantBaseline="middle"
+                fontFamily={Fn}
+                fontSize={11}
+                fontWeight={active ? 700 : 500}
+                fill={active ? T.text : T.textSec}
+                style={{ transition: "all 0.2s", userSelect: "none" }}
+              >
+                {sub.name}
+              </text>
+            </g>
+          );
+        })
+      )}
+
+      {/* Segment hubs */}
+      {segByAngle.map(seg => {
+        const active = isSegActive(seg.id);
+        return (
+          <g
+            key={"hub-" + seg.id}
+            onClick={() => onSelect(seg.id)}
+            onMouseEnter={() => setHov(seg.id)}
+            onMouseLeave={() => setHov(null)}
+            style={{ cursor: "pointer" }}
+          >
+            <circle cx={seg.x} cy={seg.y} r={active ? 42 : 36} fill={seg.color} opacity={active ? 1 : 0.94} style={{ transition: "all 0.2s" }} />
+            <text x={seg.x} y={seg.y - 4} textAnchor="middle" fontFamily={Fn} fontSize={14} fontWeight={800} fill="#fff" style={{ userSelect: "none" }}>{seg.short}</text>
+            <text x={seg.x} y={seg.y + 13} textAnchor="middle" fontFamily={Fn} fontSize={11} fontWeight={700} fill="#fff" opacity={0.88} style={{ userSelect: "none" }}>{seg.share}%</text>
+          </g>
+        );
+      })}
+
+      {/* Central TMO node */}
+      <g onClick={() => onSelect(null)} style={{ cursor: "pointer" }}>
+        <circle cx={cx} cy={cy} r={48} fill={T.text} />
+        <text x={cx} y={cy - 6} textAnchor="middle" fontFamily={Fn} fontSize={15} fontWeight={800} fill={T.card} style={{ userSelect: "none" }}>TMO</text>
+        <text x={cx} y={cy + 12} textAnchor="middle" fontFamily={Fn} fontSize={9} fontWeight={600} fill={T.card} opacity={0.7} style={{ userSelect: "none" }}>$44.6B FY25</text>
+      </g>
+    </svg>
+  );
+}
+
+/* ════════════════════════════════════════════════
+   Info panel — shows the selected node, with full
+   plain-English explanation and product breakdown.
+   ════════════════════════════════════════════════ */
+function InfoPanel({ selectedId, T }) {
+  // Find what's selected: segment, sub-business, or null
+  const found = useMemo(() => {
+    if (!selectedId) return null;
+    for (const seg of orgTree) {
+      if (seg.id === selectedId) return { type: "segment", seg };
+      for (const sub of seg.children) {
+        if (sub.id === selectedId) return { type: "sub", seg, sub };
+      }
+    }
+    return null;
+  }, [selectedId]);
+
+  if (!found) {
+    return (
+      <Card T={T} style={{ padding: "28px 28px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: T.textTer, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12 }}>
+          How to use
+        </div>
+        <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: "0 0 16px" }}>
+          Click any segment hub (the four large coloured circles) to read what that part of the business does. Click any sub-business node (the smaller circles further out) to drill into its specific product lines.
+        </p>
+        <p style={{ fontSize: 13, color: T.textSec, fontFamily: Fn, lineHeight: 1.75, margin: "0 0 16px" }}>
+          Technical terms in every description carry a <span style={{ borderBottom: `1px dotted ${T.deepBlue}`, color: T.text, fontWeight: 500 }}>dotted underline</span> — hover over them for a plain-English definition. The full categorised glossary sits below the diagram.
+        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+          {orgTree.map(s => (
+            <Pill key={s.id} T={T} color={s.color} bg={s.color + "14"}>{s.short} · {s.share}%</Pill>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  const { type, seg, sub } = found;
+  const accent = seg.color;
+  const accentBg = accent + "14";
+
+  if (type === "segment") {
+    return (
+      <Card T={T} style={{ padding: 0, borderTop: `4px solid ${accent}` }}>
+        <div style={{ padding: "22px 26px" }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
+            <Pill T={T} color={accent} bg={accentBg}>Segment</Pill>
+            <span style={{ fontSize: 12, color: T.textTer, fontFamily: Fn, fontWeight: 600 }}>{seg.share}% of revenue · {seg.revenue} FY2025</span>
+          </div>
+          <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 24, color: T.text, marginBottom: 16 }}>{seg.name}</div>
+
+          <div style={{ fontSize: 10, fontWeight: 800, color: accent, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>Plain English</div>
+          <p style={{ fontSize: 13.5, color: T.text, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 18px" }}>{seg.plainEnglish}</p>
+
+          <div style={{ fontSize: 10, fontWeight: 800, color: T.textTer, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>Reporting definition</div>
+          <RichText text={seg.description} T={T} />
+
+          <div style={{ marginTop: 22, paddingTop: 18, borderTop: "1px solid " + T.border }}>
+            <div style={{ fontSize: 10, fontWeight: 800, color: T.textTer, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12 }}>Sub-businesses ({seg.children.length})</div>
+            <div style={{ display: "grid", gap: 8 }}>
+              {seg.children.map(sub => (
+                <div key={sub.id} style={{ padding: "12px 14px", background: T.pillBg, borderRadius: T.radiusSm, borderLeft: `3px solid ${accent}` }}>
+                  <div style={{ fontSize: 12.5, fontWeight: 600, color: T.text, fontFamily: Fn, marginBottom: 4 }}>{sub.name}</div>
+                  <div style={{ fontSize: 11.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.6 }}>{sub.plainEnglish.slice(0, 180)}{sub.plainEnglish.length > 180 ? "…" : ""}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 10, fontSize: 11, color: T.textTer, fontFamily: Fn, fontStyle: "italic" }}>
+              Click a sub-business node on the diagram to see its full product line.
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  // Sub-business view
+  return (
+    <Card T={T} style={{ padding: 0, borderTop: `4px solid ${accent}` }}>
+      <div style={{ padding: "22px 26px" }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
+          <Pill T={T} color={accent} bg={accentBg}>{seg.short}</Pill>
+          <span style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, fontWeight: 600 }}>Sub-business</span>
+        </div>
+        <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 22, color: T.text, marginBottom: 16, lineHeight: 1.2 }}>{sub.name}</div>
+
+        <div style={{ fontSize: 10, fontWeight: 800, color: accent, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>What it actually does</div>
+        <p style={{ fontSize: 13.5, color: T.text, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 18px" }}>{sub.plainEnglish}</p>
+
+        <div style={{ fontSize: 10, fontWeight: 800, color: T.textTer, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>Reporting definition</div>
+        <div style={{ marginBottom: 22 }}>
+          <RichText text={sub.description} T={T} />
+        </div>
+
+        {sub.children && sub.children.length > 0 && (
+          <div style={{ paddingTop: 18, borderTop: "1px solid " + T.border }}>
+            <div style={{ fontSize: 10, fontWeight: 800, color: T.textTer, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>
+              Product lines & brands ({sub.children.length})
+            </div>
+            <div style={{ display: "grid", gap: 10 }}>
+              {sub.children.map(p => (
+                <div key={p.id} style={{ padding: "14px 16px", background: T.card, border: "1px solid " + T.border, borderRadius: T.radiusSm, borderLeft: `3px solid ${accent}` }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: Fn, marginBottom: 8 }}>{p.name}</div>
+                  <div style={{ marginBottom: 10 }}>
+                    <RichText text={p.desc} T={T} fontSize={12.5} />
+                  </div>
+                  <div style={{ padding: "8px 10px", background: accentBg, borderRadius: 4, fontSize: 11.5, color: T.text, fontFamily: Fn, lineHeight: 1.6 }}>
+                    <span style={{ fontWeight: 700, color: accent, letterSpacing: "0.04em", textTransform: "uppercase", fontSize: 9, marginRight: 8 }}>In plain English</span>
+                    {p.plain}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+}
+
+/* ════════════════════════════════════════════════
+   Categorised glossary section
+   ════════════════════════════════════════════════ */
+function GlossarySection({ T }) {
+  const [openCat, setOpenCat] = useState(null);
+
+  return (
+    <Card T={T} style={{ padding: "22px 26px" }}>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 6, flexWrap: "wrap", gap: 8 }}>
+        <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 22, color: T.text }}>Glossary</div>
+        <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn }}>All technical terms used in the org map, grouped by domain. Click a category to expand.</div>
+      </div>
+      <div style={{ display: "grid", gap: 8, marginTop: 16 }}>
+        {glossaryCategories.map(cat => {
+          const open = openCat === cat.title;
+          return (
+            <div key={cat.title} style={{ border: "1px solid " + T.border, borderRadius: T.radiusSm, overflow: "hidden" }}>
+              <div
+                onClick={() => setOpenCat(open ? null : cat.title)}
+                style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer", background: open ? T.pillBg : "transparent" }}
+              >
+                <div style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: Fn }}>{cat.title}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, fontWeight: 600 }}>{cat.keys.length} terms</span>
+                  <span style={{ fontSize: 14, color: T.textTer, transform: open ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>
+                </div>
+              </div>
+              {open && (
+                <div style={{ padding: "8px 16px 16px", display: "grid", gap: 10 }}>
+                  {cat.keys.filter(k => glossary[k]).map(k => (
+                    <div key={k} style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 14, paddingTop: 8, borderTop: "1px dashed " + T.border }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: T.text, fontFamily: Fn, paddingTop: 2 }}>
+                        {k.toUpperCase().replace(/([A-Z])([A-Z][a-z])/g, "$1 $2")}
+                      </div>
+                      <div style={{ fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.65 }}>{glossary[k]}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+}
+
+/* ════════════════════════════════════════════════
+   Mobile-friendly accordion fallback for very narrow screens
+   ════════════════════════════════════════════════ */
+function MobileTreeList({ selectedId, onSelect, T }) {
+  return (
+    <div style={{ display: "grid", gap: 12 }}>
+      {orgTree.map(seg => (
+        <Card key={seg.id} T={T} style={{ padding: 0, overflow: "hidden", borderLeft: `4px solid ${seg.color}` }}>
+          <div onClick={() => onSelect(seg.id)} style={{ padding: "14px 16px", cursor: "pointer", background: selectedId === seg.id ? seg.color + "0d" : "transparent" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: Fn }}>{seg.name}</div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: seg.color, fontFamily: Fn }}>{seg.share}% · {seg.revenue}</div>
+            </div>
+          </div>
+          <div style={{ display: "grid", gap: 2, padding: "0 10px 10px" }}>
+            {seg.children.map(sub => (
+              <div
+                key={sub.id}
+                onClick={() => onSelect(sub.id)}
+                style={{ padding: "10px 12px", background: selectedId === sub.id ? seg.color + "14" : T.pillBg, borderRadius: 6, cursor: "pointer", fontSize: 12, color: T.text, fontFamily: Fn, fontWeight: selectedId === sub.id ? 700 : 500, display: "flex", alignItems: "center", justifyContent: "space-between" }}
+              >
+                <span>{sub.name}</span>
+                {sub.children && <span style={{ fontSize: 10, color: T.textTer, fontWeight: 600 }}>{sub.children.length}</span>}
+              </div>
+            ))}
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════
+   Main exported component
+   ════════════════════════════════════════════════ */
+export default function OrgMap({ T }) {
+  const [selectedId, setSelectedId] = useState(null);
+  const isMobile = useMobile(900);
+
+  return (
+    <div>
+      <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 22px" }}>{orgMapIntro}</p>
+
+      {/* Segment legend strip — gives non-experts a key to the short codes used inside the diagram */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10, marginBottom: 22 }}>
+        {orgTree.map(seg => {
+          const isActiveSeg = selectedId === seg.id || seg.children.some(c => c.id === selectedId);
+          return (
+            <div
+              key={"leg-" + seg.id}
+              onClick={() => setSelectedId(seg.id)}
+              style={{
+                background: T.card,
+                border: `1px solid ${isActiveSeg ? seg.color : T.border}`,
+                borderTop: `3px solid ${seg.color}`,
+                borderRadius: T.radiusSm,
+                padding: "12px 14px",
+                cursor: "pointer",
+                boxShadow: isActiveSeg ? T.shadow : "none",
+                transition: "all 0.15s",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                <div style={{ background: seg.color, color: "#fff", fontSize: 10, fontWeight: 800, fontFamily: Fn, padding: "2px 7px", borderRadius: 4, letterSpacing: "0.04em" }}>{seg.short}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: seg.color, fontFamily: Fn }}>{seg.revenue}</div>
+                <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, fontWeight: 600 }}>· {seg.share}%</div>
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn, lineHeight: 1.35 }}>{seg.name}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.1fr) minmax(0, 1fr)", gap: 24, marginBottom: 28 }}>
+        <Card T={T} style={{ padding: isMobile ? "16px 12px" : "26px 18px", overflow: "hidden" }}>
+          {isMobile
+            ? <MobileTreeList selectedId={selectedId} onSelect={setSelectedId} T={T} />
+            : <RadialDiagram selectedId={selectedId} onSelect={setSelectedId} T={T} />
+          }
+        </Card>
+        <div>
+          <InfoPanel selectedId={selectedId} T={T} />
+        </div>
+      </div>
+
+      <GlossarySection T={T} />
+    </div>
+  );
+}

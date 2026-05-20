@@ -19,6 +19,7 @@ import {
   productMapIntro, productStack, productMapInsight,
   valHistory, peerValTable, valInsight,
 } from "../data/research-tmo-products";
+import OrgMap from "../components/tmo/OrgMap";
 
 /* ═══════════════════════════════════════════ SHARED COMPONENTS ═══════════════════════════════════════════ */
 
@@ -117,11 +118,12 @@ export default function ResearchTMO({ T }) {
     { id: "whydown",  num: "01", label: "Why It's Down" },
     { id: "value",    num: "02", label: "Valuation & Entry" },
     { id: "primer",   num: "03", label: "Business Primer" },
-    { id: "products", num: "04", label: "Product Map" },
-    { id: "peers",    num: "05", label: "Competitors" },
-    { id: "trough",   num: "06", label: "Cyclical Trough KPIs" },
-    { id: "catalysts",num: "07", label: "Near-Term Catalysts" },
-    { id: "tailwinds",num: "08", label: "LT Tailwinds" },
+    { id: "orgmap",   num: "04", label: "Org Map" },
+    { id: "products", num: "05", label: "Product Map" },
+    { id: "peers",    num: "06", label: "Competitors" },
+    { id: "trough",   num: "07", label: "Cyclical Trough KPIs" },
+    { id: "catalysts",num: "08", label: "Near-Term Catalysts" },
+    { id: "tailwinds",num: "09", label: "LT Tailwinds" },
   ];
 
   const prose = (text, s = {}) => <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 16px", ...s }}>{text}</p>;
@@ -678,6 +680,7 @@ export default function ResearchTMO({ T }) {
     whydown: whyDownTab,
     value: valueTab,
     primer: primerTab,
+    orgmap: <OrgMap T={T} />,
     products: productMapTab,
     peers: compTab,
     trough: troughTab,
