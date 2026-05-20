@@ -20,6 +20,7 @@ import {
   valHistory, peerValTable, valInsight,
 } from "../data/research-tmo-products";
 import OrgMap from "../components/tmo/OrgMap";
+import PeerExplorer from "../components/tmo/PeerExplorer";
 
 /* ═══════════════════════════════════════════ SHARED COMPONENTS ═══════════════════════════════════════════ */
 
@@ -427,6 +428,9 @@ export default function ResearchTMO({ T }) {
   const valueTab = (
     <div>
       {prose("The valuation question has three parts: (1) where does TMO trade versus its own history, (2) where does it trade versus peers, and (3) are the consensus estimates that underpin those multiples credible. The framing mirrors the work we did on Canadian National — a high-quality cyclical compounder where the multiple has compressed during a cycle trough but consensus EPS estimates have held remarkably stable.")}
+
+      {sTitle("Peer explorer — pick a metric, drive the whole chart")}
+      <PeerExplorer T={T} />
 
       {sTitle("Valuation versus own 5-year history")}
       <Card T={T} style={{ padding: 0, overflow: "hidden", marginBottom: 24 }}>
