@@ -126,7 +126,7 @@ function Dashboard({ dark, setDark }) {
       {/* Main */}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", transition: "background 0.3s" }}>
         <div style={{
-          height: 80, background: T.topbar, backdropFilter: T.glassBlur, WebkitBackdropFilter: T.glassBlur,
+          height: 48, background: T.topbar, backdropFilter: T.glassBlur, WebkitBackdropFilter: T.glassBlur,
           borderBottom: T.glassBorder, display: "flex", alignItems: "center", justifyContent: "space-between",
           padding: "0 28px", flexShrink: 0, transition: "background 0.3s", position: "sticky", top: 0, zIndex: 5,
         }}>
@@ -134,10 +134,6 @@ function Dashboard({ dark, setDark }) {
             <button className="hamburger" onClick={() => setSidebarOpen(!sidebarOpen)} style={{ display: "none", background: "none", border: "none", color: T.text, fontSize: 20, cursor: "pointer", padding: 0, lineHeight: 1 }}>
               {sidebarOpen ? "\u2715" : "\u2630"}
             </button>
-            <div>
-              <div style={{ fontSize: 28, color: T.text, fontFamily: Fh, fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.02em", lineHeight: 1.2 }}>{navItems[nav].l}</div>
-              {navItems[nav].sub && <div style={{ fontSize: 11, color: T.textTer, fontFamily: Fn, marginTop: 2 }}>{navItems[nav].sub}</div>}
-            </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <button onClick={() => setCmdOpen(true)} style={{
