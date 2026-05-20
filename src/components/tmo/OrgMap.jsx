@@ -595,35 +595,7 @@ export default function OrgMap({ T }) {
     <div>
       <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 22px" }}>{orgMapIntro}</p>
 
-      {/* Segment legend strip — gives non-experts a key to the short codes used inside the diagram */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10, marginBottom: 22 }}>
-        {orgTree.map(seg => {
-          const isActiveSeg = selectedId === seg.id || seg.children.some(c => c.id === selectedId);
-          return (
-            <div
-              key={"leg-" + seg.id}
-              onClick={() => setSelectedId(seg.id)}
-              style={{
-                background: T.card,
-                border: `1px solid ${isActiveSeg ? seg.color : T.border}`,
-                borderTop: `3px solid ${seg.color}`,
-                borderRadius: T.radiusSm,
-                padding: "12px 14px",
-                cursor: "pointer",
-                boxShadow: isActiveSeg ? T.shadow : "none",
-                transition: "all 0.15s",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                <div style={{ background: seg.color, color: "#fff", fontSize: 10, fontWeight: 800, fontFamily: Fn, padding: "2px 7px", borderRadius: 4, letterSpacing: "0.04em" }}>{seg.short}</div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: seg.color, fontFamily: Fn }}>{seg.revenue}</div>
-                <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, fontWeight: 600 }}>· {seg.share}%</div>
-              </div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: T.text, fontFamily: Fn, lineHeight: 1.35 }}>{seg.name}</div>
-            </div>
-          );
-        })}
-      </div>
+
 
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.1fr) minmax(0, 1fr)", gap: 24, marginBottom: 28 }}>
         <Card T={T} style={{ padding: isMobile ? "16px 12px" : "26px 56px", overflow: "visible" }}>
