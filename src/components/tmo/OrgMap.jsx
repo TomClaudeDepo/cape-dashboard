@@ -93,20 +93,35 @@ function RichText({ text, T, fontSize = 13, color }) {
 }
 
 /* ════════════════════════════════════════════════
-   Radial diagram — TMO at centre, segments at four cardinal
-   positions, sub-businesses fanning out in each quadrant.
+   Orbital Constellation diagram — TMO at centre, four segment
+   hubs at cardinal positions, sub-businesses on an outer orbit,
+   curved bezier connections, glowing nodes, drifting dashed orbits,
+   faint segment-tinted quadrant wedges, satellite dots for products.
    ════════════════════════════════════════════════ */
-function RadialDiagram({ selectedId, onSelect, T }) {
+function ConstellationDiagram({ selectedId, onSelect, T }) {
   const [hov, setHov] = useState(null);
   // Cardinal angles (radians). Top, right, bottom, left.
   const segAngles = { lpbs: -Math.PI / 2, lss: 0, ai: Math.PI / 2, sd: Math.PI };
   // Angular spread for sub-businesses around each segment angle
-  const fanSpread = (n) => Math.min(Math.PI * 0.5, (n - 1) * 0.32 + 0.4);
+  const fanSpread = (n) => Math.min(Math.PI * 0.5, (n - 1) * 0.27 + 0.42);
 
-  const W = 760, H = 720;
+  const W = 1400, H = 950;
   const cx = W / 2, cy = H / 2;
-  const R_seg = 165;   // distance to segment hubs
-  const R_sub = 305;   // distance to sub-business nodes
+  const R_seg = 268;   // distance to segment hubs
+  const R_sub = 425;   // distance to sub-business nodes
+
+  // Deterministic starfield positions — generated once
+  const stars = useMemo(() => {
+    const out = [];
+    let s = 1337;
+    const rand = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 0xffffffff; };
+    for (let i = 0; i < 80; i++) {
+      const r = 80 + rand() * 380;
+      const θ = rand() * Math.PI * 2;
+      out.push({ x: cx + r * Math.cos(θ), y: cy + r * Math.sin(θ), s: 0.4 + rand() * 1.4, o: 0.15 + rand() * 0.35 });
+    }
+    return out;
+  }, [cx, cy]);
 
   const segByAngle = orgTree.map(seg => {
     const θ = segAngles[seg.id];
@@ -124,84 +139,227 @@ function RadialDiagram({ selectedId, onSelect, T }) {
     return { ...seg, x, y, θ, subs };
   });
 
-  // Determine highlight state for connection lines
+  // Determine highlight state
   const isSegActive = (id) => selectedId === id || segByAngle.find(s => s.subs.some(sub => sub.id === selectedId))?.id === id || hov === id;
   const isSubActive = (id) => selectedId === id || hov === id;
+  const anySelected = selectedId !== null || hov !== null;
+
+  // Cubic bezier from (x1,y1) → (x2,y2). Control points pulled toward the centre
+  // to make connection arcs sweep gracefully around the hub.
+  const curve = (x1, y1, x2, y2, bow = 0.35) => {
+    const mx = (x1 + x2) / 2;
+    const my = (y1 + y2) / 2;
+    // Pull control point perpendicular to line, away from origin
+    const dx = x2 - x1, dy = y2 - y1;
+    const px = -dy * bow, py = dx * bow;
+    const c1x = x1 + (mx - x1) * 0.4 + px * 0.25;
+    const c1y = y1 + (my - y1) * 0.4 + py * 0.25;
+    const c2x = x2 - (x2 - mx) * 0.4 + px * 0.25;
+    const c2y = y2 - (y2 - my) * 0.4 + py * 0.25;
+    return `M ${x1} ${y1} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${x2} ${y2}`;
+  };
+
+  // Quadrant pie wedge from centre, ±π/4 around segment angle, radius = R_sub + 90
+  const wedge = (θ, R) => {
+    const a1 = θ - Math.PI / 4, a2 = θ + Math.PI / 4;
+    const x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
+    const x2 = cx + R * Math.cos(a2), y2 = cy + R * Math.sin(a2);
+    return `M ${cx} ${cy} L ${x1} ${y1} A ${R} ${R} 0 0 1 ${x2} ${y2} Z`;
+  };
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ maxWidth: 760, display: "block", margin: "0 auto" }}>
-      {/* Faint orbital rings */}
-      <circle cx={cx} cy={cy} r={R_seg} fill="none" stroke={T.border} strokeDasharray="3 5" />
-      <circle cx={cx} cy={cy} r={R_sub} fill="none" stroke={T.border} strokeDasharray="3 5" />
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block", margin: "0 auto" }}>
+      <defs>
+        {/* Per-segment radial gradients for quadrant wash */}
+        {orgTree.map(seg => (
+          <radialGradient key={"g-" + seg.id} id={`quad-${seg.id}`} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+            <stop offset="0%" stopColor={seg.color} stopOpacity="0.00" />
+            <stop offset="55%" stopColor={seg.color} stopOpacity="0.04" />
+            <stop offset="100%" stopColor={seg.color} stopOpacity="0.11" />
+          </radialGradient>
+        ))}
+        {/* Centre TMO gradient */}
+        <radialGradient id="tmo-core" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={T.text} stopOpacity="1" />
+          <stop offset="70%" stopColor={T.text} stopOpacity="1" />
+          <stop offset="100%" stopColor={T.text} stopOpacity="0.85" />
+        </radialGradient>
+        {/* Glow filter — used for hubs on hover/select */}
+        <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="6" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <filter id="strong-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="10" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
 
-      {/* Centre → segment connection lines */}
-      {segByAngle.map(seg => {
+      <style>{`
+        @keyframes tmo-drift1 { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 120; } }
+        @keyframes tmo-drift2 { from { stroke-dashoffset: 120; } to { stroke-dashoffset: 0; } }
+        @keyframes tmo-pulse { 0%,100% { opacity: 0.18; } 50% { opacity: 0.42; } }
+        @keyframes tmo-twinkle { 0%,100% { opacity: var(--o,0.3); } 50% { opacity: 0.05; } }
+        .tmo-orbit-inner { animation: tmo-drift1 80s linear infinite; }
+        .tmo-orbit-outer { animation: tmo-drift2 120s linear infinite; }
+        .tmo-halo { animation: tmo-pulse 4.5s ease-in-out infinite; }
+        .tmo-star { animation: tmo-twinkle 6s ease-in-out infinite; }
+      `}</style>
+
+      {/* Quadrant tint washes */}
+      {orgTree.map(seg => {
+        const θ = segAngles[seg.id];
         const active = isSegActive(seg.id);
         return (
-          <line
-            key={"l-" + seg.id}
-            x1={cx} y1={cy} x2={seg.x} y2={seg.y}
-            stroke={active ? seg.color : T.border}
-            strokeWidth={active ? 2.5 : 1.5}
-            style={{ transition: "stroke 0.2s, stroke-width 0.2s" }}
+          <path
+            key={"q-" + seg.id}
+            d={wedge(θ, R_sub + 95)}
+            fill={`url(#quad-${seg.id})`}
+            opacity={active ? 1 : 0.55}
+            style={{ transition: "opacity 0.3s" }}
           />
         );
       })}
 
-      {/* Segment → sub-business lines */}
+      {/* Starfield */}
+      {stars.map((st, i) => (
+        <circle
+          key={"st-" + i}
+          className="tmo-star"
+          cx={st.x} cy={st.y} r={st.s}
+          fill={T.textTer}
+          style={{ "--o": st.o, animationDelay: `${(i % 7) * 0.7}s` }}
+        />
+      ))}
+
+      {/* Orbital rings — dashed, drifting */}
+      <circle className="tmo-orbit-inner" cx={cx} cy={cy} r={R_seg} fill="none" stroke={T.border} strokeWidth={1.2} strokeDasharray="4 8" />
+      <circle className="tmo-orbit-outer" cx={cx} cy={cy} r={R_sub} fill="none" stroke={T.border} strokeWidth={1.2} strokeDasharray="2 10" />
+
+      {/* TMO halo pulse */}
+      <circle className="tmo-halo" cx={cx} cy={cy} r={96} fill={T.text} />
+
+      {/* Centre → segment curved connectors */}
+      {segByAngle.map(seg => {
+        const active = isSegActive(seg.id);
+        return (
+          <path
+            key={"l-" + seg.id}
+            d={curve(cx, cy, seg.x, seg.y, 0.18)}
+            fill="none"
+            stroke={active ? seg.color : T.border}
+            strokeWidth={active ? 3 : 1.6}
+            strokeLinecap="round"
+            opacity={anySelected && !active ? 0.35 : 1}
+            style={{ transition: "all 0.25s" }}
+          />
+        );
+      })}
+
+      {/* Segment → sub-business curved connectors */}
       {segByAngle.map(seg =>
         seg.subs.map(sub => {
-          const active = isSubActive(sub.id) || (isSegActive(seg.id) && selectedId === seg.id);
+          const subActive = isSubActive(sub.id) || (isSegActive(seg.id) && selectedId === seg.id);
+          const dim = anySelected && !subActive && !(isSegActive(seg.id) && (hov === seg.id || selectedId === seg.id));
           return (
-            <line
+            <path
               key={"sl-" + sub.id}
-              x1={seg.x} y1={seg.y} x2={sub.sx} y2={sub.sy}
-              stroke={active ? seg.color : T.border}
-              strokeWidth={active ? 2 : 1}
-              opacity={isSegActive(seg.id) || hov === null && selectedId === null ? 1 : 0.35}
-              style={{ transition: "all 0.2s" }}
+              d={curve(seg.x, seg.y, sub.sx, sub.sy, 0.25)}
+              fill="none"
+              stroke={subActive ? seg.color : seg.color}
+              strokeWidth={subActive ? 2.4 : 1.1}
+              strokeLinecap="round"
+              opacity={dim ? 0.12 : (subActive ? 0.95 : 0.42)}
+              style={{ transition: "all 0.25s" }}
             />
           );
         })
       )}
 
-      {/* Sub-business nodes */}
+      {/* Sub-business nodes with satellite product dots */}
       {segByAngle.map(seg =>
         seg.subs.map(sub => {
           const active = isSubActive(sub.id);
-          const dimmed = selectedId && !isSubActive(sub.id) && selectedId !== seg.id && !seg.subs.some(s => s.id === selectedId);
+          const dimmed = anySelected && !active && !(isSegActive(seg.id) && selectedId === seg.id);
           // Position label outside the ring
-          const labelR = R_sub + 14;
+          const labelR = R_sub + 22;
           const lx = cx + labelR * Math.cos(sub.subθ);
           const ly = cy + labelR * Math.sin(sub.subθ);
-          const anchor = Math.abs(Math.cos(sub.subθ)) < 0.2 ? "middle" : Math.cos(sub.subθ) > 0 ? "start" : "end";
+          const cos = Math.cos(sub.subθ);
+          const anchor = Math.abs(cos) < 0.18 ? "middle" : cos > 0 ? "start" : "end";
+          // Satellite product dots — small dots arcing further out, count = product count (capped at 8 visible)
+          const prodCount = sub.children ? sub.children.length : 0;
+          const visible = Math.min(prodCount, 8);
+          const satR = R_sub + (active ? 70 : 56);
+          const satSpread = Math.min(0.32, 0.045 * Math.max(visible - 1, 1));
           return (
             <g
               key={"sub-" + sub.id}
               onClick={() => onSelect(sub.id)}
               onMouseEnter={() => setHov(sub.id)}
               onMouseLeave={() => setHov(null)}
-              style={{ cursor: "pointer", opacity: dimmed ? 0.4 : 1, transition: "opacity 0.2s" }}
+              style={{ cursor: "pointer", opacity: dimmed ? 0.32 : 1, transition: "opacity 0.25s" }}
             >
+              {/* Satellite product dots */}
+              {Array.from({ length: visible }).map((_, i) => {
+                const a = visible === 1 ? sub.subθ : sub.subθ - satSpread / 2 + (satSpread * i) / (visible - 1);
+                const sx = cx + satR * Math.cos(a);
+                const sy = cy + satR * Math.sin(a);
+                return (
+                  <circle
+                    key={"sat-" + sub.id + "-" + i}
+                    cx={sx} cy={sy} r={active ? 2.6 : 1.8}
+                    fill={seg.color}
+                    opacity={active ? 0.95 : 0.55}
+                    style={{ transition: "all 0.25s" }}
+                  />
+                );
+              })}
+
+              {/* Outer halo on hover/select */}
+              {active && (
+                <circle cx={sub.sx} cy={sub.sy} r={20} fill={seg.color} opacity={0.18} />
+              )}
               <circle
-                cx={sub.sx} cy={sub.sy} r={active ? 10 : 7}
+                cx={sub.sx} cy={sub.sy} r={active ? 12 : 8.5}
                 fill={active ? seg.color : T.card}
                 stroke={seg.color}
-                strokeWidth={2}
-                style={{ transition: "all 0.2s" }}
+                strokeWidth={2.4}
+                filter={active ? "url(#soft-glow)" : undefined}
+                style={{ transition: "all 0.25s" }}
               />
               <text
                 x={lx} y={ly}
                 textAnchor={anchor}
                 dominantBaseline="middle"
                 fontFamily={Fn}
-                fontSize={11}
+                fontSize={active ? 13 : 12}
                 fontWeight={active ? 700 : 500}
                 fill={active ? T.text : T.textSec}
                 style={{ transition: "all 0.2s", userSelect: "none" }}
               >
                 {sub.name}
               </text>
+              {prodCount > 0 && (
+                <text
+                  x={lx} y={ly + 15}
+                  textAnchor={anchor}
+                  dominantBaseline="middle"
+                  fontFamily={Fn}
+                  fontSize={9.5}
+                  fontWeight={600}
+                  fill={T.textTer}
+                  style={{ userSelect: "none", letterSpacing: "0.04em" }}
+                >
+                  {prodCount} product{prodCount === 1 ? "" : "s"}
+                </text>
+              )}
             </g>
           );
         })
@@ -210,6 +368,7 @@ function RadialDiagram({ selectedId, onSelect, T }) {
       {/* Segment hubs */}
       {segByAngle.map(seg => {
         const active = isSegActive(seg.id);
+        const r = active ? 56 : 48;
         return (
           <g
             key={"hub-" + seg.id}
@@ -218,18 +377,30 @@ function RadialDiagram({ selectedId, onSelect, T }) {
             onMouseLeave={() => setHov(null)}
             style={{ cursor: "pointer" }}
           >
-            <circle cx={seg.x} cy={seg.y} r={active ? 42 : 36} fill={seg.color} opacity={active ? 1 : 0.94} style={{ transition: "all 0.2s" }} />
-            <text x={seg.x} y={seg.y - 4} textAnchor="middle" fontFamily={Fn} fontSize={14} fontWeight={800} fill="#fff" style={{ userSelect: "none" }}>{seg.short}</text>
-            <text x={seg.x} y={seg.y + 13} textAnchor="middle" fontFamily={Fn} fontSize={11} fontWeight={700} fill="#fff" opacity={0.88} style={{ userSelect: "none" }}>{seg.share}%</text>
+            {/* outer soft halo */}
+            <circle cx={seg.x} cy={seg.y} r={r + 16} fill={seg.color} opacity={active ? 0.22 : 0.10} style={{ transition: "all 0.25s" }} />
+            <circle cx={seg.x} cy={seg.y} r={r + 6} fill={seg.color} opacity={active ? 0.32 : 0.18} style={{ transition: "all 0.25s" }} />
+            <circle
+              cx={seg.x} cy={seg.y} r={r}
+              fill={seg.color}
+              filter={active ? "url(#strong-glow)" : undefined}
+              style={{ transition: "all 0.25s" }}
+            />
+            <text x={seg.x} y={seg.y - 9} textAnchor="middle" fontFamily={Fn} fontSize={18} fontWeight={800} fill="#fff" style={{ userSelect: "none", letterSpacing: "0.04em" }}>{seg.short}</text>
+            <text x={seg.x} y={seg.y + 11} textAnchor="middle" fontFamily={Fn} fontSize={12} fontWeight={700} fill="#fff" opacity={0.92} style={{ userSelect: "none" }}>{seg.share}%</text>
+            <text x={seg.x} y={seg.y + 26} textAnchor="middle" fontFamily={Fn} fontSize={9.5} fontWeight={600} fill="#fff" opacity={0.7} style={{ userSelect: "none", letterSpacing: "0.06em" }}>{seg.revenue}</text>
           </g>
         );
       })}
 
-      {/* Central TMO node */}
+      {/* Central TMO node with double-ring halo */}
       <g onClick={() => onSelect(null)} style={{ cursor: "pointer" }}>
-        <circle cx={cx} cy={cy} r={48} fill={T.text} />
-        <text x={cx} y={cy - 6} textAnchor="middle" fontFamily={Fn} fontSize={15} fontWeight={800} fill={T.card} style={{ userSelect: "none" }}>TMO</text>
-        <text x={cx} y={cy + 12} textAnchor="middle" fontFamily={Fn} fontSize={9} fontWeight={600} fill={T.card} opacity={0.7} style={{ userSelect: "none" }}>$44.6B FY25</text>
+        <circle cx={cx} cy={cy} r={86} fill={T.text} opacity={0.06} />
+        <circle cx={cx} cy={cy} r={72} fill={T.text} opacity={0.10} />
+        <circle cx={cx} cy={cy} r={62} fill="url(#tmo-core)" />
+        <text x={cx} y={cy - 10} textAnchor="middle" fontFamily={Fh} fontStyle="italic" fontSize={26} fontWeight={700} fill={T.card} style={{ userSelect: "none" }}>TMO</text>
+        <text x={cx} y={cy + 13} textAnchor="middle" fontFamily={Fn} fontSize={11} fontWeight={700} fill={T.card} opacity={0.78} style={{ userSelect: "none", letterSpacing: "0.06em" }}>$44.6B FY25</text>
+        <text x={cx} y={cy + 28} textAnchor="middle" fontFamily={Fn} fontSize={9} fontWeight={600} fill={T.card} opacity={0.5} style={{ userSelect: "none", letterSpacing: "0.12em" }}>4 SEGMENTS</text>
       </g>
     </svg>
   );
@@ -476,17 +647,33 @@ export default function OrgMap({ T }) {
         })}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.1fr) minmax(0, 1fr)", gap: 24, marginBottom: 28 }}>
-        <Card T={T} style={{ padding: isMobile ? "16px 12px" : "26px 18px", overflow: "hidden" }}>
-          {isMobile
-            ? <MobileTreeList selectedId={selectedId} onSelect={setSelectedId} T={T} />
-            : <RadialDiagram selectedId={selectedId} onSelect={setSelectedId} T={T} />
-          }
-        </Card>
-        <div>
+      {isMobile ? (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 20, marginBottom: 28 }}>
+          <Card T={T} style={{ padding: "16px 12px", overflow: "hidden" }}>
+            <MobileTreeList selectedId={selectedId} onSelect={setSelectedId} T={T} />
+          </Card>
           <InfoPanel selectedId={selectedId} T={T} />
         </div>
-      </div>
+      ) : (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24, marginBottom: 28 }}>
+          <Card T={T} style={{ padding: "8px 8px 0", overflow: "hidden", position: "relative" }}>
+            {/* Floating hint overlay */}
+            <div style={{ position: "absolute", top: 18, left: 22, zIndex: 2, pointerEvents: "none" }}>
+              <div style={{ fontSize: 10, fontWeight: 800, color: T.textTer, fontFamily: Fn, letterSpacing: "0.14em", textTransform: "uppercase" }}>Orbital Constellation</div>
+              <div style={{ fontSize: 11.5, color: T.textSec, fontFamily: Fn, marginTop: 4, maxWidth: 280, lineHeight: 1.5 }}>
+                Centre is TMO. Four coloured hubs are the reporting segments. Outer ring shows their sub-businesses. Tiny dots beyond each sub-business indicate how many product lines sit underneath. Click anything.
+              </div>
+            </div>
+            <div style={{ position: "absolute", top: 18, right: 22, zIndex: 2, pointerEvents: "none", textAlign: "right" }}>
+              <div style={{ fontSize: 10, fontWeight: 800, color: T.textTer, fontFamily: Fn, letterSpacing: "0.14em", textTransform: "uppercase" }}>FY2025</div>
+              <div style={{ fontSize: 22, fontFamily: Fh, fontStyle: "italic", color: T.text, lineHeight: 1, marginTop: 4 }}>$44.6B</div>
+              <div style={{ fontSize: 10.5, color: T.textTer, fontFamily: Fn, marginTop: 4, fontWeight: 600, letterSpacing: "0.04em" }}>Reported revenue · 4 segments · 15 sub-businesses</div>
+            </div>
+            <ConstellationDiagram selectedId={selectedId} onSelect={setSelectedId} T={T} />
+          </Card>
+          <InfoPanel selectedId={selectedId} T={T} />
+        </div>
+      )}
 
       <GlossarySection T={T} />
     </div>
