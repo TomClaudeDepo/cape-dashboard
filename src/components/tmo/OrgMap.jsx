@@ -197,10 +197,16 @@ function RadialDiagram({ selectedId, onSelect, T }) {
   // Cardinal angles (radians). Top, right, bottom, left.
   const segAngles = { lpbs: -Math.PI / 2, lss: 0, ai: Math.PI / 2, sd: Math.PI };
   // Tighter spread so the outer subs of adjacent segments don't collide at the diagonals.
-  const fanSpread = (n) => Math.min(1.1, (n - 1) * 0.25 + 0.45);
-  // Strip parenthetical brand suffixes for the diagram label
-  // ("Transplant Diagnostics (One Lambda)" → "Transplant Diagnostics").
-  const shortLabel = (name) => name.replace(/\s*\([^)]+\)\s*$/, "");
+  const fanSpread = (n) => Math.min(0.95, (n - 1) * 0.22 + 0.42);
+  // Per-sub-business label overrides for the diagram only — the long full
+  // names overflow neighbouring labels at the top/bottom quadrants.
+  const labelOverrides = {
+    rsmc:       "Fisher Scientific channel",
+    cms:        "Chromatography & MS",
+    hmc:        "Healthcare channel",
+    transplant: "Transplant Diagnostics",
+  };
+  const shortLabel = (sub) => labelOverrides[sub.id] || sub.name.replace(/\s*\([^)]+\)\s*$/, "");
 
   const W = 760, H = 720;
   const cx = W / 2, cy = H / 2;
@@ -348,7 +354,7 @@ function RadialDiagram({ selectedId, onSelect, T }) {
                 fill={active ? T.text : T.textSec}
                 style={{ transition: "all 0.2s", userSelect: "none" }}
               >
-                {shortLabel(sub.name)}
+                {shortLabel(sub)}
               </text>
             </g>
           );
@@ -600,12 +606,12 @@ export default function OrgMap({ T }) {
 
   return (
     <div>
-      <p style={{ fontSize: 13.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.8, margin: "0 0 22px" }}>{orgMapIntro}</p>
+      <p style={{ fontSize: 12.5, color: T.textSec, fontFamily: Fn, lineHeight: 1.65, margin: "0 0 16px", maxWidth: 920 }}>{orgMapIntro}</p>
 
 
 
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.1fr) minmax(0, 1fr)", gap: 24, marginBottom: 28, alignItems: "start" }}>
-        <Card T={T} style={{ padding: isMobile ? "16px 12px" : "26px 56px", overflow: "visible", position: isMobile ? "static" : "sticky", top: 16, alignSelf: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.7fr) minmax(0, 1fr)", gap: 20, marginBottom: 28, alignItems: "start" }}>
+        <Card T={T} style={{ padding: isMobile ? "16px 12px" : "18px 22px", overflow: "visible", position: isMobile ? "static" : "sticky", top: 16, alignSelf: "start" }}>
           {isMobile
             ? <MobileTreeList selectedId={selectedId} onSelect={setSelectedId} T={T} />
             : <RadialDiagram selectedId={selectedId} onSelect={setSelectedId} T={T} />
