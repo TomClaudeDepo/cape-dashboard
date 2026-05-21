@@ -9,7 +9,6 @@ import OverviewPg from "./pages/Overview";
 import HoldingsPg from "./pages/Holdings";
 import AllocPg from "./pages/Allocation";
 import ResearchPg from "./pages/Research";
-import DanaherPg from "./pages/Danaher";
 import ThematicMapPg from "./pages/ResearchThematicMap";
 import MacroPg from "./pages/Macro";
 import RiskPg from "./pages/Risk";
@@ -58,7 +57,6 @@ function Dashboard({ dark, setDark }) {
     () => <ScenariosPg T={T} />,
     () => <ThematicMapPg T={T} />,
     () => <ResearchPg T={T} />,
-    () => <DanaherPg T={T} />,
     () => <RiskPg T={T} />,
     () => <MacroPg T={T} />,
     () => <ClaudePg T={T} apiKey={apiKey} />,

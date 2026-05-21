@@ -15,6 +15,7 @@ import ResearchIBE from "./ResearchIBE";
 import ResearchSolar from "./ResearchSolar";
 import ResearchThemes from "./ResearchThemes";
 import ResearchTMO from "./ResearchTMO";
+import Danaher from "./Danaher";
 
 const reports = [
   {
@@ -42,6 +43,15 @@ const reports = [
     stats: [
       { l: "Price", v: "$438" }, { l: "Fwd P/E", v: "16.8x" },
       { l: "Revenue", v: "$44.6B" }, { l: "Customers", v: "~400k" },
+    ],
+  },
+  {
+    id: "dhr", ticker: "DHR", name: "Danaher Corporation", sector: "Life Sciences & Diagnostics",
+    tagline: "Post-Veralto pure-play compounder — bioprocessing cycle has turned, Cytiva equipment orders +>30% YoY in Q1 26",
+    date: "May 2026", type: "Business Primer", color: "deepBlue",
+    stats: [
+      { l: "Revenue", v: "$24.6B" }, { l: "Recurring", v: "82%" },
+      { l: "Adj. OPM", v: "28.2%" }, { l: "FCF/NI", v: "152%" },
     ],
   },
   {
@@ -170,6 +180,7 @@ const reportComponents = {
   solar: ResearchSolar,
   themes10: ResearchThemes,
   tmo: ResearchTMO,
+  dhr: Danaher,
 };
 
 export default function ResearchPg({ T }) {
