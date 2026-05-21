@@ -228,6 +228,103 @@ function PlayerShareBar({ T }) {
 }
 
 /* ════════════════════════════════════════════════
+   TAILWIND VENN — three secular tailwinds, TMO at the intersection
+   ════════════════════════════════════════════════ */
+function TailwindVenn({ T }) {
+  const W = 720, H = 500;
+  const cx = W / 2, cy = H / 2 + 6;
+  const r = 150;
+  const d = 84;
+
+  const tailwinds = [
+    { angle: -90, color: "#059669", num: "01", title: "Biologics Supercycle",      stat: "60%",    sub: "of pharma pipeline now biologics" },
+    { angle: 150, color: "#1D4ED8", num: "02", title: "Pharma Outsourcing",        stat: "$140B+", sub: "global outsourcing market"        },
+    { angle: 30,  color: "#EA580C", num: "03", title: "US Mfg Reshoring",          stat: "$2B",    sub: "TMO US capacity investment"       },
+  ];
+
+  const positions = tailwinds.map(t => {
+    const a = t.angle * Math.PI / 180;
+    return {
+      ...t,
+      ccx: cx + d * Math.cos(a),
+      ccy: cy + d * Math.sin(a),
+      lx:  cx + (d + r * 0.52) * Math.cos(a),
+      ly:  cy + (d + r * 0.52) * Math.sin(a),
+    };
+  });
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", display: "block", overflow: "visible" }}>
+      <defs>
+        <radialGradient id="tmo-venn-halo" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stopColor={T.text} stopOpacity="0.55" />
+          <stop offset="60%"  stopColor={T.text} stopOpacity="0.10" />
+          <stop offset="100%" stopColor={T.text} stopOpacity="0"    />
+        </radialGradient>
+        <style>{`
+          @keyframes tmo-venn-pulse {
+            0%, 100% { opacity: 0.55; transform: scale(1); }
+            50%      { opacity: 0.85; transform: scale(1.06); }
+          }
+          .tmo-venn-pulse {
+            animation: tmo-venn-pulse 4s ease-in-out infinite;
+            transform-origin: ${cx}px ${cy}px;
+            transform-box: fill-box;
+          }
+        `}</style>
+      </defs>
+
+      {/* Halo behind TMO */}
+      <circle className="tmo-venn-pulse" cx={cx} cy={cy} r={110} fill="url(#tmo-venn-halo)" />
+
+      {/* 3 main circles */}
+      {positions.map((c, i) => (
+        <circle
+          key={"c-" + i}
+          cx={c.ccx} cy={c.ccy} r={r}
+          fill={c.color}
+          fillOpacity={0.16}
+          stroke={c.color}
+          strokeWidth={2.5}
+        />
+      ))}
+
+      {/* Stat labels in the outer (unique) zone of each circle */}
+      {positions.map((c, i) => (
+        <g key={"l-" + i}>
+          <text x={c.lx} y={c.ly - 42} textAnchor="middle" fontFamily={Fn} fontSize={10} fontWeight={800} fill={c.color} letterSpacing="0.1em">
+            TAILWIND {c.num}
+          </text>
+          <text x={c.lx} y={c.ly - 22} textAnchor="middle" fontFamily={Fn} fontSize={13} fontWeight={700} fill={T.text} letterSpacing="-0.01em">
+            {c.title}
+          </text>
+          <text x={c.lx} y={c.ly + 10} textAnchor="middle" fontFamily={Fh} fontStyle="italic" fontSize={34} fontWeight={600} fill={c.color}>
+            {c.stat}
+          </text>
+          <text x={c.lx} y={c.ly + 32} textAnchor="middle" fontFamily={Fn} fontSize={11} fill={T.textSec}>
+            {c.sub}
+          </text>
+        </g>
+      ))}
+
+      {/* Subtle dashed connection lines from each circle centre to TMO */}
+      {positions.map((c, i) => (
+        <line
+          key={"line-" + i}
+          x1={c.ccx} y1={c.ccy} x2={cx} y2={cy}
+          stroke={c.color} strokeWidth={1} strokeDasharray="3 4" opacity={0.45}
+        />
+      ))}
+
+      {/* Central TMO node */}
+      <circle cx={cx} cy={cy} r={62} fill={T.text} stroke="#fff" strokeWidth={4} />
+      <text x={cx} y={cy - 4} textAnchor="middle" fontFamily={Fh} fontStyle="italic" fontSize={30} fontWeight={600} fill={T.card} letterSpacing="-0.02em">TMO</text>
+      <text x={cx} y={cy + 20} textAnchor="middle" fontFamily={Fn} fontSize={9} fontWeight={700} fill={T.card} opacity={0.78} letterSpacing="0.12em">AT THE INTERSECTION</text>
+    </svg>
+  );
+}
+
+/* ════════════════════════════════════════════════
    CYCLE STRIP — where we are right now
    ════════════════════════════════════════════════ */
 function CycleStrip({ T }) {
@@ -568,6 +665,15 @@ export default function SectorBriefTab({ T }) {
           </Card>
         ))}
       </div>
+
+      {/* ── Tailwind Venn — the strategic frame ─ */}
+      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
+        <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 22, color: T.text }}>Three tailwinds. One firm at the intersection.</div>
+        <div style={{ fontSize: 12, color: T.textTer, fontFamily: Fn }}>Every Thermo Fisher franchise sits in at least one of these. TMO is the only firm sitting in all three.</div>
+      </div>
+      <Card T={T} style={{ padding: "24px 24px 16px", marginBottom: 28, overflow: "visible" }}>
+        <TailwindVenn T={T} />
+      </Card>
 
       {/* ── Cycle phase strip ─────────────────── */}
       <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 4, flexWrap: "wrap" }}>

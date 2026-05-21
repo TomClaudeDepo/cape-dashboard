@@ -527,7 +527,7 @@ export default function ResearchTMO({ T }) {
 
   const tabs = [
     { id: "tldr",      num: "00", label: "TL;DR" },
-    { id: "brief",     num: "01", label: "Sector Brief" },
+    { id: "brief",     num: "01", label: "Investment Case" },
     { id: "endmkts",   num: "02", label: "End Markets" },
     { id: "whydown",   num: "03", label: "Why It's Down" },
     { id: "value",     num: "04", label: "Valuation & Entry" },
