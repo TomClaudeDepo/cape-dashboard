@@ -30,6 +30,7 @@ export const navItems = [
   { l: "Scenarios", i: "scenarios", sub: "30 market narratives mapped to portfolio holdings · " + NAV_DATE },
   { l: "Thematic Universe", i: "thematic", sub: "Sector themes, company universe & cross-sector connections" },
   { l: "Research", i: "research", sub: "Cape Capital equity research · April 2026" },
+  { l: "Danaher", i: "danaher", sub: "DHR US · Single-equity business primer · Stage 2 · 21 May 2026" },
   { l: "Risk", i: "risk", sub: "UCITS limit monitoring & concentration analysis · " + NAV_DATE },
   { l: "Macro", i: "macro", sub: "Regional economic indicators · 4 regions" },
   { l: "Claude", i: "claude", sub: "Internal portfolio assistant" },
