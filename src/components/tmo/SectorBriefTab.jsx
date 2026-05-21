@@ -6,6 +6,8 @@ import {
   facts, pricePeSeries, chartAnnotations, sectorStats,
   bioprocPrimer, players, playerInsight,
   blaMoat, catalysts, conclusion,
+  cyclePhases, sectorVsSpxSeries, adoptionSeries,
+  shareEvolution, capexCommitments, capexTotal,
 } from "../../data/research-tmo-sector-brief";
 
 /* ════════════════════════════════════════════════
@@ -226,6 +228,308 @@ function PlayerShareBar({ T }) {
 }
 
 /* ════════════════════════════════════════════════
+   CYCLE STRIP — where we are right now
+   ════════════════════════════════════════════════ */
+function CycleStrip({ T }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8, marginTop: 20, paddingTop: 20 }}>
+      {cyclePhases.map((p, i) => {
+        const isCurrent = p.state === "current";
+        const isPast = p.state === "past";
+        return (
+          <div key={p.id} style={{ position: "relative" }}>
+            {isCurrent && (
+              <div style={{ position: "absolute", top: -22, left: "50%", transform: "translateX(-50%)", whiteSpace: "nowrap", fontSize: 9.5, fontWeight: 800, color: T.capRed, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                ★ You are here
+              </div>
+            )}
+            <div style={{
+              padding: "16px 12px",
+              background: isCurrent ? p.color : T.card,
+              border: `1px solid ${isCurrent ? p.color : T.border}`,
+              borderRadius: 8,
+              color: isCurrent ? "#fff" : isPast ? T.textSec : T.textTer,
+              opacity: isPast ? 0.7 : 1,
+              textAlign: "center",
+              boxShadow: isCurrent ? `0 8px 22px ${p.color}55` : "none",
+              transform: isCurrent ? "translateY(-4px)" : "none",
+              transition: "all 0.2s",
+            }}>
+              <div style={{ fontSize: 24, marginBottom: 4, fontWeight: 700 }}>{p.icon}</div>
+              <div style={{ fontSize: 12, fontWeight: 700, fontFamily: Fn, lineHeight: 1.2, marginBottom: 4 }}>{p.label}</div>
+              <div style={{ fontSize: 9.5, fontFamily: Fn, opacity: 0.85, letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 600 }}>{p.span}</div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════
+   SECTOR vs S&P 500 — 15-year relative P/E
+   ════════════════════════════════════════════════ */
+function SectorVsSpx({ T }) {
+  const data = sectorVsSpxSeries;
+  const W = 1000, H = 280;
+  const padL = 58, padR = 18, padT = 22, padB = 38;
+  const gridW = W - padL - padR;
+  const gridH = H - padT - padB;
+
+  const yMin = 0.7, yMax = 1.65;
+  const xFor = (i) => padL + (i / (data.length - 1)) * gridW;
+  const yFor = (v) => padT + gridH - ((v - yMin) / (yMax - yMin)) * gridH;
+  const lineColor = "#1D4ED8";
+
+  const lastV = data[data.length - 1].rel;
+  const peakV = Math.max(...data.map(d => d.rel));
+
+  // Build polyline points
+  const pts = data.map((d, i) => `${xFor(i)},${yFor(d.rel)}`).join(" ");
+  // Path for >1 (premium) area
+  const aboveArea = `M ${xFor(0)} ${yFor(1)} ${data.map((d, i) => `L ${xFor(i)} ${yFor(Math.max(d.rel, 1))}`).join(" ")} L ${xFor(data.length - 1)} ${yFor(1)} Z`;
+  const belowArea = `M ${xFor(0)} ${yFor(1)} ${data.map((d, i) => `L ${xFor(i)} ${yFor(Math.min(d.rel, 1))}`).join(" ")} L ${xFor(data.length - 1)} ${yFor(1)} Z`;
+
+  const yTicks = [0.8, 1.0, 1.2, 1.4, 1.6];
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block", overflow: "visible" }}>
+      {/* Grid */}
+      {yTicks.map(v => (
+        <line key={"g-" + v} x1={padL} y1={yFor(v)} x2={padL + gridW} y2={yFor(v)} stroke={T.border} strokeWidth={1} />
+      ))}
+      {/* Y labels */}
+      {yTicks.map(v => (
+        <text key={"yl-" + v} x={padL - 8} y={yFor(v) + 3} textAnchor="end" fontFamily={Fn} fontSize={10} fill={v === 1 ? T.text : T.textSec} fontWeight={v === 1 ? 700 : 500}>{v.toFixed(1)}x</text>
+      ))}
+      {/* X labels */}
+      {data.map((d, i) => (i % 2 === 0 || i === data.length - 1) && (
+        <text key={"xl-" + i} x={xFor(i)} y={padT + gridH + 18} textAnchor="middle" fontFamily={Fn} fontSize={10} fill={T.textSec}>{d.year}</text>
+      ))}
+
+      {/* Premium / Discount shading */}
+      <path d={aboveArea} fill="#10B981" opacity={0.10} />
+      <path d={belowArea} fill="#EF4444" opacity={0.10} />
+
+      {/* Parity reference line */}
+      <line x1={padL} y1={yFor(1)} x2={padL + gridW} y2={yFor(1)} stroke={T.text} strokeWidth={1.2} strokeDasharray="4 3" opacity={0.6} />
+      <text x={padL + 6} y={yFor(1) - 6} fontFamily={Fn} fontSize={10} fontWeight={700} fill={T.text}>PARITY · 1.0x</text>
+
+      {/* Main line */}
+      <polyline points={pts} fill="none" stroke={lineColor} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" style={{ filter: `drop-shadow(0 1px 3px ${lineColor}55)` }} />
+
+      {/* Peak marker */}
+      {(() => {
+        const peakIdx = data.findIndex(d => d.rel === peakV);
+        return (
+          <g>
+            <circle cx={xFor(peakIdx)} cy={yFor(peakV)} r={6} fill="#10B981" stroke="#fff" strokeWidth={2} />
+            <text x={xFor(peakIdx)} y={yFor(peakV) - 12} textAnchor="middle" fontFamily={Fn} fontSize={10.5} fontWeight={700} fill="#059669">PEAK · {peakV.toFixed(2)}x</text>
+          </g>
+        );
+      })()}
+
+      {/* Current marker */}
+      {(() => {
+        const last = data.length - 1;
+        return (
+          <g>
+            <circle cx={xFor(last)} cy={yFor(lastV)} r={6} fill={T.capRed} stroke="#fff" strokeWidth={2} />
+            <text x={xFor(last)} y={yFor(lastV) + 22} textAnchor="end" fontFamily={Fn} fontSize={10.5} fontWeight={700} fill={T.capRed}>15-YR LOW · {lastV.toFixed(2)}x</text>
+          </g>
+        );
+      })()}
+
+      {/* Title */}
+      <text x={padL} y={14} fontFamily={Fn} fontSize={11} fontWeight={800} fill={T.textTer} letterSpacing="0.08em">TOOLS SECTOR P/E ÷ S&P 500 P/E · NTM, 2010 → 2026</text>
+    </svg>
+  );
+}
+
+/* ════════════════════════════════════════════════
+   ADOPTION CURVE — stainless steel → single-use
+   ════════════════════════════════════════════════ */
+function AdoptionCurve({ T }) {
+  const data = adoptionSeries;
+  const W = 1000, H = 260;
+  const padL = 50, padR = 60, padT = 28, padB = 40;
+  const gridW = W - padL - padR;
+  const gridH = H - padT - padB;
+
+  const xFor = (i) => padL + (i / (data.length - 1)) * gridW;
+  const yFor = (v) => padT + gridH - (v / 100) * gridH;
+
+  const singleColor = "#059669";
+  const steelColor  = "#94A3B8";
+
+  const currentIdx = data.findIndex(d => d.current);
+  const estStartIdx = data.findIndex(d => d.est);
+
+  const singleHistPts = data.slice(0, estStartIdx).map((d, i) => `${xFor(i)},${yFor(d.single)}`).join(" ");
+  const singleEstPts  = data.slice(estStartIdx - 1).map((d, i) => `${xFor(i + estStartIdx - 1)},${yFor(d.single)}`).join(" ");
+  const steelHistPts  = data.slice(0, estStartIdx).map((d, i) => `${xFor(i)},${yFor(d.steel)}`).join(" ");
+  const steelEstPts   = data.slice(estStartIdx - 1).map((d, i) => `${xFor(i + estStartIdx - 1)},${yFor(d.steel)}`).join(" ");
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block", overflow: "visible" }}>
+      {/* Grid */}
+      {[0, 25, 50, 75, 100].map(v => (
+        <g key={v}>
+          <line x1={padL} y1={yFor(v)} x2={padL + gridW} y2={yFor(v)} stroke={T.border} strokeWidth={1} />
+          <text x={padL - 6} y={yFor(v) + 3} textAnchor="end" fontFamily={Fn} fontSize={10} fill={T.textSec}>{v}%</text>
+        </g>
+      ))}
+
+      {/* X labels */}
+      {data.map((d, i) => (i % 3 === 0 || i === data.length - 1) && (
+        <text key={"xl-" + i} x={xFor(i)} y={padT + gridH + 18} textAnchor="middle" fontFamily={Fn} fontSize={10} fill={T.textSec}>{d.year}</text>
+      ))}
+
+      {/* Vertical separator at est start */}
+      <line x1={xFor(estStartIdx - 0.5)} y1={padT} x2={xFor(estStartIdx - 0.5)} y2={padT + gridH} stroke={T.textTer} strokeDasharray="3 3" opacity={0.6} />
+      <text x={xFor(estStartIdx - 0.5)} y={padT - 6} textAnchor="middle" fontFamily={Fn} fontSize={9.5} fontWeight={700} fill={T.textTer} letterSpacing="0.06em">FORECAST →</text>
+
+      {/* Lines — historical (solid) + forecast (dashed) */}
+      <polyline points={singleHistPts} fill="none" stroke={singleColor} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={singleEstPts}  fill="none" stroke={singleColor} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" strokeDasharray="5 5" opacity={0.85} />
+      <polyline points={steelHistPts}  fill="none" stroke={steelColor}  strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={steelEstPts}   fill="none" stroke={steelColor}  strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" strokeDasharray="5 5" opacity={0.85} />
+
+      {/* Current marker */}
+      {currentIdx >= 0 && (
+        <g>
+          <circle cx={xFor(currentIdx)} cy={yFor(data[currentIdx].single)} r={7} fill={singleColor} stroke="#fff" strokeWidth={2.5} />
+          <text x={xFor(currentIdx)} y={yFor(data[currentIdx].single) - 14} textAnchor="middle" fontFamily={Fn} fontSize={10.5} fontWeight={800} fill={singleColor}>NOW · {data[currentIdx].single}%</text>
+        </g>
+      )}
+
+      {/* End labels */}
+      <text x={xFor(data.length - 1) + 8} y={yFor(data[data.length - 1].single) + 4} fontFamily={Fn} fontSize={11} fontWeight={700} fill={singleColor}>Single-use {data[data.length - 1].single}%</text>
+      <text x={xFor(data.length - 1) + 8} y={yFor(data[data.length - 1].steel) + 4} fontFamily={Fn} fontSize={11} fontWeight={700} fill={steelColor}>Steel {data[data.length - 1].steel}%</text>
+
+      {/* Title */}
+      <text x={padL} y={14} fontFamily={Fn} fontSize={11} fontWeight={800} fill={T.textTer} letterSpacing="0.08em">% OF NEW BIOREACTOR CAPACITY · SINGLE-USE vs STAINLESS STEEL</text>
+    </svg>
+  );
+}
+
+/* ════════════════════════════════════════════════
+   MARKET SHARE EVOLUTION — bioprocessing tools
+   ════════════════════════════════════════════════ */
+function ShareEvolution({ T }) {
+  const data = shareEvolution;
+  const W = 1000, H = 300;
+  const padL = 44, padR = 110, padT = 28, padB = 38;
+  const gridW = W - padL - padR;
+  const gridH = H - padT - padB;
+
+  const xFor = (i) => padL + (i / (data.length - 1)) * gridW;
+  const yMin = 0, yMax = 35;
+  const yFor = (v) => padT + gridH - ((v - yMin) / (yMax - yMin)) * gridH;
+
+  const series = [
+    { key: "cytiva",    label: "Cytiva (DHR)",  color: "#9333EA" },
+    { key: "sartorius", label: "Sartorius",     color: "#059669" },
+    { key: "tmo",       label: "Thermo Fisher", color: "#1D4ED8", isHero: true },
+    { key: "merck",     label: "Merck KGaA",    color: "#EA580C" },
+    { key: "other",     label: "Other",         color: "#94A3B8" },
+  ];
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block", overflow: "visible" }}>
+      {/* Grid */}
+      {[0, 10, 20, 30].map(v => (
+        <g key={v}>
+          <line x1={padL} y1={yFor(v)} x2={padL + gridW} y2={yFor(v)} stroke={T.border} strokeWidth={1} />
+          <text x={padL - 6} y={yFor(v) + 3} textAnchor="end" fontFamily={Fn} fontSize={10} fill={T.textSec}>{v}%</text>
+        </g>
+      ))}
+
+      {/* X labels */}
+      {data.map((d, i) => (
+        <text key={"xl-" + i} x={xFor(i)} y={padT + gridH + 18} textAnchor="middle" fontFamily={Fn} fontSize={10} fontWeight={i === data.length - 1 ? 700 : 500} fill={T.textSec}>{d.year}</text>
+      ))}
+
+      {/* Lines */}
+      {series.map(s => {
+        const pts = data.map((d, i) => `${xFor(i)},${yFor(d[s.key])}`).join(" ");
+        return (
+          <g key={s.key}>
+            <polyline points={pts} fill="none" stroke={s.color} strokeWidth={s.isHero ? 3 : 2.5} strokeLinecap="round" strokeLinejoin="round" style={{ filter: s.isHero ? `drop-shadow(0 1px 2px ${s.color}55)` : "none" }} />
+            {data.map((d, i) => (
+              <circle key={i} cx={xFor(i)} cy={yFor(d[s.key])} r={s.isHero ? 4 : 3} fill={s.color} stroke="#fff" strokeWidth={1.5} />
+            ))}
+            {/* End label */}
+            <text x={xFor(data.length - 1) + 8} y={yFor(data[data.length - 1][s.key]) + 4} fontFamily={Fn} fontSize={11} fontWeight={s.isHero ? 800 : 600} fill={s.color}>{s.label}</text>
+          </g>
+        );
+      })}
+
+      {/* Title */}
+      <text x={padL} y={14} fontFamily={Fn} fontSize={11} fontWeight={800} fill={T.textTer} letterSpacing="0.08em">GLOBAL BIOPROCESSING TOOLS — % MARKET SHARE BY PLAYER, 2018 → 2026</text>
+
+      {/* Δ callout for Cytiva and TMO */}
+      {(() => {
+        const cytFirst = data[0].cytiva;
+        const cytLast = data[data.length - 1].cytiva;
+        const tmoFirst = data[0].tmo;
+        const tmoLast = data[data.length - 1].tmo;
+        return (
+          <g>
+            <text x={padL + gridW / 2} y={padT - 6} textAnchor="middle" fontFamily={Fn} fontSize={10.5} fontWeight={700} fill={T.textSec}>
+              <tspan fill="#9333EA">Cytiva +{cytLast - cytFirst}pp</tspan>  ·  <tspan fill="#1D4ED8">TMO {tmoLast - tmoFirst}pp</tspan>  since 2018
+            </text>
+          </g>
+        );
+      })()}
+    </svg>
+  );
+}
+
+/* ════════════════════════════════════════════════
+   CAPEX BARS — big-pharma US manufacturing commitments
+   ════════════════════════════════════════════════ */
+function CapexBars({ T }) {
+  // Sort descending by amount
+  const data = [...capexCommitments].sort((a, b) => b.amount - a.amount);
+  const maxV = Math.max(...data.map(d => d.amount));
+
+  return (
+    <div>
+      <div style={{ display: "grid", gap: 8 }}>
+        {data.map((c) => {
+          const widthPct = (c.amount / maxV) * 100;
+          return (
+            <div key={c.name} style={{ display: "grid", gridTemplateColumns: "minmax(140px, 1.2fr) minmax(0, 3fr) 80px", gap: 12, alignItems: "center" }}>
+              <div>
+                <div style={{ fontSize: 12.5, fontWeight: 700, color: T.text, fontFamily: Fn, lineHeight: 1.2 }}>{c.name}</div>
+                <div style={{ fontSize: 10, color: T.textTer, fontFamily: Fn, fontWeight: 600, marginTop: 1 }}>{c.ticker}</div>
+              </div>
+              <div style={{ position: "relative", height: 24, background: T.pillBg, borderRadius: 4 }}>
+                <div style={{
+                  position: "absolute", left: 0, top: 0, bottom: 0, width: widthPct + "%",
+                  background: `linear-gradient(90deg, ${c.color}, ${c.color}CC)`,
+                  borderRadius: 4, display: "flex", alignItems: "center", paddingLeft: 10, color: "#fff", fontSize: 11, fontWeight: 700, fontFamily: Fn,
+                  boxShadow: `0 1px 4px ${c.color}55`,
+                  transition: "width 0.4s",
+                }}>
+                  {c.note}
+                </div>
+              </div>
+              <div style={{ fontSize: 17, fontWeight: 800, color: T.text, fontFamily: Fn, fontVariantNumeric: "tabular-nums", textAlign: "right" }}>${c.amount}B</div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ marginTop: 16, padding: "14px 18px", background: T.text, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+        <div style={{ fontSize: 12, color: T.card, fontFamily: Fn, fontWeight: 600, opacity: 0.85 }}>{capexTotal.label}</div>
+        <div style={{ fontSize: 28, fontWeight: 800, color: T.card, fontFamily: Fn, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>${capexTotal.whAggregate}B+</div>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════
    Main tab
    ════════════════════════════════════════════════ */
 export default function SectorBriefTab({ T }) {
@@ -265,6 +569,15 @@ export default function SectorBriefTab({ T }) {
         ))}
       </div>
 
+      {/* ── Cycle phase strip ─────────────────── */}
+      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 4, flexWrap: "wrap" }}>
+        <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 22, color: T.text }}>Where we are in the cycle</div>
+        <div style={{ fontSize: 12, color: T.textTer, fontFamily: Fn }}>Five phases. Past two are done. Now: early recovery.</div>
+      </div>
+      <Card T={T} style={{ padding: "26px 22px 20px", marginBottom: 28, overflow: "visible" }}>
+        <CycleStrip T={T} />
+      </Card>
+
       {/* ── Price × P/E chart ───────────────────── */}
       <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
         <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 22, color: T.text }}>Price × P/E NTM</div>
@@ -293,6 +606,18 @@ export default function SectorBriefTab({ T }) {
           <div style={{ fontSize: 22, fontWeight: 800, color: T.capRed, fontFamily: Fn, fontVariantNumeric: "tabular-nums" }}>{priceDelta.toFixed(0)}%</div>
         </div>
       </div>
+
+      {/* ── Sector vs SPX chart ─────────────────── */}
+      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
+        <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 22, color: T.text }}>Tools vs S&amp;P 500 — 15-year relative multiple</div>
+        <div style={{ fontSize: 12, color: T.textTer, fontFamily: Fn }}>Premium for the cohort has flipped to a discount for the first time in 15 years.</div>
+      </div>
+      <Card T={T} style={{ padding: "20px 22px", marginBottom: 28, overflow: "visible" }}>
+        <SectorVsSpx T={T} />
+        <div style={{ paddingTop: 14, marginTop: 6, borderTop: "1px solid " + T.border, fontSize: 12, color: T.textSec, fontFamily: Fn, lineHeight: 1.65, fontStyle: "italic" }}>
+          For 15 years tools traded at a premium to the S&amp;P 500 — never below 1.0x. The premium peaked at 1.55x in 2021 and has compressed to ~0.82x today. The cohort sits at a record discount to the index.
+        </div>
+      </Card>
 
       {/* ── Sector valuation low strip ──────────── */}
       <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 22, color: T.text, marginBottom: 10 }}>The sector is at multi-decade valuation lows.</div>
@@ -328,6 +653,15 @@ export default function SectorBriefTab({ T }) {
         ))}
       </div>
 
+      {/* Adoption curve */}
+      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6, flexWrap: "wrap", marginTop: 4 }}>
+        <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 18, color: T.text }}>Stainless steel → single-use</div>
+        <div style={{ fontSize: 11.5, color: T.textTer, fontFamily: Fn }}>The secular shift driving consumable revenue. Plenty of runway remains.</div>
+      </div>
+      <Card T={T} style={{ padding: "18px 20px", marginBottom: 22, overflow: "visible" }}>
+        <AdoptionCurve T={T} />
+      </Card>
+
       {/* Two product cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 14, marginBottom: 32 }}>
         {bioprocPrimer.products.map((p, i) => (
@@ -350,6 +684,11 @@ export default function SectorBriefTab({ T }) {
       <Card T={T} style={{ padding: "20px 22px", marginBottom: 16 }}>
         <PlayerShareBar T={T} />
       </Card>
+      {/* Share evolution chart */}
+      <Card T={T} style={{ padding: "18px 22px", marginBottom: 16, overflow: "visible" }}>
+        <ShareEvolution T={T} />
+      </Card>
+
       <Card T={T} style={{ padding: "18px 22px", marginBottom: 32, borderLeft: `4px solid ${T.capRed}`, background: T.capRed + "08" }}>
         <div style={{ fontSize: 10.5, fontWeight: 800, color: T.capRed, fontFamily: Fn, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>The share-gain concern</div>
         <div style={{ fontSize: 13, color: T.text, fontFamily: Fn, lineHeight: 1.75 }}>{playerInsight}</div>
@@ -384,6 +723,15 @@ export default function SectorBriefTab({ T }) {
           </Card>
         ))}
       </div>
+
+      {/* ── Big-pharma capex bars ──────────────── */}
+      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
+        <div style={{ fontFamily: Fh, fontStyle: "italic", fontSize: 22, color: T.text }}>The onshoring tailwind — in dollars committed</div>
+        <div style={{ fontSize: 12, color: T.textTer, fontFamily: Fn }}>Announced US manufacturing investments triggered by Section 232 / MFN dynamics.</div>
+      </div>
+      <Card T={T} style={{ padding: "22px 24px", marginBottom: 32, overflow: "hidden" }}>
+        <CapexBars T={T} />
+      </Card>
 
       {/* ── Conclusion ──────────────────────────── */}
       <Card T={T} style={{ padding: "30px 32px", marginBottom: 16, borderTop: `4px solid ${T.text}` }}>

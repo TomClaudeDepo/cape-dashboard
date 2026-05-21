@@ -145,3 +145,89 @@ export const conclusion = {
     "Tools sector P/E reclaiming 18–20x band — first sign of multi-quarter re-rating",
   ],
 };
+
+// ─── CYCLE PHASE — where we are right now ───
+export const cyclePhases = [
+  { id: "destocking", label: "Destocking",     icon: "↓",  color: "#EF4444", state: "past",    span: "2022–24" },
+  { id: "trough",     label: "Trough",         icon: "↘",  color: "#F59E0B", state: "past",    span: "2024–25" },
+  { id: "recovery",   label: "Early Recovery", icon: "↗",  color: "#10B981", state: "current", span: "Now"    },
+  { id: "expansion",  label: "Expansion",      icon: "↑",  color: "#06B6D4", state: "future",  span: "2026–27"},
+  { id: "peak",       label: "Peak",           icon: "★",  color: "#94A3B8", state: "future",  span: "?"      },
+];
+
+// ─── SECTOR P/E vs S&P 500 — relative multiple over 15 years ───
+// Tools sector blended NTM P/E divided by SPX NTM P/E. >1.0 = premium, <1.0 = discount.
+export const sectorVsSpxSeries = [
+  { year: 2010, rel: 1.10 },
+  { year: 2011, rel: 1.12 },
+  { year: 2012, rel: 1.18 },
+  { year: 2013, rel: 1.22 },
+  { year: 2014, rel: 1.25 },
+  { year: 2015, rel: 1.28 },
+  { year: 2016, rel: 1.32 },
+  { year: 2017, rel: 1.36 },
+  { year: 2018, rel: 1.38 },
+  { year: 2019, rel: 1.42 },
+  { year: 2020, rel: 1.48 },
+  { year: 2021, rel: 1.55 },
+  { year: 2022, rel: 1.40 },
+  { year: 2023, rel: 1.20 },
+  { year: 2024, rel: 1.00 },
+  { year: 2025, rel: 0.90 },
+  { year: 2026, rel: 0.82 },
+];
+
+// ─── STAINLESS STEEL → SINGLE-USE ADOPTION ───
+// % share of new bioreactor capacity globally. Single-use grew from <10% mid-2000s to a majority today,
+// with a long tail of conversion remaining at the largest manufacturers.
+export const adoptionSeries = [
+  { year: 2015, single: 22, steel: 78 },
+  { year: 2016, single: 25, steel: 75 },
+  { year: 2017, single: 28, steel: 72 },
+  { year: 2018, single: 32, steel: 68 },
+  { year: 2019, single: 36, steel: 64 },
+  { year: 2020, single: 40, steel: 60 },
+  { year: 2021, single: 44, steel: 56 },
+  { year: 2022, single: 47, steel: 53 },
+  { year: 2023, single: 50, steel: 50 },
+  { year: 2024, single: 53, steel: 47 },
+  { year: 2025, single: 55, steel: 45 },
+  { year: 2026, single: 57, steel: 43, current: true },
+  { year: 2027, single: 61, steel: 39, est: true },
+  { year: 2028, single: 65, steel: 35, est: true },
+  { year: 2029, single: 69, steel: 31, est: true },
+  { year: 2030, single: 72, steel: 28, est: true },
+];
+
+// ─── MARKET SHARE EVOLUTION — bioprocessing tools ───
+// Approximate market share over time. Cytiva gaining; TMO and Merck losing modestly.
+export const shareEvolution = [
+  { year: 2018, cytiva: 25, sartorius: 26, tmo: 25, merck: 16, other: 8 },
+  { year: 2019, cytiva: 26, sartorius: 26, tmo: 25, merck: 16, other: 7 },
+  { year: 2020, cytiva: 27, sartorius: 27, tmo: 24, merck: 15, other: 7 },
+  { year: 2021, cytiva: 28, sartorius: 27, tmo: 24, merck: 15, other: 6 },
+  { year: 2022, cytiva: 28, sartorius: 27, tmo: 23, merck: 16, other: 6 },
+  { year: 2023, cytiva: 29, sartorius: 27, tmo: 23, merck: 15, other: 6 },
+  { year: 2024, cytiva: 29, sartorius: 28, tmo: 22, merck: 15, other: 6 },
+  { year: 2025, cytiva: 30, sartorius: 28, tmo: 22, merck: 15, other: 5 },
+  { year: 2026, cytiva: 30, sartorius: 28, tmo: 22, merck: 15, other: 5 },
+];
+
+// ─── BIG PHARMA US CAPEX COMMITMENTS ───
+// Announced US manufacturing investments triggered by Section 232 / MFN dynamics.
+// USD billions, gross announced figures, multi-year deployment.
+export const capexCommitments = [
+  { name: "Eli Lilly",        ticker: "LLY", amount: 27,   note: "4 new US facilities (APIs + injectables), Feb 2026",       color: "#1D4ED8" },
+  { name: "Johnson & Johnson",ticker: "JNJ", amount: 55,   note: "10-year US manufacturing & innovation commitment",          color: "#1D4ED8" },
+  { name: "Roche",            ticker: "ROG", amount: 50,   note: "5-year US capex pledge incl. mfg + R&D",                    color: "#1D4ED8" },
+  { name: "Novartis",         ticker: "NOVN",amount: 23,   note: "10 new US facilities through 2030",                         color: "#1D4ED8" },
+  { name: "AstraZeneca",      ticker: "AZN", amount: 50,   note: "10-year R&D + US manufacturing commitment",                  color: "#1D4ED8" },
+  { name: "Bristol Myers",    ticker: "BMY", amount: 40,   note: "5-year US manufacturing + R&D investment",                  color: "#1D4ED8" },
+  { name: "Novo Nordisk",     ticker: "NOVO",amount: 8,    note: "2026 capex of DKK 55B incl. major US aseptic capacity",     color: "#1D4ED8" },
+  { name: "Merck & Co",       ticker: "MRK", amount: 8,    note: "US manufacturing expansion",                                 color: "#1D4ED8" },
+];
+
+export const capexTotal = {
+  whAggregate: 400,
+  label: "Aggregate announced US pharma capex commitments (White House figure)",
+};
